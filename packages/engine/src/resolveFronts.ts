@@ -93,6 +93,9 @@ interface SideState {
   told: Set<string>;
 }
 
+/** SHOOT at or above this counts as a shooter for the trait sentences (Volley, Harass). */
+export const SHOOTER_MIN = 40;
+
 const avg = (arr: PreparedUnit[], f: (u: PreparedUnit) => number) => (arr.length ? arr.reduce((t, u) => t + f(u), 0) / arr.length : 0);
 const contrib = (u: PreparedUnit, value: number): Contribution => ({ unitId: u.unit.id, name: u.unit.name, cost: u.unit.cost, value });
 const top = (cs: Contribution[]) => cs.filter((c) => c.value > 0).sort((a, b) => b.value - a.value).slice(0, 3);
@@ -332,7 +335,8 @@ export function resolveBattleFronts(data: GameData, armyA: Army, armyB: Army, te
     contests.push(contest("skirmish", 0, FA, FB, sA, sB, cA, cB, R.weights.skirmish * stakes("skirmish"), mods));
   }
   for (const s of [A, B]) {
-    const shooters = (fs: FrontState) => fs.units.filter((u) => u.stats.ranged > 0);
+    // A shooter is a unit that can actually shoot; a swordsman with SHOOT 5 does not make a Volley.
+    const shooters = (fs: FrontState) => fs.units.filter((u) => u.unit.stats.ranged >= SHOOTER_MIN);
     if (has(s, "volley") && shooters(s.fronts.C).length) acted(s, "volley", "C", shooters(s.fronts.C));
     const wingShooters = [...shooters(s.fronts.L), ...shooters(s.fronts.R)];
     if (has(s, "harass") && wingShooters.length) acted(s, "harass", null, wingShooters);

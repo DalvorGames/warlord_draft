@@ -1,5 +1,5 @@
 // Copy the Deploy screen derives from the rules and the enemy roster (v3 §3.5, §4.4, §4.10–4.12).
-import type { Army, Engine, Front, PlanName, Unit } from "@warlord/engine";
+import { SHOOTER_MIN, type Army, type Engine, type Front, type PlanName, type Unit } from "@warlord/engine";
 import { WING_CLASSES, PLAN_TITLE, cultureShort } from "./text";
 
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight"];
@@ -94,7 +94,7 @@ export function lineTraitState(engine: Engine, id: string, mine: Army, placed: (
     return { on, note: on ? "On: one front is heavier than the other two, and it hits harder at the clash." : "Not on yet: needs one front heavier than the other two." };
   }
   if (id === "volley") {
-    const n = mine.slots.filter((s, k) => placed[k] === "C" && engine.data.unitById.get(s.unitId)!.stats.ranged >= 50).length;
+    const n = mine.slots.filter((s, k) => placed[k] === "C" && engine.data.unitById.get(s.unitId)!.stats.ranged >= SHOOTER_MIN).length;
     return { on: n > 0, note: n > 0 ? `On: ${WORDS[n]} shooter${n > 1 ? "s" : ""} in the center.` : "Wants shooters in the center: none there now." };
   }
   return null;
