@@ -45,12 +45,10 @@ export default function DeployPage() {
 
   const preview = useMemo(() => {
     if (!engine || !army || !b) return null;
-    const idx = placed.map((f, k) => (f ? k : -1)).filter((k) => k >= 0);
-    if (!idx.length) return null;
+    if (!placed.some((f) => f)) return null;
     const his = engine.defaultDeployment(b.foe);
     const hisCount = (f: Front) => his.filter((x) => x === f).length;
-    const partial = { ...army, plan, slots: idx.map((k) => army.slots[k]), deployment: idx.map((k) => placed[k] as Front) };
-    return deployPreview(engine.data, partial, b.spec.terrain, { L: hisCount(OPP.L), C: hisCount(OPP.C), R: hisCount(OPP.R) });
+    return deployPreview(engine.data, { ...army, plan }, b.spec.terrain, { L: hisCount(OPP.L), C: hisCount(OPP.C), R: hisCount(OPP.R) }, placed);
   }, [engine, army, b, placed, plan]);
 
   if (!engine || !save || !army || !b) return <Screen />;

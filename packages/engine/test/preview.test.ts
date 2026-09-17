@@ -33,6 +33,22 @@ describe("deployPreview", () => {
       }
     }
   });
+  it("accepts a partial placement and leaves unplaced units off every front", () => {
+    const { A } = pair(1147, "plains");
+    const placed = A.deployment!.map((f, i) => (i === 3 ? f : null));
+    const pv = deployPreview(data, A, "plains", undefined, placed);
+    const total = FR.reduce((t, f) => t + pv.fronts[f].count, 0);
+    expect(total).toBe(1);
+    expect(pv.fronts[A.deployment![3]].unitIds).toEqual([A.slots[3].unitId]);
+    const empty = FR.filter((f) => f !== A.deployment![3]);
+    for (const f of empty) expect(pv.fronts[f].threshold).toBe(0);
+    // With nothing placed, every front is empty and nothing throws.
+    const none = deployPreview(data, A, "plains", undefined, A.slots.map(() => null));
+    for (const f of FR) expect(none.fronts[f].count).toBe(0);
+    // Fully placed through `placed` matches the deployment path exactly.
+    const full = deployPreview(data, A, "plains", undefined, A.deployment!);
+    for (const f of FR) expect(full.fronts[f].threshold).toBe(deployPreview(data, A, "plains").fronts[f].threshold);
+  });
   it("counts reserves by the frontage rule and names cohesion", () => {
     expect(reserveCount(data, 6, 4)).toBe(0); // ceil(4×1.5)=6 engage
     expect(reserveCount(data, 6, 2)).toBe(3); // ceil(2×1.5)=3 engage

@@ -41,13 +41,17 @@ export interface DeployPreview {
 
 /**
  * Preview an army's fronts on a terrain. `opposing` is how many enemy units you assume on each of *your*
- * fronts' opposites (L faces his R, and so on); it only affects the reserve count.
+ * fronts' opposites (L faces his R, and so on); it only affects the reserve count. `placed` is the
+ * in-progress deployment, one entry per slot with null for units not yet on the line: the army is
+ * prepared whole (the resolver needs all eight) and unplaced units are left out of every front.
  */
-export function deployPreview(data: GameData, army: Army, terrain: TerrainName, opposing?: Partial<Record<Front, number>>): DeployPreview {
-  const p = prepareArmy(data, army, terrain);
+export function deployPreview(data: GameData, army: Army, terrain: TerrainName, opposing?: Partial<Record<Front, number>>, placed?: (Front | null)[]): DeployPreview {
+  const placement = placed ?? army.deployment ?? null;
+  const whole: Army = placement ? { ...army, deployment: placement.map((f) => f ?? "C") } : army;
+  const p = prepareArmy(data, whole, terrain);
   const fronts = {} as Record<Front, FrontPreview>;
   for (const f of FRONTS) {
-    const units = p.units.filter((u) => u.front === f);
+    const units = p.units.filter((u, i) => (placement ? placement[i] === f : u.front === f));
     const oppN = opposing?.[f] ?? Math.round(army.slots.length / 3);
     fronts[f] = {
       front: f,
