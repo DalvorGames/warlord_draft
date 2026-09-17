@@ -17,6 +17,7 @@ export function EngineSmoke({ seed }: { seed: number }) {
     const result = engine.resolve(armyA, armyB, terrain, seed);
     console.log("[warlord] engine data v%d, %d units", engine.dataVersion, engine.data.units.length);
     console.log("[warlord] smoke battle", { seed, terrain, winner: result.winner, brokeIn: result.brokeInPhase, recap: result.recap });
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-off smoke readout
     setLine(`Engine v${engine.dataVersion} · ${engine.data.units.length} units · smoke battle ${result.winner === "A" ? "won" : "lost"} at ${result.brokeInPhase}`);
   }, [engine, seed]);
   return <div className="font-mono text-[10px] text-faint-2">{line}</div>;

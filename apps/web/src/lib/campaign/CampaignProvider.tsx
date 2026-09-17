@@ -39,6 +39,18 @@ export interface CampaignContextValue {
   marchOn(): void;
 }
 
+/** Resolve every fought battle of a save from its inputs. */
+function resolveAll(engine: Engine, save: CampaignSave, army: Army): (BattleResult | null)[] {
+  return save.spec.battles.map((spec, i) => {
+    const play = save.battles[i];
+    if (!play.fought || !play.plan || !play.deployment) return null;
+    const foeArmy = engine.replayDraft(spec.foe).army!;
+    const mine: Army = { ...army, plan: play.plan, deployment: play.deployment };
+    const foe: Army = { ...foeArmy, deployment: engine.aiDeploy(foeArmy, mine, spec.terrain) };
+    return engine.resolve(mine, foe, spec.terrain, spec.battleSeed);
+  });
+}
+
 const Ctx = createContext<CampaignContextValue | null>(null);
 
 export function CampaignProvider({ children }: { children: ReactNode }) {
@@ -48,6 +60,7 @@ export function CampaignProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate from localStorage once, after mount
     setSaveState(storage.loadSave());
     setHistory(storage.loadHistory());
     setHydrated(true);
@@ -76,18 +89,11 @@ export function CampaignProvider({ children }: { children: ReactNode }) {
 
   const battles = useMemo<BattleView[]>(() => {
     if (!engine || !save) return [];
+    const results = army ? resolveAll(engine, save, army) : save.spec.battles.map(() => null);
     return save.spec.battles.map((spec, index) => {
-      const foeState = engine.replayDraft(spec.foe);
-      const foeArmy = foeState.army!;
-      const play = save.battles[index];
+      const foeArmy = engine.replayDraft(spec.foe).army!;
       const general = engine.data.generalById.get(foeArmy.generalId)!;
-      let result: BattleResult | null = null;
-      if (play.fought && army && play.plan && play.deployment) {
-        const mine: Army = { ...army, plan: play.plan, deployment: play.deployment };
-        const foe: Army = { ...foeArmy, deployment: engine.aiDeploy(foeArmy, mine, spec.terrain) };
-        result = engine.resolve(mine, foe, spec.terrain, spec.battleSeed);
-      }
-      return { index, spec, foe: foeArmy, foeGeneral: general.name, foeCulture: general.culture, play, result };
+      return { index, spec, foe: foeArmy, foeGeneral: general.name, foeCulture: general.culture, play: save.battles[index], result: results[index] };
     });
   }, [engine, save, army]);
 
@@ -120,29 +126,37 @@ export function CampaignProvider({ children }: { children: ReactNode }) {
     setStage: (stage) => patch((s) => ({ ...s, stage })),
     setBattlePlan: (i, plan) => patch((s) => ({ ...s, battles: s.battles.map((b, j) => (j === i ? { ...b, plan } : b)) })),
     setBattleDeployment: (i, deployment) => patch((s) => ({ ...s, battles: s.battles.map((b, j) => (j === i ? { ...b, deployment } : b)) })),
-    giveBattle: (i) => patch((s) => ({ ...s, stage: "battle", battleIndex: i, battles: s.battles.map((b, j) => (j === i ? { ...b, fought: true } : b)) })),
+    giveBattle: (i) => {
+      if (!engine || !save || !army) return;
+      const next: CampaignSave = { ...save, stage: "battle", battleIndex: i, battles: save.battles.map((b, j) => (j === i ? { ...b, fought: true } : b)) };
+      // Resolve now so the campaign's end is known and recorded once, from inputs only.
+      const results = resolveAll(engine, next, army);
+      const won = results.filter((r) => r?.winner === "A").length;
+      const lost = results.some((r) => r && r.winner !== "A");
+      const played = results.filter(Boolean).length;
+      if (lost || won === BATTLES_PER_CAMPAIGN) {
+        const finishedAt = new Date().toISOString();
+        const lossPct = results.reduce((t, r) => t + (r ? r.casualties.A : 0), 0);
+        const lastIdx = results.map((r, k) => (r ? k : -1)).filter((k) => k >= 0).pop()!;
+        const foeName = engine.data.generalById.get(engine.replayDraft(next.spec.battles[lastIdx].foe).army!.generalId)!.name;
+        const entry: HistoryEntry = {
+          id: next.spec.id,
+          kind: next.kind,
+          general: engine.data.generalById.get(army.generalId)!.name,
+          won,
+          played,
+          lossPct,
+          headline: lost ? `Fell at battle ${lastIdx + 1} to ${foeName}` : `Conquered, ${(lossPct * 100).toFixed(0)}% lost`,
+          finishedAt,
+          runs: next.battles.filter((b) => b.fought).map((b) => engine.toRunString({ ...next.draft, plan: b.plan, deployment: b.deployment })),
+        };
+        setHistory(storage.pushHistory(entry));
+        next.finishedAt = finishedAt;
+      }
+      setSave(next);
+    },
     marchOn: () => patch((s) => ({ ...s, stage: "deploy", battleIndex: s.battleIndex + 1 })),
   };
-
-  // When a campaign ends, record it in history once.
-  useEffect(() => {
-    if (!engine || !save || !army || save.finishedAt || !score.over) return;
-    const general = engine.data.generalById.get(army.generalId)!.name;
-    const last = battles.filter((b) => b.result).slice(-1)[0];
-    const entry: HistoryEntry = {
-      id: save.spec.id,
-      kind: save.kind,
-      general,
-      won: score.won,
-      played: score.played,
-      lossPct: score.lossPct,
-      headline: last ? (last.result!.winner === "A" ? `Conquered, ${(score.lossPct * 100).toFixed(0)}% lost` : `Fell at battle ${last.index + 1} to ${last.foeGeneral}`) : "",
-      finishedAt: new Date().toISOString(),
-      runs: battles.filter((b) => b.result).map((b) => engine.toRunString({ ...save.draft, plan: b.play.plan, deployment: b.play.deployment })),
-    };
-    setHistory(storage.pushHistory(entry));
-    patch((s) => ({ ...s, stage: "result", finishedAt: entry.finishedAt }));
-  }, [engine, save, army, battles, score, patch]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
