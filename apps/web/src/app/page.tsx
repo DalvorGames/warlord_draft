@@ -8,7 +8,7 @@ import { TabBar } from "@/components/TabBar";
 import { useCampaign } from "@/lib/campaign/CampaignProvider";
 import { campaignFromSeed } from "@/lib/campaign/spec";
 import { dailyKey, formatMusterDate, seedFromKey } from "@/lib/daily";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const STAGE_LABEL: Record<string, string> = { general: "pick a general", draft: "the draft", deploy: "deploy", battle: "the battle", between: "between battles", result: "the result" };
 
@@ -26,9 +26,17 @@ function routeFor(stage: string, row: number, battle: number): string {
 export default function TodayPage() {
   const router = useRouter();
   const { engine, hydrated, save, history, start, abandon } = useCampaign();
-  const key = dailyKey();
-  const seed = seedFromKey(key);
-  const preview = useMemo(() => (engine ? campaignFromSeed(engine, seed, key) : null), [engine, seed, key]);
+  // The date is the player's local date, so it is only known on the client: compute after mount to keep
+  // the prerendered HTML and the first client render identical.
+  const [today, setToday] = useState<{ key: string; seed: number; label: string } | null>(null);
+  useEffect(() => {
+    const key = dailyKey();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only date, once after mount
+    setToday({ key, seed: seedFromKey(key), label: formatMusterDate() });
+  }, []);
+  const key = today?.key ?? "";
+  const seed = today?.seed ?? 0;
+  const preview = useMemo(() => (engine && today ? campaignFromSeed(engine, today.seed, today.key) : null), [engine, today]);
   const foes = useMemo(() => {
     if (!engine || !preview) return [];
     return preview.battles.map((b) => {
@@ -40,7 +48,7 @@ export default function TodayPage() {
 
   // A finished campaign whose result screen has not been reached yet still resumes (the battle may be unwatched).
   const inProgress = hydrated && save && save.stage !== "result" ? save : null;
-  const dailyDone = history.find((h) => h.id === key);
+  const dailyDone = today ? history.find((h) => h.id === key) : undefined;
   const yesterday = history.find((h) => h.kind === "daily" && h.id !== key) ?? history[0];
   const lastFive = history.slice(0, 5);
 
@@ -55,7 +63,7 @@ export default function TodayPage() {
   };
 
   const facts = [
-    { k: "SEED", v: String(seed) },
+    { k: "SEED", v: today ? String(seed) : "…" },
     { k: "BATTLES", v: "3" },
     { k: "REROLLS", v: String(engine?.data.rules.rerolls ?? 2) },
   ];
@@ -67,7 +75,7 @@ export default function TodayPage() {
         <section className="flex flex-col gap-3.5 rounded-lg border border-accent bg-panel px-[18px] pt-5 pb-[18px]">
           <div className="flex items-baseline justify-between">
             <span className="label text-accent">Today’s muster</span>
-            <span className="font-mono text-[10px] text-faint-2">{formatMusterDate()}</span>
+            <span className="font-mono text-[10px] text-faint-2">{today?.label ?? ""}</span>
           </div>
           <h1 className="display m-0 text-[30px]">
             One army. Three generals.
@@ -109,7 +117,7 @@ export default function TodayPage() {
               Today: {dailyDone.headline}
             </div>
           ) : (
-            <button type="button" disabled={!engine} onClick={() => begin("daily")} className="flex min-h-11 items-center justify-center rounded-md bg-accent-fill px-4 py-[17px] text-[17px] font-semibold text-accent-text disabled:opacity-60">
+            <button type="button" disabled={!engine || !today} onClick={() => begin("daily")} className="flex min-h-11 items-center justify-center rounded-md bg-accent-fill px-4 py-[17px] text-[17px] font-semibold text-accent-text disabled:opacity-60">
               Draft today’s army
             </button>
           )}
