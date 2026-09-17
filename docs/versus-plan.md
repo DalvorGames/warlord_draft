@@ -190,3 +190,15 @@ set, the live VERSUS tab says the server is not set up, and everything works loc
 
 Spectators, chat, best-of-three, ranked rooms, accounts, push notifications for invites, a share image, Supabase
 Realtime, and the handicap (the spec turns it off in 1v1 anyway).
+
+## 11. Status, 2026-09-17
+
+V0 to V3 are built and pushed (commits 3d0baba and 77849bd). The `rooms` table is on the designer's Supabase
+project and the two variables are set on Vercel Production, so the live VERSUS tab works. Verified in Chrome as
+the host against a scripted guest: create, join, ready-up, the timed general and rows with presence, the roster
+reveal, lock and unlock with the locked card and the claim offer, the report with his beat, the Versus result
+with the record, a rematch into match 2, and Today's invite row with the tab dot.
+
+Left for V4: a smoke test with two phones on the live site; the guest's own screens were exercised through the
+API and the flip tests rather than a browser. Later: Supabase Realtime in place of polling, AUTO marks on the
+auto-picked tokens (today a sentence on Result), the Preview environment variables on Vercel.

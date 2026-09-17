@@ -144,3 +144,17 @@ Next: measure and tune on the new data (battle 1 sits at about 70%, target 80%);
 - Engine needs only a result-flip helper (resolve as host vs guest, flip for the guest so the report stays A = you).
 - Sketch: extend `CampaignSave` with `kind: "duel"` so General, Draft, Deploy, Battle and Result are reused;
   new routes `/1v1` (create) and `/1v1/[code]` (join, wait); route handlers under `/api/lobby`.
+
+## 1v1 rooms: built 2026-09-17 (V0–V3 of docs/versus-plan.md)
+- Server: `apps/web/src/lib/versus/room.ts` (pure state machine, 10 vitest tests), `store.ts` (Supabase REST with
+  optimistic `version`, JSON files under `apps/web/.rooms/` locally), route handlers under `/api/rooms`.
+  Table `rooms` created on the designer's Supabase project `warlord_draft` (ref frksmnnmuvwkgodbmpbj) via
+  `supabase db query --linked`; `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` set on Vercel Production (the
+  legacy service_role JWT; the CLI prints the new secret key truncated). `apps/web/.env.local` has the same.
+- Client: `/versus`, `/v/[code]`, name prompt, invite row + tab dot; `CampaignSave.kind = "duel"` mirrors the
+  room into the run screens (provider polls every 2s, server run string is the truth); guest sees `flipSides`.
+- Verified in Chrome as host against a scripted guest (`scratchpad/sam.mjs`): create, join, ready-up, timed
+  general and rows, presence words, roster reveal, lock/unlock card, claim offer on absence, battle with his beat,
+  Versus result with the record, rematch back to the ready-up and into match 2, Today's invite row.
+- Not yet: the guest's own UI path was exercised only through the API and unit tests; V4 live smoke test with
+  two phones; Supabase Realtime; AUTO marks on tokens (only a sentence on Result); Preview env vars on Vercel.
