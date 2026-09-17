@@ -1,6 +1,8 @@
 // Deployment helpers for the three-fronts model.
 
 import { resolveBattle } from "./resolve.js";
+import { mulberry32 } from "./rng.js";
+import { greedyDrafter } from "./batch/drafters.js";
 import type { Army, Front, GameData, TerrainName, Unit } from "./types.js";
 
 export const FRONTS: Front[] = ["L", "C", "R"];
@@ -102,4 +104,32 @@ export function deployAgainst(data: GameData, army: Army, enemy: Army, terrain: 
     if (score > bestScore) { bestScore = score; best = d; }
   }
   return best;
+}
+
+/**
+ * The campaign AI's line (design/gdd/deployment.md §9.1): player-blind. Each candidate layout is simulated
+ * against a neutral mirror (this same army in its default shape) on the real ground over the bot's own seeds;
+ * the candidates within `nearTie` of the best score, at most `top` of them, are one seeded pick. The line is
+ * therefore the same for everyone on the same campaign seed, and cannot be derived from the roster alone.
+ */
+export function blindLine(data: GameData, army: Army, terrain: TerrainName, seed: number): Front[] {
+  const cfg = data.rules.campaign.blindLine;
+  // The neutral panel: this army's own mirror plus a few fixed bot armies in their default shape. The panel
+  // never includes the player, so nothing about the player leaks into the line.
+  const panel: Army[] = [{ ...army, deployment: defaultDeployment(data, army) }];
+  for (let k = 0; k < (cfg.panel ?? 2); k++) panel.push(greedyDrafter(data, 7001 + k * 131, 9001 + k * 17));
+  const scored = deploymentCandidates(data, army).map((d) => {
+    const a: Army = { ...army, deployment: d };
+    let score = 0;
+    for (const foe of panel) for (let s = 1; s <= cfg.seeds; s++) {
+      const r = resolveBattle(data, a, foe, terrain, 1000 + s);
+      score += (r.winner === "A" ? 1 : 0) + 0.25 * (r.moraleFraction.B - r.moraleFraction.A);
+    }
+    return { d, score };
+  });
+  scored.sort((x, y) => y.score - x.score);
+  const best = scored[0].score;
+  const floor = best > 0 ? best * cfg.nearTie : best - (1 - cfg.nearTie);
+  const tied = scored.filter((x) => x.score >= floor).slice(0, cfg.top);
+  return mulberry32(seed).pick(tied).d;
 }

@@ -12,13 +12,12 @@ export interface SideRecord {
   culture: string;
   plan: string;
   totalCost: number;
-  /** culture id → trait level (only cultures at level ≥ 1). */
-  traits: Record<string, 1 | 2>;
+  /** trait id → level, every trait the army fielded. */
+  traits: Record<string, number>;
   units: { unitId: string; grade: string; cost: number; class: UnitClass; slot: SlotKind; onClass: boolean; penalty: number }[];
   cavCount: number;
   eliteCount: number;
   combinedArms: boolean;
-  styleMatch: boolean;
   startsShaken: boolean;
   casualties: number;
   /** fronts model: units per front, shooters (ranged ≥ 30), whether the center broke, whether the general fell. */
@@ -51,8 +50,8 @@ export interface BatchOptions {
 const TERRAINS: TerrainName[] = ["plains", "hills", "river", "forest"];
 
 function sideRecord(data: GameData, army: Army, prepared: ReturnType<typeof resolveBattle>["armies"]["A"], casualties: number): SideRecord {
-  const traits: Record<string, 1 | 2> = {};
-  for (const t of prepared.traits) traits[t.culture] = t.level;
+  const traits: Record<string, number> = {};
+  for (const t of prepared.traits) traits[t.id] = t.level;
   return {
     generalId: army.generalId,
     culture: prepared.general.culture,
@@ -63,7 +62,6 @@ function sideRecord(data: GameData, army: Army, prepared: ReturnType<typeof reso
     cavCount: prepared.units.filter((u) => u.role === "cavalry").length,
     eliteCount: prepared.units.filter((u) => u.unit.grade === "A" || u.unit.grade === "S").length,
     combinedArms: prepared.combinedArms,
-    styleMatch: prepared.styleMatch,
     startsShaken: prepared.startsShaken,
     casualties,
   };

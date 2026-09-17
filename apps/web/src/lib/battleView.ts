@@ -1,86 +1,77 @@
-// Derived views for the match report (v2 §3.5): opposed bars per front, cumulative damage, callouts.
-import type { BattleResult, Beat, ContestRecord, Front } from "@warlord/engine";
+// Derived views for the match report (v3 §3.6, §4.5–4.7): the front strip, contest rows, the chronicle.
+import { strength, type BattleResult, type Beat, type ContestRecord, type Front } from "@warlord/engine";
 
-const FRONT_WORD: Record<Front, string> = { L: "LEFT", C: "CENTER", R: "RIGHT" };
+export const FRONT_WORD: Record<Front, string> = { L: "LEFT", C: "CENTER", R: "RIGHT" };
+export const OPP: Record<Front, Front> = { L: "R", C: "C", R: "L" };
 
-export interface OpposedBar {
-  k: string;
-  aPct: number;
-  bPct: number;
-  tag: string;
-  winner: "A" | "B" | null;
-}
+export interface ContestRow { k: string; yourShare: number; word: string; pct: string; winner: "A" | "B" | null }
 
-/** One opposed bar per contest of a beat, keyed L / C / R (roll-ups as L→C etc.). */
-export function opposedBars(beat: Beat): OpposedBar[] {
+/** One row per contest of a beat: your share of the two scores, the edge word and the signed percent (v3 §4.6). */
+export function contestRows(beat: Beat): ContestRow[] {
   return beat.contests.map((c) => {
-    const max = Math.max(c.scoreA, c.scoreB, 1);
+    const total = Math.max(c.scoreA + c.scoreB, 1e-9);
     const k = c.stage === "rollup" ? (c.note?.startsWith("A") ? `${c.frontA}→${c.frontB}` : `${c.frontB}→${c.frontA}`) : c.frontA;
-    return {
-      k,
-      aPct: Math.round((c.scoreA / max) * 100),
-      bPct: Math.round((c.scoreB / max) * 100),
-      tag: c.edge === 0 ? "HELD" : `${c.winner === "A" ? "+" : "−"}${Math.round(c.edge * 100)}%`,
-      winner: c.edge === 0 ? null : c.winner,
-    };
+    const yours = c.winner === "A";
+    const e = c.edge;
+    const word = e === 0 ? (c.stage === "rollup" ? "held" : "even") : e < 0.12 ? (yours ? "yours, narrowly" : "his, narrowly") : e >= 0.3 ? (yours ? "yours, clearly" : "his, clearly") : yours ? "yours" : "his";
+    return { k, yourShare: c.scoreA / total, word, pct: e === 0 ? "0%" : `${yours ? "+" : "−"}${Math.round(e * 100)}%`, winner: e === 0 ? null : c.winner };
   });
 }
 
-/** Front damage against threshold after `upTo` beats (inclusive), for both sides. */
-export function frontsAfter(result: BattleResult, beats: Beat[], upTo: number) {
-  const dmg = { A: { L: 0, C: 0, R: 0 } as Record<Front, number>, B: { L: 0, C: 0, R: 0 } as Record<Front, number> };
+export type FrontStateWord = "BROKE" | "HE BROKE" | "FLANKED" | "SHAKEN" | "HE'S SHAKEN" | "HOLDING" | "NOBODY";
+export interface FrontPairState { you: { front: Front; unitIds: string[]; broken: boolean; shaken: boolean; flanked: boolean }; him: { front: Front; unitIds: string[]; broken: boolean; shaken: boolean; flanked: boolean }; word: FrontStateWord }
+
+/** Front strip state after `upTo` beats (v3 §4.7): BROKE · HE BROKE · FLANKED · SHAKEN · HE'S SHAKEN · HOLDING. */
+export function frontStrip(result: BattleResult, beats: Beat[], upTo: number): FrontPairState[] {
   const broke = { you: new Set<Front>(), him: new Set<Front>() };
+  const flanked = { you: new Set<Front>(), him: new Set<Front>() };
+  const shaken = { you: new Set<Front>(), him: new Set<Front>() };
+  let contactSeen = false;
   for (let i = 0; i <= Math.min(upTo, beats.length - 1); i++) {
-    for (const c of beats[i].contests) {
-      dmg.A[c.frontA] += c.damageA;
-      dmg.B[c.frontB] += c.damageB;
-    }
-    beats[i].broke.you.forEach((f) => broke.you.add(f));
-    beats[i].broke.him.forEach((f) => broke.him.add(f));
+    const b = beats[i];
+    b.broke.you.forEach((f) => broke.you.add(f));
+    b.broke.him.forEach((f) => broke.him.add(f));
+    for (const c of b.contests) if (c.stage === "rollup") { if (c.note?.startsWith("A")) flanked.him.add(c.frontB); else flanked.you.add(c.frontA); }
+    if (b.kind === "contact") contactSeen = true;
+    for (const t of b.traits) if (t.trait === "rally") (t.side === "A" ? shaken.you : shaken.him).add(t.front!);
   }
-  const thr = (side: "A" | "B", f: Front) => result.fronts![side].find((x) => x.front === f)!;
+  if (contactSeen) {
+    for (const f of result.fronts!.A) if (f.shaken) shaken.you.add(f.front);
+    for (const f of result.fronts!.B) if (f.shaken) shaken.him.add(f.front);
+  }
   return (["L", "C", "R"] as Front[]).map((f) => {
-    const opp: Front = f === "L" ? "R" : f === "R" ? "L" : "C";
-    const ya = thr("A", f), hb = thr("B", opp);
-    return {
-      you: { front: f, pct: ya.threshold > 0 ? Math.min(1, dmg.A[f] / ya.threshold) : 0, broken: broke.you.has(f), empty: ya.unitIds.length === 0 },
-      him: { front: opp, pct: hb.threshold > 0 ? Math.min(1, dmg.B[opp] / hb.threshold) : 0, broken: broke.him.has(opp), empty: hb.unitIds.length === 0 },
-    };
+    const o = OPP[f];
+    const ya = result.fronts!.A.find((x) => x.front === f)!, hb = result.fronts!.B.find((x) => x.front === o)!;
+    const you = { front: f, unitIds: ya.unitIds, broken: broke.you.has(f), shaken: shaken.you.has(f), flanked: flanked.you.has(f) };
+    const him = { front: o, unitIds: hb.unitIds, broken: broke.him.has(o), shaken: shaken.him.has(o), flanked: flanked.him.has(o) };
+    const word: FrontStateWord = you.broken ? "BROKE" : him.broken ? "HE BROKE" : you.flanked ? "FLANKED" : you.shaken ? "SHAKEN" : him.shaken ? "HE'S SHAKEN" : !you.unitIds.length && !him.unitIds.length ? "NOBODY" : "HOLDING";
+    return { you, him, word };
   });
 }
 
-export function pairLabel(c: ContestRecord): string {
-  if (c.stage === "rollup") {
-    const mine = c.note?.startsWith("A");
-    return mine ? `YOUR ${FRONT_WORD[c.frontA]} → HIS ${FRONT_WORD[c.frontB]}` : `HIS ${FRONT_WORD[c.frontB]} → YOUR ${FRONT_WORD[c.frontA]}`;
-  }
-  if (c.frontA === "C") return "THE CENTERS";
-  return `YOUR ${FRONT_WORD[c.frontA]} — HIS ${FRONT_WORD[c.frontB]}`;
+export function strengthOf(morale: number, routLevel: number) {
+  return strength(morale, routLevel);
 }
 
 export function endedLabel(brokeInPhase: string): string {
-  if (brokeInPhase === "break") return "RECKONING";
-  if (brokeInPhase === "skirmish") return "SKIRM";
-  if (brokeInPhase === "contact") return "CLASH";
+  if (brokeInPhase === "break") return "THE RECKONING";
+  if (brokeInPhase === "skirmish") return "ROUT, SKIRMISH";
+  if (brokeInPhase === "contact") return "ROUT, CLASH";
   const m = brokeInPhase.match(/press (\d)/);
-  return m ? `P${m[1]}` : brokeInPhase.toUpperCase();
+  return m ? `ROUT, PRESS ${m[1]}` : brokeInPhase.toUpperCase();
+}
+export const stageGutter = (b: Beat) => (b.kind === "result" ? "END" : b.kind === "skirmish" ? "SKIRM" : b.kind === "contact" ? "CLASH" : b.label);
+
+/** The chronicle: one clause per beat with the traits named in brackets (v3 §3.7). */
+export function chronicle(beats: Beat[]): { label: string; text: string; key: boolean }[] {
+  return beats.filter((b) => b.kind !== "result").map((b) => {
+    const traits = [...new Set(b.keys.filter((k) => k.kind === "trait").map((k) => k.label.split(" · ")[0]))].map((w) => w.charAt(0) + w.slice(1).toLowerCase());
+    const text = b.short.replace(/\.$/, "") + (traits.length ? ` (${traits.join(", ")})` : "") + ".";
+    return { label: stageGutter(b), text, key: b.keys.some((k) => k.kind !== "trait") || b.routed };
+  });
 }
 
-/** The rust tag on a key beat: what broke or routed. */
-export function keyTag(beat: Beat, hisName: string): string | null {
-  const bits: string[] = [];
-  if (beat.contests.some((c) => c.stage === "rollup")) bits.push("ROLL-UP");
-  if (beat.broke.him.length === 2 && !beat.broke.him.includes("C")) bits.push("BOTH HIS WINGS BREAK");
-  else for (const f of beat.broke.him) bits.push(`HIS ${FRONT_WORD[f]} BREAKS`);
-  if (beat.broke.you.length === 2 && !beat.broke.you.includes("C")) bits.push("BOTH YOUR WINGS BREAK");
-  else for (const f of beat.broke.you) bits.push(`YOUR ${FRONT_WORD[f]} BREAKS`);
-  if (beat.events.includes("B routs")) bits.push(`${hisName.toUpperCase()} ROUTS`);
-  if (beat.events.includes("A routs")) bits.push("YOUR ARMY ROUTS");
-  if (beat.contests.some((c) => c.note?.includes("rampage"))) bits.push("ELEPHANTS RAMPAGE");
-  return bits.length ? bits.join(" · ") : null;
-}
-
-/** Whether a beat is one of the key beats (v2 "Key beats" mode): a break, a rout, a roll-up, or the first two. */
-export function isKeyBeat(beat: Beat, index: number): boolean {
-  return index < 2 || beat.kind === "result" || beat.broke.him.length > 0 || beat.broke.you.length > 0 || beat.routed || beat.contests.some((c) => c.stage === "rollup");
-}
+export const pairLabel = (c: ContestRecord): string => {
+  if (c.stage === "rollup") return c.note?.startsWith("A") ? `YOUR ${FRONT_WORD[c.frontA]} → HIS ${FRONT_WORD[c.frontB]}` : `HIS ${FRONT_WORD[c.frontB]} → YOUR ${FRONT_WORD[c.frontA]}`;
+  return c.frontA === "C" ? "THE CENTERS" : `YOUR ${FRONT_WORD[c.frontA]} — HIS ${FRONT_WORD[c.frontB]}`;
+};

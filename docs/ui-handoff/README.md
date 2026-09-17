@@ -1,6 +1,8 @@
 # UI handoff v2 — how to use this folder
 
-Start with `UI-HANDOFF.md`. It is the design intent: decisions, tokens, every screen, the rules the UI computes itself, motion, narration templates, engine binding, open items and a build order.
+Two entry points. **Building the client:** start with `UI-HANDOFF.md`. **Redesigning against a new game design doc:** start with `DESIGN-SESSION-HANDOFF.md`, which says how to work the canvas, where the current design is weak, and how to diff a new doc against it.
+
+`UI-HANDOFF.md` is the design intent: decisions, tokens, every screen, the rules the UI computes itself, motion, narration templates, engine binding, open items and a build order.
 
 `design/` holds the visual mockups, exported from the Design canvas (`https://claude.ai/artifact/FYFSv7GGwABWfVfCXHgLPz`, where the same screens are live and clickable).
 
@@ -19,10 +21,10 @@ Start with `UI-HANDOFF.md`. It is the design intent: decisions, tokens, every sc
 | `Phone-General.dc.html` | 1 · General — three cards turn over by themselves; tap to choose (interactive) |
 | `Phone-Draft.dc.html` | 2 · Draft — one row, four slot reels, consequence lines (interactive: Reroll) |
 | `Phone-Board.dc.html` | 2b · The whole board as a sheet |
-| `Phone-Deploy.dc.html` | 3 · Deploy — the pitch, the unit inspector, the bench, doctrine (interactive) |
-| `Phone-Battle.dc.html` | 4 · Battle — the match report, one beat at a time (interactive) |
+| `Phone-Deploy.dc.html` | 3 · Deploy — your general, the pitch, the unit/doctrine panel, the bench (interactive) |
+| `Phone-Battle.dc.html` | 4 · Battle — the match report as a live feed, newest beat on top (interactive) |
 | `Phone-Result.dc.html` | 5 · Result — rank, what others took, share card |
-| `Phone-Rules.dc.html` | How it works — four numbered steps, cultures & traits (390×1640, scrolls) |
+| `Phone-Rules.dc.html` | How it works — four numbered steps, doctrines, cultures & traits (390×1800, scrolls) |
 | `Phone-Glossary.dc.html` | The numbers — every stat explained, with the stage it counts in (390×1280, scrolls) |
 | `V2-Palette.dc.html` | The palette v2 token sheet (980×844) |
 

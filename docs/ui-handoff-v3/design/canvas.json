@@ -1,0 +1,269 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Battle-First.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Battle · first beat",
+      "w": 390,
+      "x": 0,
+      "y": 2744
+    },
+    "Battle-Mid.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Battle · mid",
+      "w": 390,
+      "x": 470,
+      "y": 2744
+    },
+    "Battle-Reveal.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Battle · the reveal",
+      "w": 390,
+      "x": 1410,
+      "y": 2744
+    },
+    "Battle-Trait.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Battle · trait beat",
+      "w": 390,
+      "x": 940,
+      "y": 2744
+    },
+    "Between.dc.html": {
+      "h": 1180,
+      "is_interactive": true,
+      "title": "Between battles",
+      "w": 390,
+      "x": 1880,
+      "y": 2744
+    },
+    "Board.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Board sheet",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "Components.dc.html": {
+      "h": 2080,
+      "title": "Component sheet",
+      "w": 1280,
+      "x": 0,
+      "y": 7424
+    },
+    "Deploy-Empty.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Deploy · empty",
+      "w": 390,
+      "x": 0,
+      "y": 1204
+    },
+    "Deploy-Held.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Deploy · unit card open",
+      "w": 390,
+      "x": 470,
+      "y": 1204
+    },
+    "Deploy-Ready.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Deploy · ready",
+      "w": 390,
+      "x": 940,
+      "y": 1204
+    },
+    "Deploy-Sheet.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Deploy · enemy sheet",
+      "w": 390,
+      "x": 2350,
+      "y": 1204
+    },
+    "Draft-Flex.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Draft · flex row",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "Draft-Line.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Draft · line row",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "General.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "General",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Today",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "Numbers.dc.html": {
+      "h": 2500,
+      "is_interactive": true,
+      "title": "Numbers",
+      "w": 390,
+      "x": 470,
+      "y": 4564
+    },
+    "Result-Loss.dc.html": {
+      "h": 1560,
+      "is_interactive": true,
+      "title": "Result · loss",
+      "w": 390,
+      "x": 2350,
+      "y": 2744
+    },
+    "Result-Win.dc.html": {
+      "h": 1400,
+      "is_interactive": true,
+      "title": "Result · win",
+      "w": 390,
+      "x": 2820,
+      "y": 2744
+    },
+    "Rules.dc.html": {
+      "h": 1900,
+      "is_interactive": true,
+      "title": "Rules",
+      "w": 390,
+      "x": 0,
+      "y": 4564
+    },
+    "Tokens.dc.html": {
+      "h": 1180,
+      "title": "Token sheet",
+      "w": 1280,
+      "x": 0,
+      "y": 9684
+    },
+    "Deploy-Plan.dc.html": {
+      "h": 1180,
+      "is_interactive": true,
+      "title": "Deploy · plan open",
+      "w": 390,
+      "x": 1880,
+      "y": 1204
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-09-17T06:57:17Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "how": {
+      "size": 24,
+      "text": "UI v3 for the brief in docs/ui-handoff-v3. Palette v2 kept. Real data from the captured run (Epaminondas vs Alexander III on hills). Between and Result · win are illustrative: the run lost at battle one. CTAs link screen to screen in Play.",
+      "w": 420,
+      "x": 2500,
+      "y": -230
+    },
+    "row1": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "1 · Today to the draft",
+      "w": 240,
+      "x": 0,
+      "y": -230
+    },
+    "row2": {
+      "kind": "title1",
+      "maxW": 1800,
+      "text": "2 · Deploy, the core screen",
+      "w": 240,
+      "x": 0,
+      "y": 974
+    },
+    "row3": {
+      "kind": "title1",
+      "maxW": 3210,
+      "text": "3 · Battle to Result",
+      "w": 240,
+      "x": 0,
+      "y": 2514
+    },
+    "row4": {
+      "kind": "title1",
+      "maxW": 1200,
+      "text": "4 · Rules and Numbers",
+      "w": 240,
+      "x": 0,
+      "y": 4334
+    },
+    "row5": {
+      "kind": "title1",
+      "maxW": 1280,
+      "text": "5 · Components",
+      "w": 240,
+      "x": 0,
+      "y": 7194
+    },
+    "row6": {
+      "kind": "title1",
+      "maxW": 1280,
+      "text": "6 · Tokens",
+      "w": 240,
+      "x": 0,
+      "y": 9454
+    },
+    "scroll": {
+      "x": 2820,
+      "y": 1204,
+      "w": 320,
+      "text": "Unit card open and Plan open are drawn taller than a phone on purpose: a tapped token or the plan expands a card underneath, the page grows, and it scrolls under the pinned button. Everything else on Deploy stays on one screen.",
+      "size": "m"
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "General.dc.html",
+    "Draft-Line.dc.html",
+    "Draft-Flex.dc.html",
+    "Board.dc.html",
+    "Deploy-Empty.dc.html",
+    "Deploy-Held.dc.html",
+    "Deploy-Ready.dc.html",
+    "Deploy-Plan.dc.html",
+    "Deploy-Sheet.dc.html",
+    "Battle-First.dc.html",
+    "Battle-Mid.dc.html",
+    "Battle-Trait.dc.html",
+    "Battle-Reveal.dc.html",
+    "Between.dc.html",
+    "Result-Loss.dc.html",
+    "Result-Win.dc.html",
+    "Rules.dc.html",
+    "Numbers.dc.html",
+    "Components.dc.html",
+    "Tokens.dc.html"
+  ],
+  "pages": [],
+  "title": "Warlord Draft · UI v3"
+}

@@ -34,8 +34,14 @@ export function buildData(raw: {
   for (const g of generals) {
     if (generalById.has(g.id)) throw new Error(`duplicate general id ${g.id}`);
     if (!cultures[g.culture]) throw new Error(`general ${g.id}: unknown culture ${g.culture}`);
-    if (!(g.style in rules.styleToPlan)) throw new Error(`general ${g.id}: unknown style ${g.style}`);
+    if (!Array.isArray(g.traits)) throw new Error(`general ${g.id}: traits must be a list`);
+    for (const t of g.traits) if (!rules.traits[t]) throw new Error(`general ${g.id}: unknown trait ${t}`);
     generalById.set(g.id, g);
+  }
+  for (const [cid, c] of Object.entries(cultures)) if (!rules.traits[c.trait]) throw new Error(`culture ${cid}: unknown trait ${c.trait}`);
+  for (const [id, t] of Object.entries(rules.traits)) {
+    if (t.kind === "scaling" && t.levels.length !== 3) throw new Error(`trait ${id}: scaling traits need three levels`);
+    if (t.kind === "rule" && t.levels.length !== 1) throw new Error(`trait ${id}: rule traits have one level`);
   }
   if (rules.slots.length !== 8) throw new Error("rules.slots must have 8 rows");
   return { units, generals, cultures, rules, unitById, generalById };

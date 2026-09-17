@@ -1,192 +1,38 @@
 {
   "mac": {
     "name": "Macedon & Successors",
-    "trait": "Combined Arms",
-    "level1": [
-      {
-        "phase": "flank",
-        "mult": 1.25
-      }
-    ],
-    "level2": [
-      {
-        "phase": "flank",
-        "mult": 1.35
-      },
-      {
-        "rollup": 1.3
-      },
-      {
-        "rule": "pikes_ignore_shaken"
-      }
-    ]
+    "trait": "hammer_and_anvil"
   },
   "grk": {
     "name": "Greek City-States",
-    "trait": "Hoplite Cohesion",
-    "level1": [
-      {
-        "stat": "discipline",
-        "mult": 1.15,
-        "scope": "culture"
-      },
-      {
-        "moraleThreshold": 1.05
-      }
-    ],
-    "level2": [
-      {
-        "stat": "discipline",
-        "mult": 1.15,
-        "scope": "culture"
-      },
-      {
-        "moraleThreshold": 1.05
-      },
-      {
-        "steadiness": 1.04
-      }
-    ]
+    "trait": "steady"
   },
   "per": {
     "name": "Achaemenid Persia",
-    "trait": "Weight of Numbers",
-    "level1": [
-      {
-        "eliteSlots": 1
-      },
-      {
-        "steadiness": 1.05
-      }
-    ],
-    "level2": [
-      {
-        "eliteSlots": 1
-      },
-      {
-        "steadiness": 1.08
-      },
-      {
-        "phase": "grind",
-        "mult": 1.1
-      }
-    ]
+    "trait": "numbers"
   },
   "car": {
     "name": "Carthage",
-    "trait": "Mercenary Army",
-    "level1": [
-      {
-        "stat": "all",
-        "mult": 1.05,
-        "scope": "other_cultures"
-      }
-    ],
-    "level2": [
-      {
-        "stat": "all",
-        "mult": 1.08,
-        "scope": "other_cultures"
-      },
-      {
-        "generalStat": "tactics",
-        "mult": 1.2,
-        "phase": "flank"
-      }
-    ]
+    "trait": "mercenary_captain"
   },
   "rom": {
     "name": "Rome",
-    "trait": "Manipular Reserve",
-    "level1": [
-      {
-        "moraleThreshold": 1.1
-      }
-    ],
-    "level2": [
-      {
-        "moraleThreshold": 1.1
-      },
-      {
-        "rule": "never_shaken_by_charge"
-      }
-    ]
+    "trait": "deep_ranks"
   },
   "chn": {
     "name": "Warring States China",
-    "trait": "Crossbow Volleys",
-    "level1": [
-      {
-        "phase": "skirmish",
-        "mult": 1.2
-      }
-    ],
-    "level2": [
-      {
-        "phase": "skirmish",
-        "mult": 1.3
-      },
-      {
-        "phaseWeight": "skirmish",
-        "value": 0.6
-      }
-    ]
+    "trait": "volley"
   },
   "stp": {
     "name": "Steppe Nomads",
-    "trait": "Refuse Battle",
-    "level1": [
-      {
-        "phase": "skirmish",
-        "mult": 1.25
-      }
-    ],
-    "level2": [
-      {
-        "phase": "skirmish",
-        "mult": 1.25
-      },
-      {
-        "rule": "half_morale_damage_from_lost_grind"
-      }
-    ]
+    "trait": "harass"
   },
   "ind": {
     "name": "India (Nanda / Maurya)",
-    "trait": "Elephant Line",
-    "level1": [
-      {
-        "phase": "charge",
-        "mult": 1.08
-      }
-    ],
-    "level2": [
-      {
-        "phase": "charge",
-        "mult": 1.15
-      },
-      {
-        "rule": "rampage_chance_halved"
-      }
-    ]
+    "trait": "terror"
   },
   "gal": {
     "name": "Gauls & Celts",
-    "trait": "Furor",
-    "level1": [
-      {
-        "phase": "charge",
-        "mult": 1.08
-      }
-    ],
-    "level2": [
-      {
-        "phase": "charge",
-        "mult": 1.18
-      },
-      {
-        "moraleThreshold": 0.95
-      }
-    ]
+    "trait": "furor"
   }
 }

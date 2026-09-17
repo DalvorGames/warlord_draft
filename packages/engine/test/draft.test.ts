@@ -14,24 +14,33 @@ describe("draft board", () => {
     expect(new Set(s0.generalPool).size).toBe(3);
   });
 
-  it("deals 8 typed rows of 4 legal cards with no duplicates in a row", () => {
+  it("deals 8 rows of 4 legal cards with no duplicates in a row, cultures drawn per card", () => {
     expect(s1.rows.length).toBe(8);
+    const cultures = new Set<string>();
     s1.rows.forEach((row, i) => {
       expect(row.slot).toBe(data.rules.slots[i]);
-      // A culture with fewer eligible units than cards (Carthage has 3 cavalry) deals what exists.
-      const eligible = data.units.filter((u) => u.culture === row.culture && slotPenalty(data, u, row.slot) !== null).length;
-      expect(row.cards.length).toBe(Math.min(4, eligible));
+      expect(row.cards.length).toBe(4);
       expect(new Set(row.cards.map((c) => c.unitId)).size).toBe(row.cards.length);
       for (const c of row.cards) {
         const u = data.unitById.get(c.unitId)!;
-        expect(u.culture).toBe(row.culture);
+        cultures.add(u.culture);
         expect(slotPenalty(data, u, row.slot)).toBe(c.penalty);
         expect(c.onClass).toBe(isOnClass(u, row.slot));
       }
-      const onClass = row.cards.filter((c) => c.onClass).length;
-      const onClassEligible = data.units.filter((u) => u.culture === row.culture && isOnClass(u, row.slot)).length;
-      expect(onClass).toBeGreaterThanOrEqual(Math.min(3, onClassEligible));
+      if (row.slot !== "flex") expect(row.cards.filter((c) => c.onClass).length).toBeGreaterThanOrEqual(3);
     });
+    // Mixed-culture rows: a board draws from more than two cultures.
+    expect(cultures.size).toBeGreaterThan(2);
+  });
+
+  it("flex rows spread across classes rather than flooding with line and cavalry", () => {
+    const classes = new Map<string, number>();
+    for (let seed = 1; seed <= 150; seed++) {
+      const st = pickGeneral(data, startDraft(data, seed), 0);
+      for (const row of st.rows) if (row.slot === "flex") for (const c of row.cards) { const k = data.unitById.get(c.unitId)!.class; classes.set(k, (classes.get(k) ?? 0) + 1); }
+    }
+    const total = [...classes.values()].reduce((a, b) => a + b, 0);
+    for (const k of ["line", "shock", "cavalry", "ranged", "skirmish", "special"]) expect((classes.get(k) ?? 0) / total).toBeGreaterThan(0.06);
   });
 
   it("enforces the elite cap on pick", () => {
@@ -41,12 +50,12 @@ describe("draft board", () => {
       const st = startDraft(data, seed);
       for (let g = 0; g < 3; g++) {
         const gen = data.generalById.get(st.generalPool[g])!;
-        if (gen.stats.logistics >= 80) continue;
+        if (gen.stats.logistics >= data.rules.eliteCap.logisticsThreshold) continue;
         let s = pickGeneral(data, st, g);
         const elites: [number, number][] = [];
         s.rows.forEach((r, ri) => r.cards.forEach((c, ci) => {
           const u = data.unitById.get(c.unitId)!;
-          if ((u.grade === "A" || u.grade === "S") && u.culture !== "per" && !elites.some((e) => e[0] === ri)) elites.push([ri, ci]);
+          if ((u.grade === "A" || u.grade === "S") && !elites.some((e) => e[0] === ri)) elites.push([ri, ci]);
         }));
         if (elites.length < 3) continue;
         s = pickCard(data, s, ...elites[0]);
@@ -64,10 +73,11 @@ describe("draft board", () => {
     const s2 = pickCard(data, s1, 0, 0);
     expect(() => rerollRow(data, s2, 0)).toThrow();
     const s3 = rerollRow(data, s2, 1);
-    expect(s3.rerollsLeft).toBe(1);
+    expect(s3.rerollsLeft).toBe(data.rules.rerolls - 1);
     expect(s3.rerollLog).toEqual([1]);
-    const s4 = rerollRow(data, s3, 2);
-    expect(() => rerollRow(data, s4, 3)).toThrow(/no rerolls/);
+    const s4 = rerollRow(data, rerollRow(data, s3, 2), 3);
+    expect(s4.rerollsLeft).toBe(0);
+    expect(() => rerollRow(data, s4, 4)).toThrow(/no rerolls/);
   });
 
   it("run string replays the exact same army and battle", () => {
@@ -80,7 +90,7 @@ describe("draft board", () => {
     s = setDeployment(s, "LCCRCLRC".split("") as Front[]);
     expect(validateDraft(data, s)).toEqual([]);
     const run = toRunString(s);
-    expect(run).toMatch(/^v=2&d=777&g=1&p=/);
+    expect(run).toMatch(/^v=3&d=777&g=1&p=/);
     expect(run).toMatch(/&dep=LCCRCLRC$/);
     const { army } = replayDraft(data, run);
     expect(army).toEqual(toArmy(data, s));

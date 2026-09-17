@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 /** Pinned bottom bar on the sunk ground with safe-area padding. */
 export function BottomBar({ children }: { children: ReactNode }) {
-  return <div className="flex shrink-0 flex-col gap-2 border-t border-raised bg-sunk px-[18px] pt-3 pb-[calc(14px+env(safe-area-inset-bottom,14px))]">{children}</div>;
+  return <div className="sticky bottom-0 z-30 mt-auto flex shrink-0 flex-col gap-2 border-t border-raised bg-sunk px-5 pt-3 pb-[calc(14px+env(safe-area-inset-bottom,14px))]">{children}</div>;
 }
 
 /** Bone with ink text; disabled is raised with faint text and says why (v2 §2.1). */

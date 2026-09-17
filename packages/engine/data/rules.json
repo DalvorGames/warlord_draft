@@ -1,5 +1,5 @@
 {
-  "dataVersion": 2,
+  "dataVersion": 3,
   "battleModel": "fronts",
   "fronts": {
     "rounds": 4,
@@ -113,22 +113,26 @@
   "slots": [
     "line",
     "line",
-    "shock",
-    "cavalry",
     "cavalry",
     "ranged",
-    "ranged",
+    "flex",
+    "flex",
+    "flex",
     "flex"
   ],
   "cardsPerRow": 4,
   "onClassCardsPerRow": 3,
-  "rerolls": 2,
-  "homeCultureTilt": 0.3,
+  "rerolls": 3,
+  "homeCultureTilt": 0.2,
   "generalPool": 3,
   "eliteCap": {
     "base": 2,
-    "logisticsThreshold": 80,
+    "logisticsThreshold": 75,
     "withLogistics": 3
+  },
+  "supplyNudge": {
+    "from": 50,
+    "maxRelative": 0.2
   },
   "traitThresholds": [
     4,
@@ -205,14 +209,377 @@
       "moraleThreshold": 1
     }
   },
-  "styleToPlan": {
-    "hammer": "aggressive",
-    "envelopment": "envelopment",
-    "attrition": "defensive",
-    "skirmish": "skirmish",
-    "defensive": "defensive"
+  "traits": {
+    "deep_ranks": {
+      "name": "Deep ranks",
+      "kind": "scaling",
+      "culture": "rom",
+      "text": "Fresh ranks step up: your fronts recover a little each round.",
+      "levels": [
+        [
+          {
+            "relief": 0.01
+          }
+        ],
+        [
+          {
+            "relief": 0.02
+          }
+        ],
+        [
+          {
+            "relief": 0.029
+          }
+        ]
+      ]
+    },
+    "steady": {
+      "name": "Steady",
+      "kind": "scaling",
+      "culture": "grk",
+      "text": "Your fronts take more punishment before they break.",
+      "levels": [
+        [
+          {
+            "moraleThreshold": 1.04
+          }
+        ],
+        [
+          {
+            "moraleThreshold": 1.075
+          }
+        ],
+        [
+          {
+            "moraleThreshold": 1.12
+          }
+        ]
+      ]
+    },
+    "hammer_and_anvil": {
+      "name": "Hammer and anvil",
+      "kind": "scaling",
+      "culture": "mac",
+      "text": "A wing of yours that breaks its opponent wheels into his center harder.",
+      "levels": [
+        [
+          {
+            "rollup": 1.8
+          },
+          {
+            "rollupDamage": 1.8
+          }
+        ],
+        [
+          {
+            "rollup": 3.3
+          },
+          {
+            "rollupDamage": 3.3
+          }
+        ],
+        [
+          {
+            "rollup": 5
+          },
+          {
+            "rollupDamage": 5
+          }
+        ]
+      ]
+    },
+    "numbers": {
+      "name": "Numbers",
+      "kind": "scaling",
+      "culture": "per",
+      "text": "Weight of numbers counts for more in the press.",
+      "levels": [
+        [
+          {
+            "lanchester": 0.03
+          }
+        ],
+        [
+          {
+            "lanchester": 0.06
+          }
+        ],
+        [
+          {
+            "lanchester": 0.1
+          }
+        ]
+      ]
+    },
+    "mercenary_captain": {
+      "name": "Mercenary captain",
+      "kind": "scaling",
+      "culture": "car",
+      "text": "Units from outside your general's culture fight better.",
+      "levels": [
+        [
+          {
+            "stat": "melee",
+            "mult": 1.12,
+            "scope": "other_cultures"
+          }
+        ],
+        [
+          {
+            "stat": "melee",
+            "mult": 1.25,
+            "scope": "other_cultures"
+          }
+        ],
+        [
+          {
+            "stat": "melee",
+            "mult": 1.42,
+            "scope": "other_cultures"
+          }
+        ]
+      ]
+    },
+    "volley": {
+      "name": "Volley",
+      "kind": "scaling",
+      "culture": "chn",
+      "text": "Your center shoots harder.",
+      "levels": [
+        [
+          {
+            "centerShooting": 0.68
+          }
+        ],
+        [
+          {
+            "centerShooting": 0.92
+          }
+        ],
+        [
+          {
+            "centerShooting": 1.39
+          }
+        ]
+      ]
+    },
+    "harass": {
+      "name": "Harass",
+      "kind": "scaling",
+      "culture": "stp",
+      "text": "Your wings win the missile exchange more heavily.",
+      "levels": [
+        [
+          {
+            "wingShooting": 1.25
+          }
+        ],
+        [
+          {
+            "wingShooting": 1.62
+          }
+        ],
+        [
+          {
+            "wingShooting": 2.29
+          }
+        ]
+      ]
+    },
+    "terror": {
+      "name": "Terror",
+      "kind": "scaling",
+      "culture": "ind",
+      "text": "Fronts that lose the clash to you shake sooner and fight worse for it.",
+      "levels": [
+        [
+          {
+            "shakenEdge": 0.15
+          },
+          {
+            "enemyShakenMult": 0.84
+          }
+        ],
+        [
+          {
+            "shakenEdge": 0.15
+          },
+          {
+            "enemyShakenMult": 0.7
+          }
+        ],
+        [
+          {
+            "shakenEdge": 0.15
+          },
+          {
+            "enemyShakenMult": 0.59
+          }
+        ]
+      ]
+    },
+    "furor": {
+      "name": "Furor",
+      "kind": "scaling",
+      "culture": "gal",
+      "text": "You hit harder at the clash, and a little weaker every round after.",
+      "levels": [
+        [
+          {
+            "phase": "charge",
+            "mult": 1.06
+          },
+          {
+            "pressDecay": 0.015
+          }
+        ],
+        [
+          {
+            "phase": "charge",
+            "mult": 1.17
+          },
+          {
+            "pressDecay": 0.042
+          }
+        ],
+        [
+          {
+            "phase": "charge",
+            "mult": 1.51
+          },
+          {
+            "pressDecay": 0.127
+          }
+        ]
+      ]
+    },
+    "envelopment": {
+      "name": "Envelopment",
+      "kind": "scaling",
+      "text": "Your wings press harder.",
+      "levels": [
+        [
+          {
+            "phase": "flank",
+            "mult": 1.1
+          }
+        ],
+        [
+          {
+            "phase": "flank",
+            "mult": 1.22
+          }
+        ],
+        [
+          {
+            "phase": "flank",
+            "mult": 1.38
+          }
+        ]
+      ]
+    },
+    "oblique_order": {
+      "name": "Oblique order",
+      "kind": "scaling",
+      "text": "Your most heavily loaded front hits harder at the clash.",
+      "levels": [
+        [
+          {
+            "heaviestFrontContact": 1.08
+          }
+        ],
+        [
+          {
+            "heaviestFrontContact": 1.16
+          }
+        ],
+        [
+          {
+            "heaviestFrontContact": 1.28
+          }
+        ]
+      ]
+    },
+    "delayer": {
+      "name": "Delayer",
+      "kind": "rule",
+      "text": "None of your fronts can break before the second round.",
+      "levels": [
+        [
+          {
+            "noBreakBefore": 2
+          }
+        ]
+      ]
+    },
+    "rally": {
+      "name": "Rally",
+      "kind": "rule",
+      "text": "The first of your fronts to break holds for one more stage, shaken.",
+      "levels": [
+        [
+          {
+            "rally": 0.001
+          }
+        ]
+      ]
+    },
+    "master_of_ground": {
+      "name": "Master of ground",
+      "kind": "rule",
+      "text": "Ground penalties on your units are halved.",
+      "levels": [
+        [
+          {
+            "groundPenalty": 0.5
+          }
+        ]
+      ]
+    },
+    "scouts": {
+      "name": "Scouts",
+      "kind": "rule",
+      "text": "Before you deploy, you are told which of his fronts is heaviest.",
+      "levels": [
+        []
+      ]
+    }
   },
-  "styleMatchBonus": 1.08,
+  "command": {
+    "base": 0.875,
+    "slope": 0.25
+  },
+  "groundExcludes": [
+    "discipline"
+  ],
+  "campaign": {
+    "battles": 3,
+    "generalBands": [
+      [
+        0,
+        277
+      ],
+      [
+        278,
+        292
+      ],
+      [
+        285,
+        9999
+      ]
+    ],
+    "costCeilings": [
+      58,
+      66,
+      null
+    ],
+    "blindLine": {
+      "seeds": 4,
+      "nearTie": 0.8,
+      "top": 3,
+      "panel": 2
+    }
+  },
   "terrain": {
     "plains": {
       "cavalry": 1.05,

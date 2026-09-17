@@ -2,7 +2,7 @@
 // All randomness comes from one mulberry32 stream seeded by draftSeed so any client replays it.
 
 import { mulberry32, fromState, type Rng } from "./rng.js";
-import type { Army, Front, GameData, Grade, PlanName, SlotKind, Unit, General, PenaltySlot } from "./types.js";
+import type { Army, Front, GameData, Grade, PlanName, SlotKind, Unit, UnitClass, General, PenaltySlot } from "./types.js";
 
 export interface Card {
   unitId: string;
@@ -13,7 +13,7 @@ export interface Card {
 }
 export interface Row {
   slot: SlotKind;
-  culture: string;
+  /** v3: cards draw their culture one by one; a row has no culture of its own. */
   cards: Card[];
   /** Index into cards, or null if nothing picked from this row yet. */
   pick: number | null;
@@ -71,17 +71,6 @@ export function isWrecked(data: GameData, penalty: number): boolean {
 
 // ---------- board generation ----------
 
-function weightedSampleWithoutReplacement(rng: Rng, pool: Unit[], weights: number[], k: number): Unit[] {
-  const remaining = pool.map((u, i) => ({ u, w: weights[i] }));
-  const out: Unit[] = [];
-  while (out.length < k && remaining.length > 0) {
-    const idx = rng.weightedIndex(remaining.map((r) => r.w));
-    out.push(remaining[idx].u);
-    remaining.splice(idx, 1);
-  }
-  return out;
-}
-
 function shuffleInPlace<T>(rng: Rng, arr: T[]): void {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = rng.int(i + 1);
@@ -89,36 +78,57 @@ function shuffleInPlace<T>(rng: Rng, arr: T[]): void {
   }
 }
 
-function rollRow(data: GameData, rng: Rng, slot: SlotKind, homeCulture: string): Row {
+/** Card weight: grade rarity, with SUPPLY nudging A and S up a little (design/gdd/draft.md §3.B.4). */
+function rarityFor(data: GameData, general: General): (u: Unit) => number {
+  const { rules } = data;
+  const n = rules.supplyNudge;
+  const t = Math.max(0, Math.min(1, (general.stats.logistics - n.from) / (100 - n.from)));
+  const nudge = 1 + n.maxRelative * t;
+  return (u) => rules.draftRarity[u.grade] * (ELITE.has(u.grade) ? nudge : 1);
+}
+
+const CLASSES: UnitClass[] = ["line", "shock", "cavalry", "ranged", "skirmish", "special"];
+
+/**
+ * v3 board (design/gdd/draft.md §3.B): every card draws its own culture (the general's with probability
+ * `homeCultureTilt`, else uniform over the rest). A typed row deals `onClassCardsPerRow` on-class cards and the
+ * rest off-class but legal; a flex row draws a class uniformly for each card, then a unit of that class. No card
+ * repeats within a row; a unit may appear again in another row.
+ */
+function rollRow(data: GameData, rng: Rng, slot: SlotKind, general: General): Row {
   const { rules, units } = data;
   const cultureIds = Object.keys(data.cultures);
-  let culture: string;
-  if (rng.next() < rules.homeCultureTilt) culture = homeCulture;
-  else culture = rng.pick(cultureIds.filter((c) => c !== homeCulture));
-
-  const cultureUnits = units.filter((u) => u.culture === culture);
-  const rarity = (u: Unit) => rules.draftRarity[u.grade];
-
-  const onPool = cultureUnits.filter((u) => isOnClass(u, slot));
-  const offPool = cultureUnits.filter((u) => !isOnClass(u, slot) && slotPenalty(data, u, slot) !== null);
-
-  const onDrawn = weightedSampleWithoutReplacement(rng, onPool, onPool.map(rarity), rules.onClassCardsPerRow);
-  const offDrawn = weightedSampleWithoutReplacement(rng, offPool, offPool.map(rarity), rules.cardsPerRow - rules.onClassCardsPerRow);
-  let drawn = [...onDrawn, ...offDrawn];
-  // Fill to cardsPerRow when a pool ran short: more on-class first (e.g. cavalry rows have no legal
-  // off-class card), then more off-class (e.g. a Steppe shock row has one shock unit).
-  for (const pool of [onPool, offPool]) {
-    if (drawn.length >= rules.cardsPerRow) break;
+  const rarity = rarityFor(data, general);
+  const drawn: Unit[] = [];
+  const draw = (pool: Unit[]): Unit | null => {
     const rest = pool.filter((u) => !drawn.includes(u));
-    drawn = drawn.concat(weightedSampleWithoutReplacement(rng, rest, rest.map(rarity), rules.cardsPerRow - drawn.length));
+    if (!rest.length) return null;
+    return rest[rng.weightedIndex(rest.map(rarity))];
+  };
+  const drawCulture = () => (rng.next() < rules.homeCultureTilt ? general.culture : rng.pick(cultureIds.filter((c) => c !== general.culture)));
+  const want = rules.cardsPerRow;
+  for (let i = 0; i < want; i++) {
+    const culture = drawCulture();
+    const ofCulture = units.filter((u) => u.culture === culture);
+    let u: Unit | null = null;
+    if (slot === "flex") {
+      // A class first, so the big pools (line, cavalry) do not flood the flex rows; fall back to any of the culture.
+      const cls = rng.pick(CLASSES);
+      u = draw(ofCulture.filter((x) => x.class === cls)) ?? draw(ofCulture);
+    } else if (i < rules.onClassCardsPerRow) {
+      u = draw(ofCulture.filter((x) => isOnClass(x, slot))) ?? draw(units.filter((x) => isOnClass(x, slot)));
+    } else {
+      // The temptation card: off-class but legal in this slot; a culture with none offers another on-class card.
+      u = draw(ofCulture.filter((x) => !isOnClass(x, slot) && slotPenalty(data, x, slot) !== null)) ?? draw(ofCulture.filter((x) => isOnClass(x, slot))) ?? draw(units.filter((x) => isOnClass(x, slot)));
+    }
+    if (u) drawn.push(u);
   }
   shuffleInPlace(rng, drawn);
-
   const cards: Card[] = drawn.map((u) => {
     const penalty = slotPenalty(data, u, slot)!;
     return { unitId: u.id, onClass: isOnClass(u, slot), penalty, wrecked: isWrecked(data, penalty) };
   });
-  return { slot, culture, cards, pick: null };
+  return { slot, cards, pick: null };
 }
 
 // ---------- state transitions (each returns a new state; inputs are not mutated) ----------
@@ -157,7 +167,7 @@ export function pickGeneral(data: GameData, state: DraftState, index: number): D
   next.generalIndex = index;
   const general = data.generalById.get(state.generalPool[index])!;
   const rng = fromState(state.rngState);
-  next.rows = data.rules.slots.map((slot) => rollRow(data, rng, slot, general.culture));
+  next.rows = data.rules.slots.map((slot) => rollRow(data, rng, slot, general));
   next.rngState = rng.state();
   return next;
 }
@@ -171,7 +181,7 @@ export function rerollRow(data: GameData, state: DraftState, rowIndex: number): 
   const next = clone(state);
   const general = data.generalById.get(state.generalPool[state.generalIndex])!;
   const rng = fromState(state.rngState);
-  next.rows[rowIndex] = rollRow(data, rng, row.slot, general.culture);
+  next.rows[rowIndex] = rollRow(data, rng, row.slot, general);
   next.rngState = rng.state();
   next.rerollsLeft--;
   next.rerollLog.push(rowIndex);
@@ -238,17 +248,11 @@ export function traitLevel(data: GameData, count: number): 0 | 1 | 2 {
   return count >= t2 ? 2 : count >= t1 ? 1 : 0;
 }
 
-export function eliteCapFor(data: GameData, general: General | null, counts: Record<string, number>): number {
-  const { rules, cultures } = data;
-  let cap = rules.eliteCap.base;
-  if (general && general.stats.logistics >= rules.eliteCap.logisticsThreshold) cap = rules.eliteCap.withLogistics;
-  for (const [cid, n] of Object.entries(counts)) {
-    const lvl = traitLevel(data, n);
-    if (lvl === 0) continue;
-    const entries = lvl === 2 ? cultures[cid].level2 : cultures[cid].level1;
-    for (const e of entries) if ("eliteSlots" in e) cap += e.eliteSlots;
-  }
-  return cap;
+/** Two elites, or three when the general's SUPPLY reaches the threshold. The only hard draft constraint (v3). */
+export function eliteCapFor(data: GameData, general: General | null): number {
+  const { rules } = data;
+  if (general && general.stats.logistics >= rules.eliteCap.logisticsThreshold) return rules.eliteCap.withLogistics;
+  return rules.eliteCap.base;
 }
 
 export function summarize(data: GameData, state: DraftState): DraftSummary {
@@ -262,7 +266,7 @@ export function summarize(data: GameData, state: DraftState): DraftSummary {
     cultureCounts: counts,
     traitLevels,
     eliteUsed: units.filter((u) => ELITE.has(u.grade)).length,
-    eliteCap: eliteCapFor(data, general, counts),
+    eliteCap: eliteCapFor(data, general),
     totalCost: units.reduce((s, u) => s + u.cost, 0),
     picksMade: picks.length,
   };

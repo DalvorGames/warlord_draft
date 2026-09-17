@@ -10,7 +10,6 @@ export type StatKey = "melee" | "ranged" | "armor" | "mobility" | "discipline" |
 export type Stats = Record<StatKey, number>;
 export type PhaseName = "skirmish" | "charge" | "grind" | "flank";
 export type PlanName = "aggressive" | "defensive" | "envelopment" | "skirmish";
-export type Style = "hammer" | "envelopment" | "attrition" | "skirmish" | "defensive";
 export type TerrainName = "plains" | "hills" | "river" | "forest";
 export type Side = "A" | "B";
 export type RuleName =
@@ -39,7 +38,8 @@ export interface General {
   culture: string;
   period: Period;
   stats: { command: number; tactics: number; logistics: number; charisma: number };
-  style: Style;
+  /** Trait ids from `rules.traits`, 0–3 of them (design/gdd/traits.md §3.2). Each scaling trait counts one level. */
+  traits: string[];
   note?: string;
 }
 
@@ -52,13 +52,52 @@ export type TraitEntry =
   | { generalStat: "command" | "tactics" | "logistics" | "charisma"; mult: number; phase: PhaseName }
   | { steadiness: number }
   | { rollup: number }
-  | { rule: RuleName };
+  | { rule: RuleName }
+  // --- trait-system hooks (design/gdd/traits.md). Neutral unless a data set or a lab script uses them. ---
+  /** Volley: this army's center shoots at this strength instead of `fronts.lineSkirmishMult`. */
+  | { centerShooting: number }
+  /** Harass: multiplier on this army's wing shooting. */
+  | { wingShooting: number }
+  /** Terror: enemy fronts that lose contact to this army are shaken above this edge instead of `shakenEdge`. */
+  | { shakenEdge: number }
+  /** Furor's price: press scores lose this fraction per press round (round 1 = one step), floored at half. */
+  | { pressDecay: number }
+  /** Numbers: multiplier on `fronts.frontage` for this army. */
+  | { frontage: number }
+  /** Deep ranks: multiplier on `fronts.reserveMult` for this army; also divides the flanked penalty. */
+  | { reserve: number }
+  /** Oblique order: contact multiplier on this army's single most heavily loaded front (no bonus on a tie). */
+  | { heaviestFrontContact: number }
+  /** Terror: fronts shaken by this army fight at this multiplier instead of `shakenMult`. */
+  | { enemyShakenMult: number }
+  /** Numbers: added to the `fronts.lanchester` exponent for this army's press scores. */
+  | { lanchester: number }
+  /** Deep ranks: after each press round, each unbroken front sheds this fraction of its cohesion in damage. */
+  | { relief: number }
+  /** Hammer and anvil: multiplier on the damage this army's roll-ups deal. */
+  | { rollupDamage: number }
+  /** Rally: the first front to break stands again once with this fraction of its cohesion restored. */
+  | { rally: number }
+  /** Master of ground: this fraction of every ground penalty is ignored (1 = all of it). */
+  | { groundPenalty: number }
+  /** Delayer: no front breaks before this press round (1 = survives skirmish and contact, 2 = also round one). */
+  | { noBreakBefore: number };
 
 export interface Culture {
   name: string;
+  /** The trait id this culture grants at `traitThresholds[0]` units (level I) and `[1]` (level II). */
   trait: string;
-  level1: TraitEntry[];
-  level2: TraitEntry[];
+}
+
+/** One entry of the shared trait pool (`rules.traits`). Scaling traits have three levels; rule traits one. */
+export interface TraitDef {
+  name: string;
+  kind: "scaling" | "rule";
+  /** The one sentence the player is told. */
+  text: string;
+  /** The culture whose trait this is, if any. */
+  culture?: string;
+  levels: TraitEntry[][];
 }
 
 export interface PlanMults {
@@ -127,15 +166,31 @@ export interface Rules {
   homeCultureTilt: number;
   generalPool: number;
   eliteCap: { base: number; logisticsThreshold: number; withLogistics: number };
+  /** SUPPLY's rarity nudge: A and S card weight × (1 + maxRelative × clamp((SUPPLY − from) / (100 − from))). */
+  supplyNudge: { from: number; maxRelative: number };
   traitThresholds: [number, number];
   generalCountsAsUnit: boolean;
   slotPenalties: Record<UnitClass, Record<PenaltySlot, number | null>>;
   lightCavInRangedSlot: number;
   wreckedThreshold: number;
   plans: Record<PlanName, PlanMults>;
-  styleToPlan: Record<Style, PlanName>;
-  styleMatchBonus: number;
+  /** The shared trait pool, by id. */
+  traits: Record<string, TraitDef>;
+  /** cmd = base + slope × command/100. */
+  command: { base: number; slope: number };
   terrain: Record<TerrainName, Record<string, number>>;
+  /** Stats the ground multiplier leaves alone (STEADY, so a forest does not make horse brittle). */
+  groundExcludes: StatKey[];
+  /** Campaign shape (design/gdd/campaign.md §3.6): foe tiers and the player-blind line. */
+  campaign: {
+    battles: number;
+    /** Per battle, the [min, max] summed general stats a foe's general may have. */
+    generalBands: [number, number][];
+    /** Per battle, the foe army's total-cost ceiling, or null for none. */
+    costCeilings: (number | null)[];
+    /** The foe's line: candidates simulated against a neutral mirror over `seeds`; those within `nearTie` of the best score (at most `top`) are a seeded pick. */
+    blindLine: { seeds: number; nearTie: number; top: number; panel?: number };
+  };
   phaseWeights: Record<PhaseName, number>;
   noiseSD: number;
   lanchesterExponent: number;
@@ -180,4 +235,9 @@ export interface Army {
   plan: PlanName;
   /** Three-fronts model: one entry per slot. Omitted → `defaultDeployment`. */
   deployment?: Front[];
+  /**
+   * Extra trait entries applied after culture traits: the hook for general traits (design/gdd/traits.md).
+   * Not part of a run string. No shipped data sets it; the lab scripts use it to measure trait sizes.
+   */
+  extraTraits?: TraitEntry[];
 }

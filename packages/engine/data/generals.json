@@ -5,12 +5,15 @@
     "culture": "mac",
     "period": "mid",
     "stats": {
-      "command": 85,
-      "tactics": 80,
-      "logistics": 85,
-      "charisma": 80
+      "command": 78,
+      "tactics": 75,
+      "logistics": 78,
+      "charisma": 75
     },
-    "style": "attrition",
+    "traits": [
+      "hammer_and_anvil",
+      "oblique_order"
+    ],
     "note": "Built the army; Chaeronea 338"
   },
   {
@@ -19,12 +22,16 @@
     "culture": "mac",
     "period": "mid",
     "stats": {
-      "command": 90,
-      "tactics": 90,
-      "logistics": 75,
-      "charisma": 100
+      "command": 80,
+      "tactics": 80,
+      "logistics": 73,
+      "charisma": 85
     },
-    "style": "hammer",
+    "traits": [
+      "oblique_order",
+      "hammer_and_anvil",
+      "rally"
+    ],
     "note": "Granicus, Issus, Gaugamela, Hydaspes"
   },
   {
@@ -33,12 +40,14 @@
     "culture": "mac",
     "period": "mid",
     "stats": {
-      "command": 80,
+      "command": 75,
       "tactics": 70,
-      "logistics": 85,
-      "charisma": 60
+      "logistics": 78,
+      "charisma": 65
     },
-    "style": "defensive",
+    "traits": [
+      "steady"
+    ],
     "note": "Held the left at Gaugamela"
   },
   {
@@ -47,12 +56,14 @@
     "culture": "mac",
     "period": "late",
     "stats": {
-      "command": 85,
-      "tactics": 80,
-      "logistics": 75,
+      "command": 78,
+      "tactics": 75,
+      "logistics": 73,
       "charisma": 70
     },
-    "style": "hammer",
+    "traits": [
+      "hammer_and_anvil"
+    ],
     "note": "Paraetacene, Gabiene; fell at Ipsus 301"
   },
   {
@@ -61,12 +72,15 @@
     "culture": "mac",
     "period": "late",
     "stats": {
-      "command": 75,
-      "tactics": 90,
+      "command": 73,
+      "tactics": 80,
       "logistics": 70,
-      "charisma": 55
+      "charisma": 63
     },
-    "style": "envelopment",
+    "traits": [
+      "mercenary_captain",
+      "scouts"
+    ],
     "note": "Outmaneuvered Antigonus; betrayed by his own Argyraspides"
   },
   {
@@ -75,12 +89,14 @@
     "culture": "mac",
     "period": "late",
     "stats": {
-      "command": 80,
-      "tactics": 75,
-      "logistics": 85,
+      "command": 75,
+      "tactics": 73,
+      "logistics": 78,
       "charisma": 70
     },
-    "style": "defensive",
+    "traits": [
+      "terror"
+    ],
     "note": "Ipsus 301 with 400 elephants"
   },
   {
@@ -89,12 +105,14 @@
     "culture": "mac",
     "period": "late",
     "stats": {
-      "command": 75,
+      "command": 73,
       "tactics": 70,
-      "logistics": 85,
-      "charisma": 75
+      "logistics": 78,
+      "charisma": 73
     },
-    "style": "defensive",
+    "traits": [
+      "steady"
+    ],
     "note": "Gaza 312"
   },
   {
@@ -104,11 +122,13 @@
     "period": "late",
     "stats": {
       "command": 70,
-      "tactics": 75,
-      "logistics": 55,
-      "charisma": 80
+      "tactics": 73,
+      "logistics": 63,
+      "charisma": 75
     },
-    "style": "hammer",
+    "traits": [
+      "furor"
+    ],
     "note": "Salamis 306; brilliant and erratic"
   },
   {
@@ -118,11 +138,11 @@
     "period": "late",
     "stats": {
       "command": 70,
-      "tactics": 65,
-      "logistics": 75,
-      "charisma": 55
+      "tactics": 68,
+      "logistics": 73,
+      "charisma": 63
     },
-    "style": "attrition",
+    "traits": [],
     "note": "Thrace; Ipsus; fell at Corupedium 281"
   },
   {
@@ -131,12 +151,14 @@
     "culture": "mac",
     "period": "mid",
     "stats": {
-      "command": 75,
+      "command": 73,
       "tactics": 70,
       "logistics": 70,
-      "charisma": 80
+      "charisma": 75
     },
-    "style": "hammer",
+    "traits": [
+      "steady"
+    ],
     "note": "Alexander's infantry commander"
   },
   {
@@ -145,12 +167,15 @@
     "culture": "mac",
     "period": "late",
     "stats": {
-      "command": 85,
-      "tactics": 90,
-      "logistics": 50,
-      "charisma": 85
+      "command": 78,
+      "tactics": 80,
+      "logistics": 60,
+      "charisma": 78
     },
-    "style": "hammer",
+    "traits": [
+      "terror",
+      "rally"
+    ],
     "note": "Heraclea, Asculum, Beneventum; Hellenistic king of Epirus"
   },
   {
@@ -159,12 +184,12 @@
     "culture": "mac",
     "period": "late",
     "stats": {
-      "command": 75,
-      "tactics": 75,
-      "logistics": 75,
-      "charisma": 65
+      "command": 73,
+      "tactics": 73,
+      "logistics": 73,
+      "charisma": 68
     },
-    "style": "defensive",
+    "traits": [],
     "note": "Sellasia 222"
   },
   {
@@ -174,11 +199,11 @@
     "period": "late",
     "stats": {
       "command": 70,
-      "tactics": 65,
+      "tactics": 68,
       "logistics": 70,
-      "charisma": 60
+      "charisma": 65
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Social War 220–217; First Macedonian War"
   },
   {
@@ -187,12 +212,14 @@
     "culture": "mac",
     "period": "late",
     "stats": {
-      "command": 75,
-      "tactics": 65,
-      "logistics": 85,
-      "charisma": 75
+      "command": 73,
+      "tactics": 68,
+      "logistics": 78,
+      "charisma": 73
     },
-    "style": "hammer",
+    "traits": [
+      "numbers"
+    ],
     "note": "Raphia 217; anabasis; pre-200 commands only"
   },
   {
@@ -201,12 +228,15 @@
     "culture": "grk",
     "period": "early",
     "stats": {
-      "command": 65,
-      "tactics": 80,
-      "logistics": 85,
-      "charisma": 75
+      "command": 68,
+      "tactics": 75,
+      "logistics": 78,
+      "charisma": 73
     },
-    "style": "skirmish",
+    "traits": [
+      "mercenary_captain",
+      "master_of_ground"
+    ],
     "note": "Led the Ten Thousand home, 401–399"
   },
   {
@@ -215,12 +245,14 @@
     "culture": "grk",
     "period": "early",
     "stats": {
-      "command": 75,
+      "command": 73,
       "tactics": 70,
       "logistics": 70,
-      "charisma": 75
+      "charisma": 73
     },
-    "style": "attrition",
+    "traits": [
+      "steady"
+    ],
     "note": "Coronea 394; Asia campaigns"
   },
   {
@@ -230,11 +262,14 @@
     "period": "early",
     "stats": {
       "command": 70,
-      "tactics": 85,
-      "logistics": 65,
-      "charisma": 65
+      "tactics": 78,
+      "logistics": 68,
+      "charisma": 68
     },
-    "style": "skirmish",
+    "traits": [
+      "harass",
+      "mercenary_captain"
+    ],
     "note": "Lechaeum 390; peltast reforms"
   },
   {
@@ -244,11 +279,13 @@
     "period": "early",
     "stats": {
       "command": 70,
-      "tactics": 75,
-      "logistics": 65,
-      "charisma": 65
+      "tactics": 73,
+      "logistics": 68,
+      "charisma": 68
     },
-    "style": "defensive",
+    "traits": [
+      "steady"
+    ],
     "note": "Naxos 376; kneeling-hoplite tactic"
   },
   {
@@ -257,12 +294,15 @@
     "culture": "grk",
     "period": "early",
     "stats": {
-      "command": 85,
-      "tactics": 100,
-      "logistics": 65,
-      "charisma": 85
+      "command": 78,
+      "tactics": 85,
+      "logistics": 68,
+      "charisma": 78
     },
-    "style": "envelopment",
+    "traits": [
+      "oblique_order",
+      "deep_ranks"
+    ],
     "note": "Leuctra 371, Mantinea 362; oblique order"
   },
   {
@@ -272,11 +312,13 @@
     "period": "early",
     "stats": {
       "command": 70,
-      "tactics": 75,
-      "logistics": 55,
-      "charisma": 85
+      "tactics": 73,
+      "logistics": 63,
+      "charisma": 78
     },
-    "style": "hammer",
+    "traits": [
+      "furor"
+    ],
     "note": "Sacred Band; Tegyra 375"
   },
   {
@@ -286,11 +328,13 @@
     "period": "early",
     "stats": {
       "command": 70,
-      "tactics": 65,
-      "logistics": 80,
-      "charisma": 60
+      "tactics": 68,
+      "logistics": 75,
+      "charisma": 65
     },
-    "style": "attrition",
+    "traits": [
+      "mercenary_captain"
+    ],
     "note": "Sicilian wars vs. Carthage"
   },
   {
@@ -300,11 +344,13 @@
     "period": "mid",
     "stats": {
       "command": 70,
-      "tactics": 80,
-      "logistics": 60,
-      "charisma": 80
+      "tactics": 75,
+      "logistics": 65,
+      "charisma": 75
     },
-    "style": "hammer",
+    "traits": [
+      "master_of_ground"
+    ],
     "note": "Crimissus 339"
   },
   {
@@ -314,11 +360,11 @@
     "period": "late",
     "stats": {
       "command": 70,
-      "tactics": 75,
-      "logistics": 65,
-      "charisma": 65
+      "tactics": 73,
+      "logistics": 68,
+      "charisma": 68
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Invaded Africa 310"
   },
   {
@@ -327,12 +373,12 @@
     "culture": "grk",
     "period": "mid",
     "stats": {
-      "command": 60,
-      "tactics": 55,
-      "logistics": 55,
+      "command": 65,
+      "tactics": 63,
+      "logistics": 63,
       "charisma": 70
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Megalopolis 331"
   },
   {
@@ -343,10 +389,10 @@
     "stats": {
       "command": 70,
       "tactics": 70,
-      "logistics": 60,
-      "charisma": 75
+      "logistics": 65,
+      "charisma": 73
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Spartan reformer; Sellasia 222"
   },
   {
@@ -355,12 +401,15 @@
     "culture": "grk",
     "period": "late",
     "stats": {
-      "command": 80,
-      "tactics": 85,
-      "logistics": 65,
-      "charisma": 75
+      "command": 75,
+      "tactics": 78,
+      "logistics": 68,
+      "charisma": 73
     },
-    "style": "envelopment",
+    "traits": [
+      "envelopment",
+      "master_of_ground"
+    ],
     "note": "Sellasia 222 (cavalry), Mantinea 207"
   },
   {
@@ -369,12 +418,14 @@
     "culture": "per",
     "period": "early",
     "stats": {
-      "command": 55,
-      "tactics": 45,
-      "logistics": 85,
-      "charisma": 55
+      "command": 63,
+      "tactics": 58,
+      "logistics": 78,
+      "charisma": 63
     },
-    "style": "defensive",
+    "traits": [
+      "numbers"
+    ],
     "note": "Cunaxa 401"
   },
   {
@@ -383,12 +434,14 @@
     "culture": "per",
     "period": "early",
     "stats": {
-      "command": 65,
-      "tactics": 65,
-      "logistics": 75,
-      "charisma": 60
+      "command": 68,
+      "tactics": 68,
+      "logistics": 73,
+      "charisma": 65
     },
-    "style": "skirmish",
+    "traits": [
+      "harass"
+    ],
     "note": "Satrap; harassed Agesilaus"
   },
   {
@@ -397,12 +450,15 @@
     "culture": "per",
     "period": "mid",
     "stats": {
-      "command": 75,
-      "tactics": 85,
-      "logistics": 75,
-      "charisma": 65
+      "command": 73,
+      "tactics": 78,
+      "logistics": 73,
+      "charisma": 68
     },
-    "style": "attrition",
+    "traits": [
+      "delayer",
+      "mercenary_captain"
+    ],
     "note": "Advocated scorched earth vs. Alexander"
   },
   {
@@ -411,12 +467,14 @@
     "culture": "per",
     "period": "mid",
     "stats": {
-      "command": 55,
-      "tactics": 45,
-      "logistics": 80,
-      "charisma": 50
+      "command": 63,
+      "tactics": 58,
+      "logistics": 75,
+      "charisma": 60
     },
-    "style": "defensive",
+    "traits": [
+      "numbers"
+    ],
     "note": "Issus, Gaugamela"
   },
   {
@@ -428,9 +486,11 @@
       "command": 70,
       "tactics": 70,
       "logistics": 70,
-      "charisma": 55
+      "charisma": 63
     },
-    "style": "hammer",
+    "traits": [
+      "envelopment"
+    ],
     "note": "Nearly broke Parmenion's wing at Gaugamela"
   },
   {
@@ -439,12 +499,12 @@
     "culture": "per",
     "period": "mid",
     "stats": {
-      "command": 60,
-      "tactics": 55,
-      "logistics": 65,
-      "charisma": 40
+      "command": 65,
+      "tactics": 63,
+      "logistics": 68,
+      "charisma": 55
     },
-    "style": "skirmish",
+    "traits": [],
     "note": "Bactrian satrap; regicide"
   },
   {
@@ -453,12 +513,14 @@
     "culture": "per",
     "period": "mid",
     "stats": {
-      "command": 60,
-      "tactics": 65,
-      "logistics": 60,
-      "charisma": 60
+      "command": 65,
+      "tactics": 68,
+      "logistics": 65,
+      "charisma": 65
     },
-    "style": "defensive",
+    "traits": [
+      "master_of_ground"
+    ],
     "note": "Persian Gates 330"
   },
   {
@@ -467,12 +529,12 @@
     "culture": "car",
     "period": "early",
     "stats": {
-      "command": 65,
-      "tactics": 60,
+      "command": 68,
+      "tactics": 65,
       "logistics": 70,
-      "charisma": 55
+      "charisma": 63
     },
-    "style": "attrition",
+    "traits": [],
     "note": "Sicily 406–396"
   },
   {
@@ -481,12 +543,15 @@
     "culture": "car",
     "period": "late",
     "stats": {
-      "command": 80,
-      "tactics": 85,
-      "logistics": 80,
-      "charisma": 80
+      "command": 75,
+      "tactics": 78,
+      "logistics": 75,
+      "charisma": 75
     },
-    "style": "skirmish",
+    "traits": [
+      "mercenary_captain",
+      "harass"
+    ],
     "note": "Sicily guerrilla; Mercenary War; Spain"
   },
   {
@@ -495,12 +560,15 @@
     "culture": "car",
     "period": "late",
     "stats": {
-      "command": 75,
-      "tactics": 85,
-      "logistics": 60,
-      "charisma": 65
+      "command": 73,
+      "tactics": 78,
+      "logistics": 65,
+      "charisma": 68
     },
-    "style": "hammer",
+    "traits": [
+      "terror",
+      "envelopment"
+    ],
     "note": "Spartan mercenary; Bagradas 255"
   },
   {
@@ -509,12 +577,12 @@
     "culture": "car",
     "period": "late",
     "stats": {
-      "command": 60,
-      "tactics": 55,
-      "logistics": 85,
+      "command": 65,
+      "tactics": 63,
+      "logistics": 78,
       "charisma": 70
     },
-    "style": "defensive",
+    "traits": [],
     "note": "Built Carthaginian Spain"
   },
   {
@@ -523,12 +591,16 @@
     "culture": "car",
     "period": "late",
     "stats": {
-      "command": 95,
-      "tactics": 100,
-      "logistics": 90,
-      "charisma": 90
+      "command": 83,
+      "tactics": 85,
+      "logistics": 80,
+      "charisma": 80
     },
-    "style": "envelopment",
+    "traits": [
+      "envelopment",
+      "scouts",
+      "master_of_ground"
+    ],
     "note": "Trebia, Trasimene, Cannae"
   },
   {
@@ -538,11 +610,11 @@
     "period": "late",
     "stats": {
       "command": 70,
-      "tactics": 65,
-      "logistics": 75,
-      "charisma": 65
+      "tactics": 68,
+      "logistics": 73,
+      "charisma": 68
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Spain; Metaurus 207"
   },
   {
@@ -553,10 +625,12 @@
     "stats": {
       "command": 70,
       "tactics": 70,
-      "logistics": 65,
-      "charisma": 60
+      "logistics": 68,
+      "charisma": 65
     },
-    "style": "envelopment",
+    "traits": [
+      "envelopment"
+    ],
     "note": "Sprang the Trebia ambush"
   },
   {
@@ -565,12 +639,12 @@
     "culture": "car",
     "period": "late",
     "stats": {
-      "command": 60,
-      "tactics": 55,
+      "command": 65,
+      "tactics": 63,
       "logistics": 70,
-      "charisma": 50
+      "charisma": 60
     },
-    "style": "defensive",
+    "traits": [],
     "note": "Ilipa 206; Great Plains 203"
   },
   {
@@ -579,12 +653,14 @@
     "culture": "car",
     "period": "late",
     "stats": {
-      "command": 65,
-      "tactics": 75,
-      "logistics": 55,
+      "command": 68,
+      "tactics": 73,
+      "logistics": 63,
       "charisma": 70
     },
-    "style": "hammer",
+    "traits": [
+      "harass"
+    ],
     "note": "Cavalry commander; 'you know how to win, Hannibal'"
   },
   {
@@ -593,12 +669,15 @@
     "culture": "rom",
     "period": "early",
     "stats": {
-      "command": 80,
-      "tactics": 75,
-      "logistics": 75,
-      "charisma": 85
+      "command": 75,
+      "tactics": 73,
+      "logistics": 73,
+      "charisma": 78
     },
-    "style": "attrition",
+    "traits": [
+      "deep_ranks",
+      "rally"
+    ],
     "note": "Veii 396; Allia aftermath"
   },
   {
@@ -607,12 +686,14 @@
     "culture": "rom",
     "period": "mid",
     "stats": {
-      "command": 75,
+      "command": 73,
       "tactics": 70,
-      "logistics": 75,
+      "logistics": 73,
       "charisma": 70
     },
-    "style": "hammer",
+    "traits": [
+      "steady"
+    ],
     "note": "Second Samnite War"
   },
   {
@@ -621,12 +702,14 @@
     "culture": "rom",
     "period": "mid",
     "stats": {
-      "command": 75,
+      "command": 73,
       "tactics": 70,
       "logistics": 70,
       "charisma": 70
     },
-    "style": "hammer",
+    "traits": [
+      "deep_ranks"
+    ],
     "note": "Sentinum 295"
   },
   {
@@ -635,12 +718,14 @@
     "culture": "rom",
     "period": "mid",
     "stats": {
-      "command": 75,
+      "command": 73,
       "tactics": 70,
       "logistics": 70,
-      "charisma": 75
+      "charisma": 73
     },
-    "style": "defensive",
+    "traits": [
+      "steady"
+    ],
     "note": "Beneventum 275 vs. Pyrrhus"
   },
   {
@@ -649,12 +734,12 @@
     "culture": "rom",
     "period": "late",
     "stats": {
-      "command": 60,
-      "tactics": 45,
-      "logistics": 60,
-      "charisma": 65
+      "command": 65,
+      "tactics": 58,
+      "logistics": 65,
+      "charisma": 68
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Bagradas 255 — lost to Xanthippus"
   },
   {
@@ -663,12 +748,12 @@
     "culture": "rom",
     "period": "late",
     "stats": {
-      "command": 55,
-      "tactics": 40,
-      "logistics": 60,
-      "charisma": 65
+      "command": 63,
+      "tactics": 55,
+      "logistics": 65,
+      "charisma": 68
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Trasimene 217"
   },
   {
@@ -677,12 +762,15 @@
     "culture": "rom",
     "period": "late",
     "stats": {
-      "command": 75,
-      "tactics": 80,
-      "logistics": 85,
-      "charisma": 65
+      "command": 73,
+      "tactics": 75,
+      "logistics": 78,
+      "charisma": 68
     },
-    "style": "attrition",
+    "traits": [
+      "delayer",
+      "steady"
+    ],
     "note": "The Delayer"
   },
   {
@@ -691,12 +779,12 @@
     "culture": "rom",
     "period": "late",
     "stats": {
-      "command": 65,
-      "tactics": 60,
-      "logistics": 65,
+      "command": 68,
+      "tactics": 65,
+      "logistics": 68,
       "charisma": 70
     },
-    "style": "defensive",
+    "traits": [],
     "note": "Fell at Cannae 216"
   },
   {
@@ -705,12 +793,15 @@
     "culture": "rom",
     "period": "late",
     "stats": {
-      "command": 80,
-      "tactics": 75,
+      "command": 75,
+      "tactics": 73,
       "logistics": 70,
-      "charisma": 85
+      "charisma": 78
     },
-    "style": "hammer",
+    "traits": [
+      "rally",
+      "furor"
+    ],
     "note": "Clastidium 222; Syracuse; the Sword of Rome"
   },
   {
@@ -719,12 +810,14 @@
     "culture": "rom",
     "period": "late",
     "stats": {
-      "command": 75,
-      "tactics": 85,
-      "logistics": 75,
+      "command": 73,
+      "tactics": 78,
+      "logistics": 73,
       "charisma": 70
     },
-    "style": "envelopment",
+    "traits": [
+      "envelopment"
+    ],
     "note": "Metaurus 207 forced march"
   },
   {
@@ -733,12 +826,12 @@
     "culture": "rom",
     "period": "late",
     "stats": {
-      "command": 60,
-      "tactics": 60,
-      "logistics": 65,
-      "charisma": 65
+      "command": 65,
+      "tactics": 65,
+      "logistics": 68,
+      "charisma": 68
     },
-    "style": "defensive",
+    "traits": [],
     "note": "Ticinus 218; Spain"
   },
   {
@@ -747,12 +840,16 @@
     "culture": "rom",
     "period": "late",
     "stats": {
-      "command": 85,
-      "tactics": 90,
-      "logistics": 80,
-      "charisma": 80
+      "command": 78,
+      "tactics": 80,
+      "logistics": 75,
+      "charisma": 75
     },
-    "style": "hammer",
+    "traits": [
+      "envelopment",
+      "scouts",
+      "deep_ranks"
+    ],
     "note": "Ilipa 206, Great Plains 203, Zama 202"
   },
   {
@@ -761,12 +858,15 @@
     "culture": "chn",
     "period": "early",
     "stats": {
-      "command": 85,
-      "tactics": 85,
-      "logistics": 80,
-      "charisma": 80
+      "command": 78,
+      "tactics": 78,
+      "logistics": 75,
+      "charisma": 75
     },
-    "style": "attrition",
+    "traits": [
+      "steady",
+      "volley"
+    ],
     "note": "Wei's Wuzu; 76 battles undefeated (tradition)"
   },
   {
@@ -776,11 +876,14 @@
     "period": "mid",
     "stats": {
       "command": 70,
-      "tactics": 100,
+      "tactics": 85,
       "logistics": 70,
-      "charisma": 65
+      "charisma": 68
     },
-    "style": "envelopment",
+    "traits": [
+      "scouts",
+      "volley"
+    ],
     "note": "Guiling 354, Maling 342"
   },
   {
@@ -790,11 +893,11 @@
     "period": "mid",
     "stats": {
       "command": 70,
-      "tactics": 60,
-      "logistics": 65,
-      "charisma": 60
+      "tactics": 65,
+      "logistics": 68,
+      "charisma": 65
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Fell at Maling"
   },
   {
@@ -803,12 +906,14 @@
     "culture": "chn",
     "period": "mid",
     "stats": {
-      "command": 75,
+      "command": 73,
       "tactics": 70,
-      "logistics": 75,
-      "charisma": 75
+      "logistics": 73,
+      "charisma": 73
     },
-    "style": "skirmish",
+    "traits": [
+      "harass"
+    ],
     "note": "Cavalry reforms 307"
   },
   {
@@ -817,12 +922,14 @@
     "culture": "chn",
     "period": "mid",
     "stats": {
-      "command": 80,
-      "tactics": 80,
-      "logistics": 75,
+      "command": 75,
+      "tactics": 75,
+      "logistics": 73,
       "charisma": 70
     },
-    "style": "hammer",
+    "traits": [
+      "mercenary_captain"
+    ],
     "note": "Took 70 Qi cities for Yan, 284"
   },
   {
@@ -831,12 +938,14 @@
     "culture": "chn",
     "period": "mid",
     "stats": {
-      "command": 65,
-      "tactics": 90,
-      "logistics": 60,
-      "charisma": 80
+      "command": 68,
+      "tactics": 80,
+      "logistics": 65,
+      "charisma": 75
     },
-    "style": "envelopment",
+    "traits": [
+      "terror"
+    ],
     "note": "Fire-oxen at Jimo 279"
   },
   {
@@ -845,12 +954,16 @@
     "culture": "chn",
     "period": "late",
     "stats": {
-      "command": 95,
-      "tactics": 95,
-      "logistics": 85,
+      "command": 83,
+      "tactics": 83,
+      "logistics": 78,
       "charisma": 70
     },
-    "style": "envelopment",
+    "traits": [
+      "envelopment",
+      "terror",
+      "numbers"
+    ],
     "note": "Yique, Changping 260"
   },
   {
@@ -859,12 +972,15 @@
     "culture": "chn",
     "period": "late",
     "stats": {
-      "command": 80,
+      "command": 75,
       "tactics": 70,
-      "logistics": 85,
-      "charisma": 75
+      "logistics": 78,
+      "charisma": 73
     },
-    "style": "defensive",
+    "traits": [
+      "delayer",
+      "steady"
+    ],
     "note": "Held Changping until replaced"
   },
   {
@@ -873,12 +989,15 @@
     "culture": "chn",
     "period": "late",
     "stats": {
-      "command": 85,
-      "tactics": 90,
-      "logistics": 80,
-      "charisma": 75
+      "command": 78,
+      "tactics": 80,
+      "logistics": 75,
+      "charisma": 73
     },
-    "style": "skirmish",
+    "traits": [
+      "volley",
+      "envelopment"
+    ],
     "note": "Crushed the Xiongnu; Fei 233"
   },
   {
@@ -887,12 +1006,15 @@
     "culture": "chn",
     "period": "late",
     "stats": {
-      "command": 90,
-      "tactics": 85,
-      "logistics": 90,
-      "charisma": 75
+      "command": 80,
+      "tactics": 78,
+      "logistics": 80,
+      "charisma": 73
     },
-    "style": "attrition",
+    "traits": [
+      "numbers",
+      "delayer"
+    ],
     "note": "Conquered Zhao and Chu for Qin"
   },
   {
@@ -901,12 +1023,14 @@
     "culture": "chn",
     "period": "late",
     "stats": {
-      "command": 80,
+      "command": 75,
       "tactics": 70,
-      "logistics": 90,
-      "charisma": 65
+      "logistics": 80,
+      "charisma": 68
     },
-    "style": "defensive",
+    "traits": [
+      "volley"
+    ],
     "note": "Ordos 215; the Wall"
   },
   {
@@ -915,12 +1039,15 @@
     "culture": "chn",
     "period": "late",
     "stats": {
-      "command": 85,
-      "tactics": 80,
-      "logistics": 50,
-      "charisma": 95
+      "command": 78,
+      "tactics": 75,
+      "logistics": 60,
+      "charisma": 83
     },
-    "style": "hammer",
+    "traits": [
+      "furor",
+      "rally"
+    ],
     "note": "Julu 207; broke the cauldrons"
   },
   {
@@ -929,12 +1056,16 @@
     "culture": "chn",
     "period": "late",
     "stats": {
-      "command": 90,
-      "tactics": 95,
-      "logistics": 85,
+      "command": 80,
+      "tactics": 83,
+      "logistics": 78,
       "charisma": 70
     },
-    "style": "envelopment",
+    "traits": [
+      "numbers",
+      "envelopment",
+      "scouts"
+    ],
     "note": "Jingxing 204; Gaixia 202"
   },
   {
@@ -944,11 +1075,13 @@
     "period": "mid",
     "stats": {
       "command": 70,
-      "tactics": 65,
-      "logistics": 65,
-      "charisma": 75
+      "tactics": 68,
+      "logistics": 68,
+      "charisma": 73
     },
-    "style": "skirmish",
+    "traits": [
+      "harass"
+    ],
     "note": "Scythian king; fell to Philip II 339"
   },
   {
@@ -958,11 +1091,14 @@
     "period": "mid",
     "stats": {
       "command": 70,
-      "tactics": 85,
-      "logistics": 60,
+      "tactics": 78,
+      "logistics": 65,
       "charisma": 70
     },
-    "style": "skirmish",
+    "traits": [
+      "harass",
+      "envelopment"
+    ],
     "note": "Sogdian revolt; wiped a Macedonian column at Polytimetus 329"
   },
   {
@@ -974,9 +1110,11 @@
       "command": 70,
       "tactics": 70,
       "logistics": 70,
-      "charisma": 80
+      "charisma": 75
     },
-    "style": "skirmish",
+    "traits": [
+      "harass"
+    ],
     "note": "Parni chief; founded Parthia 247"
   },
   {
@@ -985,12 +1123,14 @@
     "culture": "ind",
     "period": "mid",
     "stats": {
-      "command": 75,
-      "tactics": 65,
-      "logistics": 65,
-      "charisma": 90
+      "command": 73,
+      "tactics": 68,
+      "logistics": 68,
+      "charisma": 80
     },
-    "style": "defensive",
+    "traits": [
+      "terror"
+    ],
     "note": "Hydaspes 326"
   },
   {
@@ -999,12 +1139,15 @@
     "culture": "ind",
     "period": "late",
     "stats": {
-      "command": 85,
-      "tactics": 80,
-      "logistics": 90,
-      "charisma": 85
+      "command": 78,
+      "tactics": 75,
+      "logistics": 80,
+      "charisma": 78
     },
-    "style": "attrition",
+    "traits": [
+      "numbers",
+      "terror"
+    ],
     "note": "Overthrew the Nandas; beat Seleucus 305"
   },
   {
@@ -1013,12 +1156,12 @@
     "culture": "ind",
     "period": "late",
     "stats": {
-      "command": 65,
-      "tactics": 60,
-      "logistics": 80,
-      "charisma": 60
+      "command": 68,
+      "tactics": 65,
+      "logistics": 75,
+      "charisma": 65
     },
-    "style": "defensive",
+    "traits": [],
     "note": "Expanded the Mauryan south"
   },
   {
@@ -1028,11 +1171,13 @@
     "period": "late",
     "stats": {
       "command": 70,
-      "tactics": 65,
-      "logistics": 90,
-      "charisma": 75
+      "tactics": 68,
+      "logistics": 80,
+      "charisma": 73
     },
-    "style": "attrition",
+    "traits": [
+      "numbers"
+    ],
     "note": "Kalinga 261 — before the remorse"
   },
   {
@@ -1041,12 +1186,15 @@
     "culture": "gal",
     "period": "early",
     "stats": {
-      "command": 65,
-      "tactics": 60,
-      "logistics": 45,
-      "charisma": 85
+      "command": 68,
+      "tactics": 65,
+      "logistics": 58,
+      "charisma": 78
     },
-    "style": "hammer",
+    "traits": [
+      "furor",
+      "terror"
+    ],
     "note": "Allia and the sack of Rome 390"
   },
   {
@@ -1055,12 +1203,12 @@
     "culture": "gal",
     "period": "mid",
     "stats": {
-      "command": 60,
-      "tactics": 55,
-      "logistics": 45,
+      "command": 65,
+      "tactics": 63,
+      "logistics": 58,
       "charisma": 70
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Senones vs. Rome 283"
   },
   {
@@ -1070,11 +1218,13 @@
     "period": "late",
     "stats": {
       "command": 70,
-      "tactics": 60,
-      "logistics": 50,
-      "charisma": 80
+      "tactics": 65,
+      "logistics": 60,
+      "charisma": 75
     },
-    "style": "hammer",
+    "traits": [
+      "furor"
+    ],
     "note": "Invaded Greece; Thermopylae, Delphi 279"
   },
   {
@@ -1083,12 +1233,12 @@
     "culture": "gal",
     "period": "late",
     "stats": {
-      "command": 65,
-      "tactics": 60,
-      "logistics": 45,
+      "command": 68,
+      "tactics": 65,
+      "logistics": 58,
       "charisma": 70
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Killed Ptolemy Keraunos 279"
   },
   {
@@ -1097,12 +1247,14 @@
     "culture": "gal",
     "period": "late",
     "stats": {
-      "command": 65,
-      "tactics": 55,
-      "logistics": 50,
-      "charisma": 75
+      "command": 68,
+      "tactics": 63,
+      "logistics": 60,
+      "charisma": 73
     },
-    "style": "hammer",
+    "traits": [
+      "furor"
+    ],
     "note": "Telamon 225"
   },
   {
@@ -1111,12 +1263,12 @@
     "culture": "gal",
     "period": "late",
     "stats": {
-      "command": 60,
-      "tactics": 55,
-      "logistics": 50,
+      "command": 65,
+      "tactics": 63,
+      "logistics": 60,
       "charisma": 70
     },
-    "style": "hammer",
+    "traits": [],
     "note": "Telamon 225"
   },
   {
@@ -1125,12 +1277,14 @@
     "culture": "gal",
     "period": "late",
     "stats": {
-      "command": 65,
-      "tactics": 60,
-      "logistics": 50,
-      "charisma": 80
+      "command": 68,
+      "tactics": 65,
+      "logistics": 60,
+      "charisma": 75
     },
-    "style": "hammer",
+    "traits": [
+      "furor"
+    ],
     "note": "Insubres; killed by Marcellus at Clastidium 222"
   }
 ]

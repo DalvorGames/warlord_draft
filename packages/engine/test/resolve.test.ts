@@ -17,7 +17,7 @@ describe("hand-checkable fixtures (HANDOFF §9.2)", () => {
     expect(winRate(pikes, cav, "plains", 1000)).toBeGreaterThan(0.5);
   });
 
-  it.fails("TARGET: pike wall beats a cavalry-heavy army on plains (~70%)", () => {
+  it("TARGET: pike wall beats a cavalry-heavy army on plains (~70%)", () => {
     const pikes = army(G, "aggressive", ["mac_pezhetairoi", "mac_pezhetairoi", "mac_hypaspists", "mac_prodromoi", "mac_tarantines", "mac_archers", "mac_agrianians", "mac_successor_pike"]);
     const cav = army(G, "aggressive", ["per_kardakes", "per_kardakes", "per_apple_bearers", "per_heavy_cav", "per_bactrians", "per_saka", "per_hyrcanians", "per_heavy_cav"]);
     const wr = winRate(pikes, cav, "plains");
@@ -72,12 +72,13 @@ describe("resolver invariants", () => {
     expect(r.casualties.B).toBeGreaterThan(0);
   });
 
-  it("applies culture traits (Alexander's 7 Macedonians reach level 2)", () => {
+  it("applies traits (Alexander's 7 Macedonians: Hammer and anvil III, Oblique order, Rally)", () => {
     const r = resolveBattle(data, a, b, "plains", 1);
-    expect(r.armies.A.traits).toEqual([{ culture: "mac", name: "Combined Arms", level: 2, count: 8 }]);
-    expect(r.armies.A.rules.has("pikes_ignore_shaken")).toBe(true);
-    expect(r.armies.B.traits[0]).toMatchObject({ culture: "car", level: 2 });
-    // Carthage L2: non-Carthaginian units get ×1.08 — the army above is all Carthaginian, so no unit changes.
+    const ids = Object.fromEntries(r.armies.A.traits.map((t) => [t.id, t.level]));
+    expect(ids).toEqual({ oblique_order: 1, hammer_and_anvil: 3, rally: 1 });
+    expect(r.armies.A.rollupMult).toBeCloseTo(5, 6);
+    // Hannibal's all-Carthaginian army: Mercenary captain II has nothing to boost.
+    expect(r.armies.B.traits.find((t) => t.id === "mercenary_captain")!.level).toBe(2);
     expect(r.armies.B.units.every((u) => u.stats.melee === u.unit.stats.melee * (data.rules.terrain.plains[u.unit.class] ?? 1))).toBe(true);
   });
 
@@ -92,6 +93,7 @@ describe("resolver invariants", () => {
 
   it("a wrecked placement starts the side shaken", () => {
     const wrecked = army("xanthippus", "defensive", ["car_libyans", "car_balearics", "car_scutarii", "car_numidians", "car_noble_cav", "car_balearics", "car_caetrati", "car_libyans"]);
+    wrecked.slots[1].slot = "line"; // slingers in a line slot: a v1 wrecked placement
     const r = resolveBattle(data, wrecked, b, "plains", 1);
     expect(r.armies.A.units[1].wrecked).toBe(true);
     expect(r.armies.A.startsShaken).toBe(true);

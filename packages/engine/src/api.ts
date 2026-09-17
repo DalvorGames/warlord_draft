@@ -4,10 +4,12 @@
 import { buildData, type RawData } from "./data.js";
 import * as draft from "./draft.js";
 import { resolveBattle, type BattleResult, type ResolveOptions } from "./resolve.js";
-import { defaultDeployment, deployAgainst, deploymentCandidates } from "./deploy.js";
+import { blindLine, defaultDeployment, deployAgainst, deploymentCandidates } from "./deploy.js";
 import { prepareArmy } from "./prepare.js";
-import { DRAFTERS, DRAFT_STATE_BOTS, type DrafterName } from "./batch/drafters.js";
-import type { Army, Front, GameData, PlanName, TerrainName } from "./types.js";
+import { activeTraits, defaultPlan, traitLabel, type ActiveTrait } from "./traits.js";
+import { campaignFromSeed, type CampaignSpec } from "./campaign.js";
+import { DRAFTERS, DRAFT_STATE_BOTS, type DrafterName, type GreedyOptions } from "./batch/drafters.js";
+import type { Army, Front, GameData, General, PlanName, TerrainName, Unit } from "./types.js";
 
 export interface Engine {
   data: GameData;
@@ -25,15 +27,24 @@ export interface Engine {
   toArmy(state: draft.DraftState): Army;
   toRunString(state: draft.DraftState): string;
   replayDraft(run: string, opts?: { rerolls?: number }): { state: draft.DraftState; army: Army | null };
+  // traits
+  /** Every trait a general with these units would field, with levels and sources. */
+  traits(general: General, units: Unit[]): ActiveTrait[];
+  traitLabel(t: { id: string; level: number }): string;
+  /** The plan a general's traits suggest (the Deploy screen's starting choice). */
+  defaultPlan(general: General): PlanName;
   // deployment
   defaultDeployment(army: Army): Front[];
   deploymentCandidates(army: Army): Front[][];
-  /** What the AI does: read the enemy roster and pick the deployment that sims best against its likely shape. */
+  /** A roster-reading bot (1v1 or a hard mode); the campaign does not use it. */
   aiDeploy(army: Army, enemy: Army, terrain: TerrainName): Front[];
-  // opponents
+  /** The campaign AI's player-blind line for an army on a ground, seeded. */
+  blindLine(army: Army, terrain: TerrainName, seed: number): Front[];
+  // opponents and the campaign
   aiDraft(seed: number, drafter?: DrafterName): Army;
-  /** The bot's finished DraftState (plan set, no deployment) — serialise it with toRunString. */
-  aiDraftState(seed: number, drafter?: DrafterName): draft.DraftState;
+  /** The bot's finished DraftState (plan set, no deployment); serialise it with toRunString. */
+  aiDraftState(seed: number, drafter?: DrafterName, opts?: GreedyOptions): draft.DraftState;
+  campaign(seed: number, id: string): CampaignSpec;
   // battle
   prepare(army: Army, terrain: TerrainName): ReturnType<typeof prepareArmy>;
   resolve(armyA: Army, armyB: Army, terrain: TerrainName, seed: number, opts?: ResolveOptions): BattleResult;
@@ -56,11 +67,16 @@ export function createEngine(raw: RawData): Engine {
     toArmy: (s) => draft.toArmy(data, s),
     toRunString: (s) => draft.toRunString(s),
     replayDraft: (run, opts) => draft.replayDraft(data, run, opts),
+    traits: (g, units) => activeTraits(data, g, units),
+    traitLabel: (t) => traitLabel(data, t),
+    defaultPlan: (g) => defaultPlan(data, g),
     defaultDeployment: (a) => defaultDeployment(data, a),
     deploymentCandidates: (a) => deploymentCandidates(data, a),
     aiDeploy: (a, e, t) => deployAgainst(data, a, e, t),
+    blindLine: (a, t, seed) => blindLine(data, a, t, seed),
     aiDraft: (seed, drafter = "greedy") => DRAFTERS[drafter](data, seed, seed ^ 0x9e3779b9),
-    aiDraftState: (seed, drafter = "greedy") => DRAFT_STATE_BOTS[drafter](data, seed, seed ^ 0x9e3779b9),
+    aiDraftState: (seed, drafter = "greedy", opts) => DRAFT_STATE_BOTS[drafter](data, seed, seed ^ 0x9e3779b9, opts),
+    campaign: (seed, id) => campaignFromSeed(data, seed, id),
     prepare: (a, t) => prepareArmy(data, a, t),
     resolve: (a, b, t, seed, opts) => resolveBattle(data, a, b, t, seed, opts),
   };

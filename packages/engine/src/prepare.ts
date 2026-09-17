@@ -1,9 +1,12 @@
-// Army preparation (HANDOFF §4): slot penalties, traits, combined arms, plan, command, morale, terrain.
+// Army preparation (design/gdd/army-preparation.md): traits, combined arms, plan, ground, command, cohesion.
 // Produces a PreparedArmy with effective per-unit stats and per-side modifiers. Pure; no RNG.
 
-import { cultureCounts, slotPenalty, isWrecked, traitLevel } from "./draft.js";
+import { slotPenalty, isWrecked, cultureCounts } from "./draft.js";
 import { defaultDeployment } from "./deploy.js";
-import type { Army, Front, GameData, General, PhaseName, PlanName, RuleName, SlotKind, Stats, StatKey, TerrainName, Unit, UnitClass } from "./types.js";
+import { activeTraits, traitEntries, type ActiveTrait } from "./traits.js";
+import type { Army, Front, GameData, General, PhaseName, PlanName, RuleName, SlotKind, Stats, StatKey, TerrainName, TraitEntry, Unit, UnitClass } from "./types.js";
+
+export type { ActiveTrait } from "./traits.js";
 
 export interface PreparedUnit {
   unit: Unit;
@@ -15,13 +18,8 @@ export interface PreparedUnit {
   wrecked: boolean;
   /** Three-fronts model only. */
   front?: Front;
-}
-
-export interface ActiveTrait {
-  culture: string;
-  name: string;
-  level: 1 | 2;
-  count: number;
+  /** Ground multiplier applied to this unit's combat stats (1 = none). */
+  ground: number;
 }
 
 export interface PreparedArmy {
@@ -34,8 +32,24 @@ export interface PreparedArmy {
   steadinessMult: number;
   /** fronts only: multiplier on roll-up impact (traits). */
   rollupMult: number;
+  /** Trait hooks, neutral by default (design/gdd/traits.md). */
+  centerShooting: number | null;
+  wingShooting: number;
+  shakenEdge: number | null;
+  pressDecay: number;
+  frontageFactor: number;
+  reserveFactor: number;
+  heaviestFrontContact: number;
+  enemyShakenMult: number | null;
+  lanchesterBonus: number;
+  relief: number;
+  rollupDamage: number;
+  rally: number;
+  noBreakBefore: number;
+  /** Cohesion multiplier from the Steady trait alone (so the resolver can tell when it saved a front). */
+  steadyMult: number;
   phaseWeights: Record<PhaseName, number>;
-  /** Multiplier applied to the general's tactics contribution in the flank (Carthage L2). */
+  /** Multiplier applied to the general's tactics contribution in the flank. */
   tacticsMult: number;
   cmd: number;
   moraleThreshold: number;
@@ -43,9 +57,11 @@ export interface PreparedArmy {
   moraleParts: { avgDiscipline: number; charisma: number; mult: number };
   terrainChargeMult: number;
   rules: Set<RuleName>;
+  /** Every trait this army fields, with level and sources. */
   traits: ActiveTrait[];
+  /** Fast lookup of the ids in `traits`. */
+  traitIds: Set<string>;
   combinedArms: boolean;
-  styleMatch: boolean;
   startsShaken: boolean;
   cultureCounts: Record<string, number>;
   totalCost: number;
@@ -66,7 +82,7 @@ export function roleFor(unit: Unit, slot: SlotKind): UnitClass {
 }
 
 export function prepareArmy(data: GameData, army: Army, terrain: TerrainName, opts: PrepareOptions = {}): PreparedArmy {
-  const { rules, cultures } = data;
+  const { rules } = data;
   const general = data.generalById.get(army.generalId);
   if (!general) throw new Error(`unknown general ${army.generalId}`);
   if (army.slots.length !== rules.slots.length) throw new Error(`army must have ${rules.slots.length} slots`);
@@ -87,47 +103,60 @@ export function prepareArmy(data: GameData, army: Army, terrain: TerrainName, op
     const unit = data.unitById.get(s.unitId);
     if (!unit) throw new Error(`unknown unit ${s.unitId}`);
     const stats = { ...unit.stats };
-    if (frontsModel) return { unit, slot: s.slot, role: unit.class, stats, penalty: 1, wrecked: false, front: deployment![i] };
+    if (frontsModel) return { unit, slot: s.slot, role: unit.class, stats, penalty: 1, wrecked: false, front: deployment![i], ground: 1 };
     const penalty = slotPenalty(data, unit, s.slot);
     if (penalty === null) throw new Error(`${unit.id} (${unit.class}) may not be placed in a ${s.slot} slot`);
     const wrecked = penalty < 1 && isWrecked(data, penalty);
     if (wrecked) startsShaken = true;
     for (const k of STAT_KEYS) stats[k] *= penalty;
-    return { unit, slot: s.slot, role: roleFor(unit, s.slot), stats, penalty, wrecked };
+    return { unit, slot: s.slot, role: roleFor(unit, s.slot), stats, penalty, wrecked, ground: 1 };
   });
 
   const phaseMult: Record<PhaseName, number> = { skirmish: 1, charge: 1, grind: 1, flank: 1 };
   const phaseWeights: Record<PhaseName, number> = { ...rules.phaseWeights };
   let moraleMult = 1;
+  let steadyMult = 1;
   let tacticsMult = 1;
   const ruleFlags = new Set<RuleName>();
-  const traits: ActiveTrait[] = [];
 
-  // 3. Culture traits.
+  // 3. Traits: the general's own plus the cultures' at four and six units, levels stacked (traits.ts).
+  let centerShooting: number | null = null, wingShooting = 1, shakenEdge: number | null = null, pressDecay = 0;
+  let frontageFactor = 1, reserveFactor = 1, heaviestFrontContact = 1;
+  let enemyShakenMult: number | null = null, lanchesterBonus = 0, relief = 0, rollupDamage = 1, rally = 0, groundPenalty = 0, noBreakBefore = 0;
   const counts = cultureCounts(data, units.map((u) => u.unit), general);
-  if (useTraits) {
-    for (const [cid, count] of Object.entries(counts)) {
-      const level = traitLevel(data, count);
-      if (level === 0) continue;
-      const culture = cultures[cid];
-      traits.push({ culture: cid, name: culture.trait, level, count });
-      const entries = level === 2 ? culture.level2 : culture.level1;
-      for (const e of entries) {
-        if ("phase" in e && "mult" in e && !("generalStat" in e)) phaseMult[e.phase] *= e.mult;
-        else if ("stat" in e) {
-          const keys = e.stat === "all" ? STAT_KEYS : [e.stat];
-          for (const pu of units) {
-            const match = e.scope === "culture" ? pu.unit.culture === cid : pu.unit.culture !== cid;
-            if (match) for (const k of keys) pu.stats[k] *= e.mult;
-          }
-        } else if ("moraleThreshold" in e) moraleMult *= e.moraleThreshold;
-        else if ("eliteSlots" in e) { /* draft-time only */ }
-        else if ("phaseWeight" in e) phaseWeights[e.phaseWeight] = e.value;
-        else if ("generalStat" in e) { if (e.generalStat === "tactics" && e.phase === "flank") tacticsMult *= e.mult; }
-        else if ("steadiness" in e) steadinessMult *= e.steadiness;
-        else if ("rollup" in e) rollupMult *= e.rollup;
-        else if ("rule" in e) ruleFlags.add(e.rule);
-      }
+  const traits = useTraits ? activeTraits(data, general, units.map((u) => u.unit)) : [];
+  const sources: { id: string | null; entries: TraitEntry[] }[] = traits.map((t) => ({ id: t.id, entries: traitEntries(data, [t]) }));
+  if (army.extraTraits?.length) sources.push({ id: null, entries: army.extraTraits });
+  for (const { id, entries } of sources) {
+    for (const e of entries) {
+      if ("phase" in e && "mult" in e && !("generalStat" in e)) phaseMult[e.phase] *= e.mult;
+      else if ("stat" in e) {
+        const keys = e.stat === "all" ? STAT_KEYS : [e.stat];
+        for (const pu of units) {
+          const match = e.scope === "culture" ? pu.unit.culture === general.culture : pu.unit.culture !== general.culture;
+          if (match) for (const k of keys) pu.stats[k] *= e.mult;
+        }
+      } else if ("moraleThreshold" in e) { moraleMult *= e.moraleThreshold; if (id === "steady") steadyMult *= e.moraleThreshold; }
+      else if ("eliteSlots" in e) { /* draft-time only */ }
+      else if ("phaseWeight" in e) phaseWeights[e.phaseWeight] = e.value;
+      else if ("generalStat" in e) { if (e.generalStat === "tactics" && e.phase === "flank") tacticsMult *= e.mult; }
+      else if ("steadiness" in e) steadinessMult *= e.steadiness;
+      else if ("rollup" in e) rollupMult *= e.rollup;
+      else if ("rule" in e) ruleFlags.add(e.rule);
+      else if ("centerShooting" in e) centerShooting = Math.max(centerShooting ?? 0, e.centerShooting);
+      else if ("wingShooting" in e) wingShooting *= e.wingShooting;
+      else if ("shakenEdge" in e) shakenEdge = Math.min(shakenEdge ?? Infinity, e.shakenEdge);
+      else if ("pressDecay" in e) pressDecay += e.pressDecay;
+      else if ("frontage" in e) frontageFactor *= e.frontage;
+      else if ("reserve" in e) reserveFactor *= e.reserve;
+      else if ("heaviestFrontContact" in e) heaviestFrontContact *= e.heaviestFrontContact;
+      else if ("enemyShakenMult" in e) enemyShakenMult = Math.min(enemyShakenMult ?? Infinity, e.enemyShakenMult);
+      else if ("lanchester" in e) lanchesterBonus += e.lanchester;
+      else if ("relief" in e) relief += e.relief;
+      else if ("rollupDamage" in e) rollupDamage *= e.rollupDamage;
+      else if ("rally" in e) rally = Math.max(rally, e.rally);
+      else if ("groundPenalty" in e) groundPenalty = Math.max(groundPenalty, e.groundPenalty);
+      else if ("noBreakBefore" in e) noBreakBefore = Math.max(noBreakBefore, e.noBreakBefore);
     }
   }
 
@@ -136,31 +165,35 @@ export function prepareArmy(data: GameData, army: Army, terrain: TerrainName, op
   const combinedArms = plays("line") && plays("cavalry") && (plays("ranged") || plays("skirmish"));
   if (combinedArms) { phaseMult.flank *= 1.10; phaseMult.grind *= 1.05; }
 
-  // 5. Plan and style match.
+  // 5. Plan.
   for (const p of PHASES) phaseMult[p] *= plan[p];
   moraleMult *= plan.moraleThreshold;
-  const styleMatch = rules.styleToPlan[general.style] === army.plan;
-  if (styleMatch) for (const p of PHASES) phaseMult[p] *= rules.styleMatchBonus;
 
-  // 8. Terrain, by natural class or subtype.
+  // 6. Ground, by natural class or subtype, on combat stats only (`groundExcludes` are left alone).
   const t = rules.terrain[terrain];
   if (!t) throw new Error(`unknown terrain ${terrain}`);
+  // Master of ground removes a fraction of each penalty (values below 1); bonuses are untouched.
+  const ground = (v: number | undefined) => (v === undefined ? 1 : v < 1 ? 1 - (1 - v) * (1 - Math.min(1, groundPenalty)) : v);
+  const excluded = new Set<StatKey>(rules.groundExcludes ?? []);
   for (const pu of units) {
-    const m = (t[pu.unit.subtype] ?? 1) * (t[pu.unit.class] ?? 1);
-    if (m !== 1) for (const k of STAT_KEYS) pu.stats[k] *= m;
+    const m = ground(t[pu.unit.subtype]) * ground(t[pu.unit.class]);
+    pu.ground = m;
+    if (m !== 1) for (const k of STAT_KEYS) if (!excluded.has(k)) pu.stats[k] *= m;
   }
   const terrainChargeMult = t.chargeAttacker ?? 1;
 
-  // 6–7. Command and morale threshold (from effective discipline, after all multipliers).
-  const cmd = 0.85 + (general.stats.command / 100) * 0.30;
+  // 7. Command and cohesion (from effective STEADY, after all multipliers).
+  const cmd = rules.command.base + (general.stats.command / 100) * rules.command.slope;
   const avgDiscipline = units.reduce((s, u) => s + u.stats.discipline, 0) / units.length;
   const charisma = general.stats.charisma;
   const moraleThreshold = (0.55 + (avgDiscipline / 100) * 0.35 + (charisma / 100) * 0.20) * moraleMult;
 
   return {
     general, plan: army.plan, units, phaseMult, steadinessMult, rollupMult, phaseWeights, tacticsMult, cmd,
+    centerShooting, wingShooting, shakenEdge, pressDecay, frontageFactor, reserveFactor, heaviestFrontContact,
+    enemyShakenMult, lanchesterBonus, relief, rollupDamage, rally, noBreakBefore, steadyMult,
     moraleThreshold, moraleParts: { avgDiscipline, charisma, mult: moraleMult },
-    terrainChargeMult, rules: ruleFlags, traits, combinedArms, styleMatch, startsShaken,
+    terrainChargeMult, rules: ruleFlags, traits, traitIds: new Set(traits.map((x) => x.id)), combinedArms, startsShaken,
     cultureCounts: counts, totalCost: units.reduce((s, u) => s + u.unit.cost, 0),
   };
 }

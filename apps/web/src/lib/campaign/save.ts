@@ -15,7 +15,9 @@ export interface BattlePlay {
 }
 
 export interface CampaignSave {
-  v: 1;
+  v: 2;
+  /** The engine data version the save was made with; a different one means the run cannot be replayed. */
+  dataVersion: number;
   kind: "daily" | "free";
   spec: CampaignSpec;
   draft: DraftState;
@@ -38,11 +40,14 @@ export interface HistoryEntry {
   lossPct: number;
   headline: string;
   finishedAt: string;
+  /** Your shape in the last battle, "2·4·2", for the last-five cells. */
+  shape?: string;
   /** Run strings, one per battle played, for sharing and later verification. */
   runs: string[];
 }
 
-const SAVE_KEY = "wd.campaign.v1";
+const SAVE_KEY = "wd.campaign.v2";
+const OLD_SAVE_KEYS = ["wd.campaign.v1"];
 const HISTORY_KEY = "wd.history.v1";
 
 function read<T>(key: string): T | null {
@@ -63,7 +68,14 @@ function write(key: string, value: unknown) {
 }
 
 export const storage = {
-  loadSave: () => read<CampaignSave>(SAVE_KEY),
+  /** The save, or null; `stale` when a save from another data version (or an older shape) had to be dropped. */
+  loadSave: (dataVersion: number): { save: CampaignSave | null; stale: boolean } => {
+    let stale = false;
+    for (const k of OLD_SAVE_KEYS) if (localStorage.getItem(k)) { write(k, null); stale = true; }
+    const s = read<CampaignSave>(SAVE_KEY);
+    if (s && (s.v !== 2 || s.dataVersion !== dataVersion)) { write(SAVE_KEY, null); return { save: null, stale: true }; }
+    return { save: s, stale };
+  },
   writeSave: (s: CampaignSave | null) => write(SAVE_KEY, s),
   loadHistory: () => read<HistoryEntry[]>(HISTORY_KEY) ?? [],
   pushHistory: (e: HistoryEntry) => {

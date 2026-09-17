@@ -19,18 +19,28 @@
   <header style="display: flex; align-items: center; justify-content: space-between; padding: 0 10px 0 6px; height: 52px; flex-shrink: 0;">
     <a href="Phone-Draft.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #B3AC9C; font-size: 20px; text-decoration: none;">&larr;</a>
     <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: #B3AC9C;">3 &middot; THE FIELD</span>
-    <button type="button" style="min-width: 44px; height: 44px; background: none; border: none; color: #F2ECDD; font-size: 13px; padding: 0 8px;">Roster</button>
+    <a href="Phone-Glossary.dc.html" aria-label="What do the numbers mean?" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; text-decoration: none;"><span style="width: 22px; height: 22px; border-radius: 50%; border: 1px solid #4A453C; color: #B3AC9C; font-family: 'IBM Plex Mono', monospace; font-size: 12px; display: flex; align-items: center; justify-content: center;">?</span></a>
   </header>
 
-  <div style="padding: 0 18px 10px 18px; flex-shrink: 0; display: flex; align-items: flex-end; justify-content: space-between;">
-    <div style="display: flex; flex-direction: column; gap: 2px;">
-      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; line-height: 1.05;">Set the line</span>
-      <span style="font-size: 11px; color: #6F6858;">{{hint}}</span>
+  <div style="margin: 0 18px 8px 18px; flex-shrink: 0; background: {{gen.deep}}; border: 1px solid {{gen.bright}}; border-radius: 6px; padding: 9px 12px; display: flex; align-items: center; gap: 12px;">
+    <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex-grow: 1;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.16em; color: {{gen.bright}};">YOUR GENERAL &middot; {{gen.culture}}</span>
+      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 22px; line-height: 1.05; color: #F2ECDD;">{{gen.name}}</span>
+      <span style="font-size: 10px; color: #E6DECB; opacity: 0.8; line-height: 1.3;">{{gen.line}}</span>
     </div>
-    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
-      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.14em; color: #6F6858;">YOUR SHAPE</span>
-      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; color: {{shapeColor}};">{{shape}}</span>
+    <div style="display: grid; grid-template-columns: repeat(2, 64px); gap: 3px 10px; flex-shrink: 0;">
+      <sc-for list="{{gen.stats}}" as="g" hint-placeholder-count="4">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 4px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 7px; letter-spacing: 0.06em; color: #E6DECB; opacity: 0.7;">{{g.k}}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{g.c}};">{{g.v}}</span>
+        </div>
+      </sc-for>
     </div>
+  </div>
+
+  <div style="padding: 0 18px 8px 18px; flex-shrink: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 10px;">
+    <span style="font-size: 11px; color: #6F6858; line-height: 1.35;">{{hint}}</span>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: {{shapeColor}}; flex-shrink: 0;">SHAPE {{shape}}</span>
   </div>
 
   <div style="margin: 0 18px; flex-grow: 1; min-height: 0; background: #191712; border: 1px solid #3D3830; border-radius: 6px; display: flex; flex-direction: column; position: relative; overflow: hidden;">
@@ -39,7 +49,7 @@
 
     <div style="flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; padding: 8px 12px 0 12px;">
       <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.18em; color: #6F6858;">PLAINS &middot; WINGS &times;1.10</span>
-      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.18em; color: #6F6858;">HIS LINE IS HIDDEN UNTIL BATTLE</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.18em; color: #6F6858;">TAP A DOCTRINE BELOW TO READ IT</span>
     </div>
 
     <div style="flex-grow: 1; min-height: 0; display: flex; gap: 8px; padding: 10px 12px 12px 12px;">
@@ -72,10 +82,22 @@
 
   <div style="flex-shrink: 0; margin: 8px 18px 0 18px; height: 142px; box-sizing: border-box; background: #1F1C17; border: 1px solid {{insp.edge}}; border-left: 3px solid {{insp.bar}}; border-radius: 4px; padding: 9px 12px; display: flex; flex-direction: column; gap: 7px;">
     <sc-if value="{{insp.empty}}" hint-placeholder-val="{{true}}">
-      <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; gap: 4px;">
-        <span style="font-size: 12px; color: #B3AC9C; line-height: 1.4;">Tap a token to see its numbers and where it fits.</span>
-        <span style="font-size: 11px; color: #6F6858; line-height: 1.4;">Wings press with Speed and Fight. The centre holds with Fight, Armour and Steady.</span>
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px;">
+        <div style="display: flex; align-items: baseline; gap: 7px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.14em; color: #9A9384;">DOCTRINE</span>
+          <span style="font-size: 13px; font-weight: 600; color: #F2ECDD;">{{doc.name}}</span>
+        </div>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.08em; color: {{doc.wayColor}}; background: {{doc.wayBg}}; border: 1px solid {{doc.wayEdge}}; border-radius: 2px; padding: 2px 6px;">{{doc.way}}</span>
       </div>
+      <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px;">
+        <sc-for list="{{doc.fx}}" as="f" hint-placeholder-count="6">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 7px; letter-spacing: 0.04em; color: #6F6858;">{{f.k}}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{f.c}};">{{f.v}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <span style="font-size: 11px; color: #C4BDAC; line-height: 1.4;">{{doc.text}}</span>
     </sc-if>
     <sc-if value="{{insp.show}}" hint-placeholder-val="{{true}}">
       <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px;">
@@ -121,7 +143,7 @@
   <div style="flex-shrink: 0; border-top: 1px solid #2C2822; background: #16140F; margin-top: 10px; padding: 10px 18px 28px 18px; display: flex; flex-direction: column; gap: 8px;">
     <div style="display: flex; gap: 5px;">
       <sc-for list="{{plans}}" as="p" hint-placeholder-count="4">
-        <button type="button" onClick="{{p.pick}}" style="flex-grow: 1; flex-basis: 0; background: {{p.bg}}; border: 1px solid {{p.edge}}; color: {{p.text}}; font-size: 11px; padding: 0 4px; border-radius: 3px; min-height: 36px;">{{p.name}}</button>
+        <button type="button" onClick="{{p.pick}}" style="flex-grow: 1; flex-basis: 0; background: {{p.bg}}; border: 1px solid {{p.edge}}; color: {{p.text}}; font-size: 11px; padding: 0 4px; border-radius: 3px; min-height: 36px; display: flex; align-items: center; justify-content: center; gap: 4px;"><span style="width: 5px; height: 5px; border-radius: 50%; background: {{p.dot}};"></span>{{p.name}}</button>
       </sc-for>
     </div>
     <a href="Phone-Battle.dc.html" style="display: block; text-align: center; text-decoration: none; background: {{ctaBg}}; border: 1px solid {{ctaEdge}}; color: {{ctaText}}; font-size: 16px; font-weight: 600; padding: 15px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">{{ctaLabel}}</a>
@@ -230,18 +252,39 @@ class Component extends DCLogic {
 
     const benchIdx = roster.map((u, i) => i).filter((i) => !placed[i]);
     const all = benchIdx.length === 0;
+    const GEN = { name: 'Ashoka', culture: 'INDIA', deep: '#6B3E12', bright: '#F2A23C', way: 'Defensive', cmd: 70, tac: 65, log: 90, cha: 75 };
+    const DOC = {
+      Aggressive:  { m: [0.90, 1.15, 0.90, 1.00, 1.00, 0.95], text: 'Hit first. The charge lands harder, but your fronts stand less steady and break sooner.' },
+      Defensive:   { m: [1.00, 0.90, 1.10, 1.05, 0.90, 1.05], text: 'Hold the line. Fronts stand steadier and take more before they break; your own charge and wings are softer.' },
+      Envelopment: { m: [1.00, 1.05, 0.95, 0.90, 1.25, 1.00], text: 'Win on the wings. Wings press much harder and the charge a little; the centre gives some ground.' },
+      Skirmish:    { m: [1.30, 0.95, 1.00, 0.95, 1.10, 1.00], text: 'Shoot first. Arrows count far more and wings a little; the clash and the centre a little less.' }
+    };
+    const fxKeys = ['ARROWS', 'CHARGE', 'STEADY', 'CENTRE', 'WINGS', 'COHESION'];
+    const isWay = plan === GEN.way;
+    const doc = {
+      name: plan,
+      way: isWay ? GEN.name.toUpperCase() + "'S WAY · +8% TO ALL" : 'NOT HIS WAY · NO BONUS',
+      wayColor: isWay ? '#100F0C' : '#9A9384', wayBg: isWay ? '#F2ECDD' : 'transparent', wayEdge: isWay ? '#F2ECDD' : '#4A453C',
+      fx: DOC[plan].m.map((v, i) => ({ k: fxKeys[i], v: (v > 1 ? '+' : v < 1 ? '−' : '') + (v === 1 ? '—' : Math.round(Math.abs(v - 1) * 100) + '%'), c: v > 1 ? '#F2ECDD' : (v < 1 ? '#D9724F' : '#6F6858') })),
+      text: DOC[plan].text
+    };
     const plans = ['Aggressive', 'Defensive', 'Envelopment', 'Skirmish'].map((p) => ({
       name: p, bg: p === plan ? '#2C2822' : 'transparent', edge: p === plan ? accent : '#4A453C', text: p === plan ? '#F2ECDD' : '#B3AC9C',
+      dot: p === GEN.way ? '#F2ECDD' : 'transparent',
       pick: () => this.setState({ plan: p })
     }));
 
     return {
       accent: accent,
-      hint: held === null ? 'Tap a token to read it, then tap where it stands.' : 'Holding ' + roster[held].name + ' — tap a front, or read it below.',
+      hint: held === null ? 'Tap a token to read it, then tap where it stands. His line stays hidden until battle.' : 'Holding ' + roster[held].name + ' — tap a front, or read it below.',
       shape: counts.L + ' · ' + counts.C + ' · ' + counts.R,
       shapeColor: all ? '#F2ECDD' : '#B3AC9C',
       fronts: fronts,
       insp: insp,
+      doc: doc,
+      gen: { name: GEN.name, culture: GEN.culture, deep: GEN.deep, bright: GEN.bright,
+        line: 'Charisma ' + GEN.cha + ' steadies every front. Prefers ' + GEN.way.toLowerCase() + '.',
+        stats: [['COMMAND', GEN.cmd], ['TACTICS', GEN.tac], ['SUPPLY', GEN.log], ['CHARISMA', GEN.cha]].map((x) => ({ k: x[0], v: x[1], c: x[1] >= 85 ? '#FFFFFF' : '#F2ECDD' })) },
       bench: benchIdx.map((i) => token(roster[i], i)),
       benchEmpty: all && held === null,
       canBench: held !== null && placed[held] !== null,

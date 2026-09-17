@@ -214,8 +214,13 @@ export const UNITS = [
 
 // ---------- Generals ----------
 // G(id, name, culture, period, command, tactics, logistics, charisma, style, note)
-const G = (id, name, culture, period, command, tactics, logistics, charisma, style, note) =>
-  ({ id, name, culture, period, stats: { command, tactics, logistics, charisma }, style, note });
+// v3: `style` is read no more (doctrine is gone); the general's traits come from GENERAL_TRAITS below.
+// Stats are compressed halfway toward 70 (STAT_COMPRESSION), because traits now carry a general's identity and
+// the raw stats were so correlated that the general pick was a lottery (docs/reviews/2026-09-16-measurements.md §2).
+const STAT_COMPRESSION = 0.5;
+const squeeze = (v) => Math.round(70 + (v - 70) * STAT_COMPRESSION);
+const G = (id, name, culture, period, command, tactics, logistics, charisma, _style, note) =>
+  ({ id, name, culture, period, stats: { command: squeeze(command), tactics: squeeze(tactics), logistics: squeeze(logistics), charisma: squeeze(charisma) }, traits: [], note });
 
 export const GENERALS = [
   // Macedon & Successors
@@ -318,40 +323,84 @@ export const GENERALS = [
   G("viridomarus", "Viridomarus",               "gal", "late", 65, 60, 50, 80, "hammer",      "Insubres; killed by Marcellus at Clastidium 222"),
 ];
 
+// ---------- Traits (design/gdd/traits.md) ----------
+// One shared pool for generals and cultures. Scaling traits have levels I–III sized to about +4 / +8 / +12 win-rate
+// points; rule traits are on or off. Sizes measured 2026-09-16 (packages/engine/src/cli/lab/traits.ts).
+export const TRAITS = {
+  deep_ranks:        { name: "Deep ranks",        kind: "scaling", culture: "rom", text: "Fresh ranks step up: your fronts recover a little each round.",
+                       levels: [[{ relief: 0.010 }], [{ relief: 0.020 }], [{ relief: 0.029 }]] },
+  steady:            { name: "Steady",            kind: "scaling", culture: "grk", text: "Your fronts take more punishment before they break.",
+                       levels: [[{ moraleThreshold: 1.04 }], [{ moraleThreshold: 1.075 }], [{ moraleThreshold: 1.12 }]] },
+  hammer_and_anvil:  { name: "Hammer and anvil",  kind: "scaling", culture: "mac", text: "A wing of yours that breaks its opponent wheels into his center harder.",
+                       levels: [[{ rollup: 1.8 }, { rollupDamage: 1.8 }], [{ rollup: 3.3 }, { rollupDamage: 3.3 }], [{ rollup: 5 }, { rollupDamage: 5 }]] },
+  numbers:           { name: "Numbers",           kind: "scaling", culture: "per", text: "Weight of numbers counts for more in the press.",
+                       levels: [[{ lanchester: 0.03 }], [{ lanchester: 0.06 }], [{ lanchester: 0.10 }]] },
+  mercenary_captain: { name: "Mercenary captain", kind: "scaling", culture: "car", text: "Units from outside your general's culture fight better.",
+                       levels: [[{ stat: "melee", mult: 1.12, scope: "other_cultures" }], [{ stat: "melee", mult: 1.25, scope: "other_cultures" }], [{ stat: "melee", mult: 1.42, scope: "other_cultures" }]] },
+  volley:            { name: "Volley",            kind: "scaling", culture: "chn", text: "Your center shoots harder.",
+                       levels: [[{ centerShooting: 0.68 }], [{ centerShooting: 0.92 }], [{ centerShooting: 1.39 }]] },
+  harass:            { name: "Harass",            kind: "scaling", culture: "stp", text: "Your wings win the missile exchange more heavily.",
+                       levels: [[{ wingShooting: 1.25 }], [{ wingShooting: 1.62 }], [{ wingShooting: 2.29 }]] },
+  terror:            { name: "Terror",            kind: "scaling", culture: "ind", text: "Fronts that lose the clash to you shake sooner and fight worse for it.",
+                       levels: [[{ shakenEdge: 0.15 }, { enemyShakenMult: 0.84 }], [{ shakenEdge: 0.15 }, { enemyShakenMult: 0.70 }], [{ shakenEdge: 0.15 }, { enemyShakenMult: 0.59 }]] },
+  furor:             { name: "Furor",             kind: "scaling", culture: "gal", text: "You hit harder at the clash, and a little weaker every round after.",
+                       levels: [[{ phase: "charge", mult: 1.06 }, { pressDecay: 0.015 }], [{ phase: "charge", mult: 1.17 }, { pressDecay: 0.042 }], [{ phase: "charge", mult: 1.51 }, { pressDecay: 0.127 }]] },
+  envelopment:       { name: "Envelopment",       kind: "scaling", text: "Your wings press harder.",
+                       levels: [[{ phase: "flank", mult: 1.10 }], [{ phase: "flank", mult: 1.22 }], [{ phase: "flank", mult: 1.38 }]] },
+  oblique_order:     { name: "Oblique order",     kind: "scaling", text: "Your most heavily loaded front hits harder at the clash.",
+                       levels: [[{ heaviestFrontContact: 1.08 }], [{ heaviestFrontContact: 1.16 }], [{ heaviestFrontContact: 1.28 }]] },
+  delayer:           { name: "Delayer",           kind: "rule", text: "None of your fronts can break before the second round.", levels: [[{ noBreakBefore: 2 }]] },
+  rally:             { name: "Rally",             kind: "rule", text: "The first of your fronts to break holds for one more stage, shaken.", levels: [[{ rally: 0.001 }]] },
+  master_of_ground:  { name: "Master of ground",  kind: "rule", text: "Ground penalties on your units are halved.", levels: [[{ groundPenalty: 0.5 }]] },
+  scouts:            { name: "Scouts",            kind: "rule", text: "Before you deploy, you are told which of his fronts is heaviest.", levels: [[]] },
+};
+
+// Which generals carry which traits (design/content/general-traits-draft.md).
+const GENERAL_TRAITS = {
+  philip2: ["hammer_and_anvil", "oblique_order"], alexander: ["oblique_order", "hammer_and_anvil", "rally"], parmenion: ["steady"],
+  antigonus1: ["hammer_and_anvil"], eumenes: ["mercenary_captain", "scouts"], seleucus1: ["terror"], ptolemy1: ["steady"], demetrius: ["furor"],
+  lysimachus: [], craterus: ["steady"], pyrrhus: ["terror", "rally"], antigonus3: [], philip5: [], antiochus3: ["numbers"],
+  xenophon: ["mercenary_captain", "master_of_ground"], agesilaus: ["steady"], iphicrates: ["harass", "mercenary_captain"], chabrias: ["steady"],
+  epaminondas: ["oblique_order", "deep_ranks"], pelopidas: ["furor"], dionysius1: ["mercenary_captain"], timoleon: ["master_of_ground"],
+  agathocles: [], agis3: [], cleomenes3: [], philopoemen: ["envelopment", "master_of_ground"],
+  artaxerxes2: ["numbers"], pharnabazus: ["harass"], memnon: ["delayer", "mercenary_captain"], darius3: ["numbers"], mazaeus: ["envelopment"],
+  bessus: [], ariobarzanes: ["master_of_ground"],
+  himilco: [], hamilcar: ["mercenary_captain", "harass"], xanthippus: ["terror", "envelopment"], hasdrubal_f: [],
+  hannibal: ["envelopment", "scouts", "master_of_ground"], hasdrubal_b: [], mago: ["envelopment"], hasdrubal_g: [], maharbal: ["harass"],
+  camillus: ["deep_ranks", "rally"], papirius: ["steady"], rullianus: ["deep_ranks"], dentatus: ["steady"], regulus: [], flaminius: [],
+  fabius: ["delayer", "steady"], paullus: [], marcellus: ["rally", "furor"], nero: ["envelopment"], scipio_sr: [], scipio: ["envelopment", "scouts", "deep_ranks"],
+  wuqi: ["steady", "volley"], sunbin: ["scouts", "volley"], pangjuan: [], wuling: ["harass"], yueyi: ["mercenary_captain"], tiandan: ["terror"],
+  baiqi: ["envelopment", "terror", "numbers"], lianpo: ["delayer", "steady"], limu: ["volley", "envelopment"], wangjian: ["numbers", "delayer"],
+  mengtian: ["volley"], xiangyu: ["furor", "rally"], hanxin: ["numbers", "envelopment", "scouts"],
+  ateas: ["harass"], spitamenes: ["harass", "envelopment"], arsaces1: ["harass"],
+  porus: ["terror"], chandragupta: ["numbers", "terror"], bindusara: [], ashoka: ["numbers"],
+  brennus1: ["furor", "terror"], britomaris: [], brennus2: ["furor"], bolgios: [], aneroestes: ["furor"], concolitanus: [], viridomarus: ["furor"],
+};
+for (const g of GENERALS) {
+  const t = GENERAL_TRAITS[g.id];
+  if (!t) throw new Error("no trait entry for " + g.id);
+  for (const id of t) if (!TRAITS[id]) throw new Error(`unknown trait ${id} on ${g.id}`);
+  g.traits = t;
+}
+
 // ---------- Cultures ----------
+// Each culture grants its trait at four units of that culture (level I) and again at six (level II). The general
+// counts as one unit of his own culture. Levels of the same trait from every source add, capped at III.
 export const CULTURES = {
-  mac: { name: "Macedon & Successors", trait: "Combined Arms",
-    level1: [{ phase: "flank", mult: 1.25 }],
-    level2: [{ phase: "flank", mult: 1.35 }, { rollup: 1.30 }, { rule: "pikes_ignore_shaken" }] }, // hammer and anvil: roll-ups hit harder
-  grk: { name: "Greek City-States", trait: "Hoplite Cohesion",
-    level1: [{ stat: "discipline", mult: 1.15, scope: "culture" }, { moraleThreshold: 1.05 }],
-    level2: [{ stat: "discipline", mult: 1.15, scope: "culture" }, { moraleThreshold: 1.05 }, { steadiness: 1.04 }] }, // the wall holds
-  per: { name: "Achaemenid Persia", trait: "Weight of Numbers",
-    level1: [{ eliteSlots: 1 }, { steadiness: 1.05 }],                            // draft-time slot plus a battle-side half: the mass holds
-    level2: [{ eliteSlots: 1 }, { steadiness: 1.08 }, { phase: "grind", mult: 1.10 }] },
-  car: { name: "Carthage", trait: "Mercenary Army",
-    level1: [{ stat: "all", mult: 1.05, scope: "other_cultures" }],
-    level2: [{ stat: "all", mult: 1.08, scope: "other_cultures" }, { generalStat: "tactics", mult: 1.2, phase: "flank" }] },
-  rom: { name: "Rome", trait: "Manipular Reserve",
-    level1: [{ moraleThreshold: 1.10 }],
-    level2: [{ moraleThreshold: 1.10 }, { rule: "never_shaken_by_charge" }] },
-  chn: { name: "Warring States China", trait: "Crossbow Volleys",
-    level1: [{ phase: "skirmish", mult: 1.20 }],
-    level2: [{ phase: "skirmish", mult: 1.30 }, { phaseWeight: "skirmish", value: 0.60 }] },
-  stp: { name: "Steppe Nomads", trait: "Refuse Battle",
-    level1: [{ phase: "skirmish", mult: 1.25 }],
-    level2: [{ phase: "skirmish", mult: 1.25 }, { rule: "half_morale_damage_from_lost_grind" }] },
-  ind: { name: "India (Nanda / Maurya)", trait: "Elephant Line",
-    level1: [{ phase: "charge", mult: 1.08 }],
-    level2: [{ phase: "charge", mult: 1.15 }, { rule: "rampage_chance_halved" }] },
-  gal: { name: "Gauls & Celts", trait: "Furor",
-    level1: [{ phase: "charge", mult: 1.08 }],
-    level2: [{ phase: "charge", mult: 1.18 }, { moraleThreshold: 0.95 }] },
+  mac: { name: "Macedon & Successors",   trait: "hammer_and_anvil" },
+  grk: { name: "Greek City-States",      trait: "steady" },
+  per: { name: "Achaemenid Persia",      trait: "numbers" },
+  car: { name: "Carthage",               trait: "mercenary_captain" },
+  rom: { name: "Rome",                   trait: "deep_ranks" },
+  chn: { name: "Warring States China",   trait: "volley" },
+  stp: { name: "Steppe Nomads",          trait: "harass" },
+  ind: { name: "India (Nanda / Maurya)", trait: "terror" },
+  gal: { name: "Gauls & Celts",          trait: "furor" },
 };
 
 // ---------- Rules ----------
 export const RULES = {
-  dataVersion: 2,
+  dataVersion: 3,
   battleModel: "fronts",             // "fronts" (docs/battle-design-three-fronts.md) or "v1" (HANDOFF §5)
   fronts: {
     rounds: 4,                       // press rounds before the reckoning
@@ -389,9 +438,14 @@ export const RULES = {
   },
   grades: { S: [13, 15], A: [10, 12], B: [7, 9], C: [5, 6], D: [3, 4], F: [1, 2] },
   draftRarity: { S: 0.05, A: 0.15, B: 0.30, C: 0.30, D: 0.15, F: 0.05 },
-  slots: ["line", "line", "shock", "cavalry", "cavalry", "ranged", "ranged", "flex"],
-  cardsPerRow: 4, onClassCardsPerRow: 3, rerolls: 2, homeCultureTilt: 0.30, generalPool: 3,
-  eliteCap: { base: 2, logisticsThreshold: 80, withLogistics: 3 },
+  // v3 board (design/gdd/draft.md §3.B): four typed rows guarantee a center, a wing and a shooter; four flex rows
+  // decide the army's identity. Culture is drawn per card, not per row. Rerolls are three: two plus one free for all.
+  slots: ["line", "line", "cavalry", "ranged", "flex", "flex", "flex", "flex"],
+  cardsPerRow: 4, onClassCardsPerRow: 3, rerolls: 3, homeCultureTilt: 0.20, generalPool: 3,
+  // SUPPLY, graded: the third elite at 75 or more (stats are compressed, so 75 is what 80 was), and a small
+  // nudge on A and S card weight that rises linearly from `from` to 100 (draft.md §3.B.4).
+  eliteCap: { base: 2, logisticsThreshold: 75, withLogistics: 3 },
+  supplyNudge: { from: 50, maxRelative: 0.20 },
   traitThresholds: [4, 6], generalCountsAsUnit: true,
   // slotPenalties[unitClass][slotClass] = multiplier on all stats; null = not allowed. "ranged" slot accepts ranged+skirmish.
   slotPenalties: {
@@ -410,8 +464,21 @@ export const RULES = {
     envelopment: { skirmish: 1.0, charge: 0.95, grind: 0.9,  flank: 1.3,  moraleThreshold: 1.0 },
     skirmish:    { skirmish: 1.3, charge: 0.8,  grind: 0.85, flank: 1.1,  moraleThreshold: 1.0 },
   },
-  styleToPlan: { hammer: "aggressive", envelopment: "envelopment", attrition: "defensive", skirmish: "skirmish", defensive: "defensive" },
-  styleMatchBonus: 1.08,
+  // The trait pool (above): entries by id. Cultures and generals reference it.
+  traits: TRAITS,
+  // General's COMMAND factor on every battle score: cmd = base + slope × command/100 (design/gdd/army-preparation.md §4.2).
+  // Provisionally halfway (0.875 + 0.25·C), decided 2026-09-16.
+  command: { base: 0.875, slope: 0.25 },
+  // Ground multiplies combat stats only, never STEADY (decided 2026-09-16: forest must not make cavalry brittle).
+  groundExcludes: ["discipline"],
+  // Campaign (design/gdd/campaign.md §3.6): foes tiered by general stat sum (terciles, computed below) and by an
+  // army-cost ceiling per battle; the foe's line is chosen player-blind among near-tied layouts by the campaign seed.
+  campaign: {
+    battles: 3,
+    generalBands: [],           // filled below from the roster: [[min,max], …] of summed stats per battle
+    costCeilings: [58, 66, null],
+    blindLine: { seeds: 4, nearTie: 0.8, top: 3, panel: 2 },
+  },
   // terrain applied by unit class / subtype, asymmetric — never as a flat phase multiplier
   terrain: {
     plains: { cavalry: 1.05, chariot: 1.05 },
@@ -463,6 +530,13 @@ export const RULES = {
     crossbow:     { pike: 1.2, elephant: 1.2, cataphract: 1.15, heavy_cav: 1.1, warband: 1.15 },
   },
 };
+
+// Foe general bands: terciles of the roster's summed stats (weakest third for battle 1, and so on).
+{
+  const sums = GENERALS.map((g) => g.stats.command + g.stats.tactics + g.stats.logistics + g.stats.charisma).sort((a, b) => a - b);
+  const q = (f) => sums[Math.min(sums.length - 1, Math.floor(sums.length * f))];
+  RULES.campaign.generalBands = [[0, q(1 / 3) - 1], [q(1 / 3), q(2 / 3) - 1], [q(1 / 2), 9999]]; // battle 3 draws from the top half
+}
 
 // ---------- Validation + write ----------
 function validate() {

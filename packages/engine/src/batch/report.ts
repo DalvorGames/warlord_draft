@@ -127,9 +127,9 @@ export function buildReport(data: GameData, recs: BattleRecord[], drafter: strin
   }).sort((a, b) => ORDER.indexOf(a.grade) - ORDER.indexOf(b.grade) || b.delta - a.delta);
 
   const traits = [...traitT.entries()].map(([key, t]) => {
-    const [culture, lvl] = key.split(":");
+    const [culture, lvl] = key.split(":"); // v3: the key is a trait id, kept under the old field name
     const off = t.off.n ? wr(t.off) : null;
-    return { culture, name: data.cultures[culture].trait, level: Number(lvl), n: t.on.n, wr: wr(t.on), wrNoTraits: off, lift: off === null ? null : wr(t.on) - off };
+    return { culture, name: data.rules.traits[culture]?.name ?? culture, level: Number(lvl), n: t.on.n, wr: wr(t.on), wrNoTraits: off, lift: off === null ? null : wr(t.on) - off };
   }).sort((a, b) => a.culture.localeCompare(b.culture) || a.level - b.level);
 
   const terrain = [...terrainT.entries()].map(([terrain, t]) => ({ terrain, cavHeavyN: t.cav.n, cavHeavyWr: wr(t.cav), otherWr: wr(t.other) }));

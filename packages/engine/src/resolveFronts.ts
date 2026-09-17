@@ -38,10 +38,28 @@ export interface FrontSummary {
   flanked: number;
   rolledUp: boolean;
 }
+/** A trait that acted this round, so the report can name it (design/gdd/traits.md §3.3.8). */
+export interface TraitEvent {
+  trait: string;
+  /** The side whose trait it is. */
+  side: Side;
+  /** The front concerned and whose front it is (Terror shakes an enemy front; the rest act on the holder's own). */
+  front: Front | null;
+  frontSide: Side;
+  /** Unit names involved, for the sentence. */
+  units: string[];
+  /** For a wheel-in: the units that were hit. */
+  targets?: string[];
+  /** Numbers: the two counts. */
+  n?: number;
+  m?: number;
+}
 export interface RoundRecord {
   round: number;
   contests: ContestRecord[];
   events: string[];
+  /** Traits that acted this round. */
+  traits: TraitEvent[];
   moraleA: number;
   moraleB: number;
 }
@@ -57,6 +75,10 @@ interface FrontState {
   shaken: boolean;
   flanked: number;
   rolledUp: boolean;
+  /** Oblique order: true for the side's single most heavily loaded front (false on a tie). */
+  heaviest: boolean;
+  /** What shaken units on this front fight at; set when the front is shaken (Terror can lower it). */
+  shakenMult: number;
 }
 interface SideState {
   side: Side;
@@ -65,6 +87,10 @@ interface SideState {
   morale: number;
   routed: boolean;
   routedAt: string | null;
+  /** Rally: whether this side has already used its one rally. */
+  rallied: boolean;
+  /** Once-per-battle trait sentences already given (trait id, or trait:front). */
+  told: Set<string>;
 }
 
 const avg = (arr: PreparedUnit[], f: (u: PreparedUnit) => number) => (arr.length ? arr.reduce((t, u) => t + f(u), 0) / arr.length : 0);
@@ -82,15 +108,17 @@ function matchupMult(data: GameData, attacker: PreparedUnit, defenders: Prepared
 function unitShaken(data: GameData, s: SideState, f: FrontState, u: PreparedUnit): number {
   if (!f.shaken) return 1;
   if (u.unit.subtype === "pike" && s.army.rules.has("pikes_ignore_shaken")) return 1;
-  return data.rules.shakenMult;
+  return f.shakenMult;
 }
 
 /** Fraction of a front's summed contribution that counts when only `oppN × frontage` units can engage. */
-function frontageMult(data: GameData, n: number, oppN: number): number {
+function frontageMult(data: GameData, n: number, oppN: number, army?: PreparedArmy): number {
   if (n === 0) return 0;
   const R = data.rules.fronts;
-  const k = Math.min(n, Math.ceil(Math.max(1, oppN) * R.frontage));
-  return (k + (n - k) * R.reserveMult) / n;
+  // Numbers widens the frontage; Deep ranks makes reserves count for more (both neutral by default).
+  const k = Math.min(n, Math.ceil(Math.max(1, oppN) * R.frontage * (army?.frontageFactor ?? 1)));
+  const reserve = Math.min(1, R.reserveMult * (army?.reserveFactor ?? 1));
+  return (k + (n - k) * reserve) / n;
 }
 
 function threshold(s: SideState, units: PreparedUnit[]): number {
@@ -101,7 +129,7 @@ function threshold(s: SideState, units: PreparedUnit[]): number {
 
 function skirmishScore(data: GameData, s: SideState, f: FrontState, enemy: PreparedUnit[], rng: Rng): [number, Contribution[]] {
   const R = data.rules.fronts;
-  const mult = f.id === "C" ? R.lineSkirmishMult : 1;
+  const mult = f.id === "C" ? (s.army.centerShooting ?? R.lineSkirmishMult) : s.army.wingShooting;
   const cs = f.units.map((u) => contrib(u, u.stats.ranged * (0.7 + 0.3 * u.stats.mobility / 100) * matchupMult(data, u, enemy) * mult));
   const raw = cs.reduce((t, c) => t + c.value, 0);
   const cover = (avg(enemy, (u) => u.stats.armor) / 100) * 0.5;
@@ -119,22 +147,26 @@ function contactParts(data: GameData, s: SideState, f: FrontState, units: Prepar
 function contactScore(data: GameData, s: SideState, f: FrontState, enemy: PreparedUnit[], rng: Rng): [number, Contribution[]] {
   const R = data.rules.fronts;
   const { impact, steadiness, cs } = contactParts(data, s, f, f.units, enemy);
-  const fm = frontageMult(data, f.units.length, enemy.length);
-  return [(impact + R.steadinessCoef * steadiness * s.army.steadinessMult) * fm * s.army.phaseMult.charge * s.army.cmd * rng.gaussian(data.rules.noiseSD), cs];
+  const fm = frontageMult(data, f.units.length, enemy.length, s.army);
+  const oblique = f.heaviest ? s.army.heaviestFrontContact : 1;
+  return [(impact + R.steadinessCoef * steadiness * s.army.steadinessMult) * fm * oblique * s.army.phaseMult.charge * s.army.cmd * rng.gaussian(data.rules.noiseSD), cs];
 }
 
-function pressScore(data: GameData, s: SideState, f: FrontState, enemy: PreparedUnit[], rng: Rng): [number, Contribution[]] {
+function pressScore(data: GameData, s: SideState, f: FrontState, enemy: PreparedUnit[], rng: Rng, round = 1): [number, Contribution[]] {
   const R = data.rules.fronts;
   let cs: Contribution[], mult: number;
   if (f.id === "C") {
     cs = f.units.map((u) => contrib(u, (u.stats.melee * 0.5 + u.stats.armor * 0.3 + u.stats.discipline * 0.2) * matchupMult(data, u, enemy) * unitShaken(data, s, f, u)));
-    mult = s.army.phaseMult.grind * Math.pow(R.flankedMult, f.flanked);
+    // Deep ranks also softens the flanked penalty: reserves turn to face the flank.
+    const flanked = 1 - (1 - R.flankedMult) / s.army.reserveFactor;
+    mult = s.army.phaseMult.grind * Math.pow(flanked, f.flanked);
   } else {
     cs = f.units.map((u) => contrib(u, (u.stats.mobility * 0.4 + u.stats.melee * 0.4 + u.stats.shock * 0.2) * Math.pow(u.stats.mobility / 100, R.wingCurve) * matchupMult(data, u, enemy) * unitShaken(data, s, f, u)));
     mult = s.army.phaseMult.flank * (0.7 + (s.army.general.stats.tactics / 100) * 0.6 * s.army.tacticsMult);
   }
-  const sum = cs.reduce((t, c) => t + c.value, 0) * frontageMult(data, f.units.length, enemy.length);
-  return [sum * Math.pow(Math.max(1, f.units.length), R.lanchester) * mult * s.army.cmd * rng.gaussian(data.rules.noiseSD), cs];
+  const sum = cs.reduce((t, c) => t + c.value, 0) * frontageMult(data, f.units.length, enemy.length, s.army);
+  const decay = Math.max(0.5, 1 - s.army.pressDecay * round); // Furor's price; 1 when pressDecay is 0
+  return [sum * Math.pow(Math.max(1, f.units.length), R.lanchester + s.army.lanchesterBonus) * mult * decay * s.army.cmd * rng.gaussian(data.rules.noiseSD), cs];
 }
 
 // ---------- events ----------
@@ -157,15 +189,27 @@ export function resolveBattleFronts(data: GameData, armyA: Army, armyB: Army, te
   const rng = mulberry32(seed);
   const mk = (side: Side, army: Army): SideState => {
     const p = prepareArmy(data, army, terrain, opts);
-    const s: SideState = { side, army: p, fronts: {} as Record<Front, FrontState>, morale: 0, routed: false, routedAt: null };
+    const s: SideState = { side, army: p, fronts: {} as Record<Front, FrontState>, morale: 0, routed: false, routedAt: null, rallied: false, told: new Set() };
     for (const f of FRONTS) {
       const units = p.units.filter((u) => u.front === f);
-      s.fronts[f] = { id: f, units, deployed: units.length, damage: 0, threshold: 0, broken: false, brokenAt: null, shaken: false, flanked: 0, rolledUp: false };
+      s.fronts[f] = { id: f, units, deployed: units.length, damage: 0, threshold: 0, broken: false, brokenAt: null, shaken: false, flanked: 0, rolledUp: false, heaviest: false, shakenMult: data.rules.shakenMult };
       s.fronts[f].threshold = threshold(s, units);
     }
+    const sizes = FRONTS.map((f) => s.fronts[f].deployed), top = Math.max(...sizes);
+    if (sizes.filter((n) => n === top).length === 1) s.fronts[FRONTS[sizes.indexOf(top)]].heaviest = true;
     return s;
   };
   const A = mk("A", armyA), B = mk("B", armyB);
+  // Trait events: recorded per round, never touching the RNG or the arithmetic.
+  let traitEvents: TraitEvent[] = [];
+  const names = (us: PreparedUnit[]) => us.map((u) => u.unit.name);
+  const has = (s: SideState, id: string) => s.army.traitIds.has(id);
+  /** Record a trait acting; `once` keys make a sentence appear only the first time. */
+  const acted = (s: SideState, trait: string, front: Front | null, units: PreparedUnit[], extra: Partial<TraitEvent> = {}, once: string | null = trait) => {
+    if (once && s.told.has(once)) return;
+    if (once) s.told.add(once);
+    traitEvents.push({ trait, side: s.side, front, frontSide: extra.frontSide ?? s.side, units: names(units), ...extra });
+  };
   const event = rollEvent(data, rng, A, B, opts.campaign ?? false);
   const eventNotes: string[] = [];
   let eventApplied = false;
@@ -202,14 +246,15 @@ export function resolveBattleFronts(data: GameData, armyA: Army, armyB: Army, te
   function rollInto(s: SideState, round: number, from: FrontState, target: FrontState, joinFront: Front): ContestRecord {
     const e = other(s);
     const parts = contactParts(data, s, from, from.units, target.units);
-    const sW = parts.impact * frontageMult(data, from.units.length, target.units.length) * R.rollupMult * s.army.rollupMult * s.army.phaseMult.charge * s.army.cmd * rng.gaussian(data.rules.noiseSD);
+    const sW = parts.impact * frontageMult(data, from.units.length, target.units.length, s.army) * R.rollupMult * s.army.rollupMult * s.army.phaseMult.charge * s.army.cmd * rng.gaussian(data.rules.noiseSD);
     const tParts = contactParts(data, e, target, target.units, from.units);
     // Only the units on the exposed flank resist: frontage against the charging wing, not the whole front.
-    const sT = R.steadinessCoef * tParts.steadiness * e.army.steadinessMult * frontageMult(data, target.units.length, from.units.length) * e.army.phaseMult.charge * e.army.cmd * rng.gaussian(data.rules.noiseSD);
+    const sT = R.steadinessCoef * tParts.steadiness * e.army.steadinessMult * frontageMult(data, target.units.length, from.units.length, e.army) * e.army.phaseMult.charge * e.army.cmd * rng.gaussian(data.rules.noiseSD);
     const edge = sW > sT ? Math.min(R.edgeCap, (sW - sT) / sW) : 0;
-    const dmg = R.weights.rollup * stakes("rollup") * edge * 2;
+    const dmg = R.weights.rollup * stakes("rollup") * edge * 2 * s.army.rollupDamage;
     target.damage += dmg;
     target.flanked++;
+    if (has(s, "hammer_and_anvil")) acted(s, "hammer_and_anvil", from.id, from.units, { targets: names(target.units) }, null);
     s.fronts[joinFront].units = s.fronts[joinFront].units.concat(from.units);
     from.units = [];
     from.rolledUp = true;
@@ -238,7 +283,17 @@ export function resolveBattleFronts(data: GameData, armyA: Army, armyB: Army, te
     for (const s of [A, B]) for (const f of FRONTS) {
       const fs = s.fronts[f];
       if (fs.broken || !fs.deployed) continue;
-      if (fs.damage >= fs.threshold) { fs.broken = true; fs.brokenAt = stage; notes.push(`${s.side}:${f} breaks`); }
+      if (fs.damage < fs.threshold) {
+        // Steady: the front took damage it would have broken under without the trait. Said once per front.
+        if (s.army.steadyMult > 1 && fs.damage >= fs.threshold / s.army.steadyMult) acted(s, "steady", f, fs.units, {}, `steady:${f}`);
+        continue;
+      }
+      // Delayer: nothing of his breaks before the second press round. Damage still accrues.
+      const pressRound = stage.startsWith("press ") ? Number(stage.slice(6)) : 0; // skirmish and contact are round 0
+      if (pressRound < s.army.noBreakBefore) { acted(s, "delayer", f, fs.units, {}, `delayer:${f}`); continue; }
+      // Rally: the first front to break stands again once, with part of its cohesion restored, and fights shaken.
+      if (s.army.rally > 0 && !s.rallied) { s.rallied = true; fs.damage = fs.threshold * (1 - s.army.rally); fs.shaken = true; notes.push(`${s.side}:${f} rallies`); acted(s, "rally", f, fs.units); continue; }
+      fs.broken = true; fs.brokenAt = stage; notes.push(`${s.side}:${f} breaks`);
     }
     for (const s of [A, B]) {
       s.morale = armyMorale(s);
@@ -276,8 +331,17 @@ export function resolveBattleFronts(data: GameData, armyA: Army, armyB: Army, te
     if (event?.id === "downpour") { mods.loserMult = mods.winnerMult = event.params?.damageMult ?? 0.3; mods.note = "downpour"; eventApplied = true; }
     contests.push(contest("skirmish", 0, FA, FB, sA, sB, cA, cB, R.weights.skirmish * stakes("skirmish"), mods));
   }
+  for (const s of [A, B]) {
+    const shooters = (fs: FrontState) => fs.units.filter((u) => u.stats.ranged > 0);
+    if (has(s, "volley") && shooters(s.fronts.C).length) acted(s, "volley", "C", shooters(s.fronts.C));
+    const wingShooters = [...shooters(s.fronts.L), ...shooters(s.fronts.R)];
+    if (has(s, "harass") && wingShooters.length) acted(s, "harass", null, wingShooters);
+    const spared = s.army.units.filter((u) => u.ground < 1);
+    if (has(s, "master_of_ground") && spared.length) acted(s, "master_of_ground", null, spared);
+  }
   let notes = checkBreaks("skirmish");
-  rounds.push({ round: 0, contests, events: notes, moraleA: A.morale, moraleB: B.morale });
+  rounds.push({ round: 0, contests, events: notes, traits: traitEvents, moraleA: A.morale, moraleB: B.morale });
+  traitEvents = [];
 
   // ----- Contact -----
   if (!A.routed && !B.routed) {
@@ -298,7 +362,18 @@ export function resolveBattleFronts(data: GameData, armyA: Army, armyB: Army, te
       const loserSide = sA >= sB ? B : A, loserFront = sA >= sB ? FB : FA;
       if (event?.id === "flank_collapse" && loserFront.id !== "C") { mods.loserMult = event.params?.damageMult ?? 2; mods.note = "flank collapses"; eventApplied = true; }
       const rec = contest("contact", 0, FA, FB, sA, sB, cA, cB, R.weights.contact * stakes("contact"), mods);
-      if (rec.edge > data.rules.shakenEdge && !loserSide.army.rules.has("never_shaken_by_charge")) loserFront.shaken = true;
+      const winnerSide = loserSide === A ? B : A;
+      const winnerFront = winnerSide === A ? FA : FB;
+      if (rec.edge > (winnerSide.army.shakenEdge ?? data.rules.shakenEdge) && !loserSide.army.rules.has("never_shaken_by_charge")) {
+        loserFront.shaken = true; loserFront.shakenMult = winnerSide.army.enemyShakenMult ?? data.rules.shakenMult;
+        if (has(winnerSide, "terror")) acted(winnerSide, "terror", loserFront.id, loserFront.units, { frontSide: loserSide.side }, `terror:${loserSide.side}:${loserFront.id}`);
+      }
+      for (const [side, front] of [[A, FA], [B, FB]] as [SideState, FrontState][]) {
+        if (has(side, "oblique_order") && front.heaviest) acted(side, "oblique_order", front.id, front.units);
+        if (has(side, "furor") && front.id === winnerFront.id && side === winnerSide) acted(side, "furor", front.id, front.units.filter((u) => u.stats.shock >= 50));
+        const foreign = front.units.filter((u) => u.unit.culture !== side.army.general.culture);
+        if (has(side, "mercenary_captain") && foreign.length) acted(side, "mercenary_captain", front.id, foreign);
+      }
       if (event?.id === "general_falls" && loserFront.id === "C") {
         const mp = loserSide.army.moraleParts;
         loserFront.threshold = (0.55 + (avg(loserFront.units, (u) => u.stats.discipline) / 100) * 0.35) * mp.mult * (event.params?.thresholdMult ?? 0.85);
@@ -323,7 +398,8 @@ export function resolveBattleFronts(data: GameData, armyA: Army, armyB: Army, te
       contests.push(rec);
     }
     notes.push(...checkBreaks("contact"));
-    rounds.push({ round: 0, contests, events: notes, moraleA: A.morale, moraleB: B.morale });
+    rounds.push({ round: 0, contests, events: notes, traits: traitEvents, moraleA: A.morale, moraleB: B.morale });
+    traitEvents = [];
   }
 
   // ----- Press rounds -----
@@ -358,15 +434,33 @@ export function resolveBattleFronts(data: GameData, armyA: Army, armyB: Army, te
     for (const [fa, fb] of pairs) {
       const FA = A.fronts[fa], FB = B.fronts[fb];
       if (FA.broken || FB.broken || !FA.units.length || !FB.units.length) continue;
-      const [sA, cA] = pressScore(data, A, FA, FB.units, rng);
-      const [sB, cB] = pressScore(data, B, FB, FA.units, rng);
+      const [sA, cA] = pressScore(data, A, FA, FB.units, rng, round);
+      const [sB, cB] = pressScore(data, B, FB, FA.units, rng, round);
       const mods: { loserMult?: number } = {};
       const loser = sA >= sB ? B : A;
       if (fa === "C" && loser.army.rules.has("half_morale_damage_from_lost_grind")) mods.loserMult = 0.5;
-      contests.push(contest("press", round, FA, FB, sA, sB, cA, cB, R.weights.press * stakes(fa === "C" ? "center" : "wing"), mods));
+      const rec = contest("press", round, FA, FB, sA, sB, cA, cB, R.weights.press * stakes(fa === "C" ? "center" : "wing"), mods);
+      contests.push(rec);
+      const winner = rec.winner === "A" ? A : B, wf = rec.winner === "A" ? FA : FB, lf = rec.winner === "A" ? FB : FA;
+      if (has(winner, "numbers") && wf.units.length > lf.units.length && rec.edge >= 0.05) acted(winner, "numbers", wf.id, wf.units, { n: wf.units.length, m: lf.units.length });
+      if (has(winner, "envelopment") && wf.id !== "C" && rec.edge >= 0.05) acted(winner, "envelopment", wf.id, wf.units);
+      const spent = rec.winner === "A" ? B : A;
+      if (has(spent, "furor") && round >= 2 && spent.told.has("furor")) acted(spent, "furor_spent", lf.id, lf.units.filter((u) => u.stats.shock >= 50));
+    }
+    // Deep ranks: fresh ranks step up. Unbroken fronts shed a little damage before breaks are checked.
+    for (const s of [A, B]) if (s.army.relief > 0) {
+      let most: FrontState | null = null;
+      for (const f of FRONTS) {
+        const fs = s.fronts[f];
+        if (fs.broken || !fs.deployed || fs.damage <= 0) continue;
+        fs.damage = Math.max(0, fs.damage - s.army.relief * fs.threshold);
+        if (!most || fs.damage / fs.threshold > most.damage / most.threshold) most = fs;
+      }
+      if (most && has(s, "deep_ranks")) acted(s, "deep_ranks", most.id, most.units, {}, `deep_ranks:${round}`);
     }
     notes.push(...checkBreaks(`press ${round}`));
-    rounds.push({ round, contests, events: notes, moraleA: A.morale, moraleB: B.morale });
+    rounds.push({ round, contests, events: notes, traits: traitEvents, moraleA: A.morale, moraleB: B.morale });
+    traitEvents = [];
   }
 
   // ----- Reckoning -----
@@ -418,9 +512,8 @@ export function narrateFronts(data: GameData, r: BattleResult, margin: number): 
   lines.push(`${A.general.name} (${A.plan}) vs ${B.general.name} (${B.plan}) on ${r.terrain}.`);
   for (const s of ["A", "B"] as Side[]) {
     const side = r.armies[s];
-    const notes = side.traits.map((t) => `${t.name} ${t.level === 2 ? "II" : "I"}`);
+    const notes = side.traits.map((t) => `${t.name} ${["", "I", "II", "III"][t.level]}`);
     if (side.combinedArms) notes.push("Combined Arms");
-    if (side.styleMatch) notes.push(`${side.general.style} doctrine`);
     const dep = r.fronts![s].map((f) => `${FRONT_NAME[f.front]} ${f.unitIds.length}`).join(", ");
     lines.push(`${side.general.name} deploys ${dep}${notes.length ? `; brings ${notes.join(", ")}` : ""}.`);
   }
@@ -470,6 +563,7 @@ function describeEvent(ev: string, name: (s: Side) => string): string {
   const who = name(side as Side);
   if (what === "breaks") return `${who}'s ${FRONT_NAME[front as Front]} breaks`;
   if (what === "routs") return `${who}'s army routs`;
+  if (what === "rallies") return `${who}'s ${FRONT_NAME[front as Front]} wavers and rallies`;
   if (what.startsWith("is empty")) return `${who}'s ${FRONT_NAME[front as Front]} is empty and gives way`;
   if (what.startsWith("pursues")) return `${who}'s ${FRONT_NAME[front as Front]} wing pursues off the field`;
   if (what.startsWith("is free")) return `${who}'s ${FRONT_NAME[front as Front]} wing is free but the enemy center is already gone`;

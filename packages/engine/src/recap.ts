@@ -43,9 +43,8 @@ export function narrate(data: GameData, r: BattleResult, margin: number): string
   const lines: string[] = [];
   lines.push(`${A.general.name} (${A.plan}) vs ${B.general.name} (${B.plan}) on ${r.terrain}.`);
   for (const side of [A, B]) {
-    const notes = side.traits.map((t) => `${t.name} ${t.level === 2 ? "II" : "I"}`);
+    const notes = side.traits.map((t) => `${t.name} ${["", "I", "II", "III"][t.level]}`);
     if (side.combinedArms) notes.push("Combined Arms");
-    if (side.styleMatch) notes.push(`${side.general.style} doctrine`);
     if (side.startsShaken) notes.push("shaken by a wrecked placement");
     if (notes.length) lines.push(`${side.general.name} brings: ${notes.join(", ")}.`);
   }

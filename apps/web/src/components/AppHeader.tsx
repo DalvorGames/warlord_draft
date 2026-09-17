@@ -1,15 +1,15 @@
 import Link from "next/link";
 
-/** Today's header: the wordmark as a mono label and the account dot (v2 Phone-Home). */
+/** Today's header (v3 Main): the wordmark as a mono label and a Rules link. */
 export function AppHeader() {
   return (
-    <header className="flex shrink-0 items-center justify-between px-[18px] pt-3.5 pb-1.5">
-      <Link href="/" className="font-mono text-[10px] tracking-[0.2em] text-faint no-underline">
+    <header className="flex shrink-0 items-center justify-between px-5 pt-4 pb-1">
+      <Link href="/" className="font-mono text-[11px] tracking-[0.2em] text-faint no-underline">
         WARLORD DRAFT · ERA I
       </Link>
-      <button type="button" aria-label="Your account" className="h-11 w-11 rounded-full border border-rule bg-transparent font-mono text-xs text-dim">
-        MP
-      </button>
+      <Link href="/rules" className="py-2 text-[15px] text-bone no-underline">
+        Rules
+      </Link>
     </header>
   );
 }

@@ -14,7 +14,7 @@
     a { color: #E08A5F; }
   </style>
 </helmet>
-<div style="width: 390px; height: 1640px; box-sizing: border-box; background: #100F0C; color: #F2ECDD; display: flex; flex-direction: column;">
+<div style="width: 390px; height: 1800px; box-sizing: border-box; background: #100F0C; color: #F2ECDD; display: flex; flex-direction: column;">
 
   <header style="display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 6px; height: 52px; flex-shrink: 0;">
     <a href="Phone-Home.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #B3AC9C; font-size: 20px; text-decoration: none;">&larr;</a>
@@ -81,6 +81,16 @@
               </div>
             </sc-for>
           </div>
+          <div style="display: flex; flex-direction: column; gap: 5px; padding: 8px 0 2px 0; border-top: 1px solid #2C2822; margin-top: 6px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.14em; color: #6F6858; padding: 4px 0 1px 0;">THEN PICK A DOCTRINE</span>
+            <sc-for list="{{s.doctrines}}" as="d" hint-placeholder-count="4">
+              <div style="display: flex; gap: 8px; align-items: baseline;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #F2ECDD; width: 84px; flex-shrink: 0;">{{d.name}}</span>
+                <span style="font-size: 11px; color: #C4BDAC; line-height: 1.4;">{{d.text}}</span>
+              </div>
+            </sc-for>
+            <span style="font-size: 11px; color: #9A9384; line-height: 1.4; padding-top: 2px;">Every general has a way he prefers. Fight his way and everything he does is 8% stronger.</span>
+          </div>
         </sc-if>
 
         <sc-if value="{{s.is_battle}}" hint-placeholder-val="{{true}}">
@@ -138,7 +148,7 @@
 
 </div>
 </x-dc>
-<script data-dc-script data-props='{"$preview":{"width":390,"height":1640}}'>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":1800}}'>
 class Component extends DCLogic {
   renderVals() {
     const CUL = {
@@ -153,7 +163,7 @@ class Component extends DCLogic {
 
     return {
       steps: [
-        { n: '1', is_general: true, is_draft: false, is_deploy: false, is_battle: false, title: 'Take a general', kicker: 'THREE TURN OVER · ONE IS YOURS',
+        { n: '1', is_general: true, doctrines: [], is_draft: false, is_deploy: false, is_battle: false, title: 'Take a general', kicker: 'THREE TURN OVER · ONE IS YOURS',
           cards: [
             { culture: CUL.gal[0], deep: CUL.gal[1], bright: CUL.gal[2], name: 'Viridomarus' },
             { culture: CUL.ind[0], deep: CUL.ind[1], bright: CUL.ind[2], name: 'Ashoka' },
@@ -161,7 +171,7 @@ class Component extends DCLogic {
           ],
           body: 'His four numbers shape the whole army before you have drafted a single unit.',
           tips: [tip('Supply 80+ lets you carry three elites instead of two.'), tip('Charisma makes every front stand longer. Command makes everything hit harder.')] },
-        { n: '2', is_general: false, is_draft: true, is_deploy: false, is_battle: false, title: 'Draft eight rows', kicker: 'ONE UNIT A ROW · TWO REROLLS',
+        { n: '2', is_general: false, is_draft: true, doctrines: [], is_deploy: false, is_battle: false, title: 'Draft eight rows', kicker: 'ONE UNIT A ROW · TWO REROLLS',
           rows: [row('1', 'LINE', centre, 3), row('2', 'LINE', centre, 4), row('3', 'SHOCK', centre, 3), row('4', 'CAVALRY', wing, 2), row('5', 'CAVALRY', wing, 1), row('6', 'RANGED', wing, 4), row('7', 'RANGED', wing, 4), row('8', 'FLEX', centre, 1)],
           body: 'Each row deals four units from one culture. Take one, or reroll the row. Your general counts as a unit too.',
           tips: [tip('Four units from one culture wakes its trait. Six wakes the stronger version.'), tip('S and A grades are elites. The cap is two, or three with the right general.')] },
@@ -171,9 +181,15 @@ class Component extends DCLogic {
             { label: 'CENTRE', tokens: [tok(CUL.rom[1], CUL.rom[2]), tok(CUL.chn[1], CUL.chn[2]), tok(CUL.ind[1], CUL.ind[2]), tok(CUL.ind[1], CUL.ind[2])], want: 'wants steady', wantColor: centre },
             { label: 'RIGHT', tokens: [tok(CUL.ind[1], CUL.ind[2]), tok(CUL.ind[1], CUL.ind[2])], want: 'wants speed', wantColor: wing }
           ],
+          doctrines: [
+            { name: 'AGGRESSIVE', text: 'Hit first. The charge lands harder, but your fronts stand less steady and break sooner.' },
+            { name: 'DEFENSIVE', text: 'Hold the line. Fronts stand steadier and take more before they break; your charge and wings are softer.' },
+            { name: 'ENVELOPMENT', text: 'Win on the wings. Wings press much harder and the charge a little; the centre gives some ground.' },
+            { name: 'SKIRMISH', text: 'Shoot first. Arrows count far more and wings a little; the clash and the centre a little less.' }
+          ],
           body: 'Cavalry earns its keep on a wing. Heavy infantry holds the centre. A front with nobody on it breaks the moment it is touched.',
-          tips: [tip('Pick a doctrine: Aggressive, Defensive, Envelopment or Skirmish. It nudges every stage and how much your fronts can take.'), tip('Each front shows a cohesion word: FIRM, STEADY or BRITTLE. Fix BRITTLE before you fight.')] },
-        { n: '4', is_general: false, is_draft: false, is_deploy: false, is_battle: true, title: 'Watch it play out', kicker: 'ONE BEAT AT A TIME · NO INPUT',
+          tips: [tip('Tap any unit on the field to see its numbers and which front suits it.'), tip('Each front shows a cohesion word: FIRM, STEADY or BRITTLE. Fix BRITTLE before you fight.')] },
+        { n: '4', is_general: false, is_draft: false, is_deploy: false, is_battle: true, doctrines: [], title: 'Watch it play out', kicker: 'ONE BEAT AT A TIME · NO INPUT',
           stages: [
             { label: 'SKIRMISH', color: '#4FC0E6', text: 'Arrows first. Shoot against their Armour.' },
             { label: 'CLASH', color: '#F2A23C', text: 'The charge lands. Charge against Steady and Armour.' },

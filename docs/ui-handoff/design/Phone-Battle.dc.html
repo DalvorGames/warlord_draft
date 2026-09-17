@@ -12,6 +12,8 @@
     body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #100F0C; }
     button { font-family: inherit; cursor: pointer; }
     a { color: #E08A5F; }
+    @keyframes wdenter { 0% { transform: translateY(-16px); opacity: 0; } 60% { opacity: 1; } 100% { transform: translateY(0); opacity: 1; } }
+    @keyframes wdtick { 0% { opacity: 0.35; } 100% { opacity: 1; } }
   </style>
 </helmet>
 <div style="width: 390px; height: 844px; box-sizing: border-box; background: #100F0C; color: #F2ECDD; display: flex; flex-direction: column;">
@@ -25,7 +27,7 @@
   <div style="margin: 0 18px 10px 18px; flex-shrink: 0; background: #1F1C17; border: 1px solid #3D3830; border-radius: 4px; padding: 12px 14px; display: flex; align-items: center; gap: 12px;">
     <div style="flex-grow: 1; flex-basis: 0; display: flex; flex-direction: column; gap: 2px;">
       <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: #F2A23C;">ASHOKA &middot; INDIA</span>
-      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1; color: #F2A23C;">0.55</span>
+      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1; color: #F2A23C; animation: wdtick 500ms ease;">{{moraleA}}</span>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; gap: 3px;">
       <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.14em; color: #6F6858;">MORALE</span>
@@ -33,7 +35,7 @@
     </div>
     <div style="flex-grow: 1; flex-basis: 0; display: flex; flex-direction: column; gap: 2px; align-items: flex-end;">
       <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: #4FC0E6;">CHABRIAS &middot; GREECE</span>
-      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1; color: #D9724F;">0.93</span>
+      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1; color: {{moraleBColor}}; animation: wdtick 500ms ease;">{{moraleB}}</span>
     </div>
   </div>
 
@@ -45,14 +47,14 @@
 
   <div style="display: flex; align-items: baseline; padding: 0 18px 6px 18px; flex-shrink: 0;">
     <span style="width: 54px; font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.12em; color: #5C5749;">BEAT</span>
-    <span style="flex-grow: 1; font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.12em; color: #5C5749;">{{listHint}}</span>
+    <span style="flex-grow: 1; font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.12em; color: #5C5749;">{{listHint}} &middot; NEWEST FIRST</span>
     <span style="width: 34px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: #F2A23C;">ASH</span>
     <span style="width: 34px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: #4FC0E6;">CHA</span>
   </div>
 
   <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 7px; padding: 0 18px; min-height: 0; overflow: hidden;">
     <sc-for list="{{cards}}" as="c" hint-placeholder-count="6">
-      <div style="display: flex; gap: 0; align-items: stretch;">
+      <div style="display: flex; gap: 0; align-items: stretch; animation: {{c.anim}};">
         <div style="width: 54px; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-top: 10px;">
           <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: {{c.gutterColor}};">{{c.gutter}}</span>
           <div style="width: 1px; flex-grow: 1; background: #2A2720; margin-left: 4px;"></div>
@@ -89,8 +91,13 @@
   </div>
 
   <div style="flex-shrink: 0; border-top: 1px solid #2C2822; background: #16140F; padding: 12px 18px 28px 18px; display: flex; gap: 9px;">
-    <a href="Phone-Battle.dc.html" style="flex-grow: 1; text-align: center; text-decoration: none; background: none; border: 1px solid #4A453C; color: #F2ECDD; font-size: 14px; padding: 14px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">Watch it beat by beat</a>
-    <a href="Phone-Result.dc.html" style="flex-grow: 1; text-align: center; text-decoration: none; background: #F2ECDD; color: #100F0C; font-size: 14px; font-weight: 600; padding: 14px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">The reckoning</a>
+    <button type="button" onClick="{{replay}}" style="flex-shrink: 0; width: 84px; background: none; border: 1px solid #4A453C; color: #B3AC9C; font-size: 13px; padding: 14px 0; border-radius: 3px; min-height: 44px;">Replay</button>
+    <sc-if value="{{playing}}" hint-placeholder-val="{{true}}">
+      <button type="button" onClick="{{next}}" style="flex-grow: 1; background: #F2ECDD; border: 1px solid #F2ECDD; color: #100F0C; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 3px; min-height: 44px;">{{nextLabel}}</button>
+    </sc-if>
+    <sc-if value="{{done}}" hint-placeholder-val="{{true}}">
+      <a href="Phone-Result.dc.html" style="flex-grow: 1; text-align: center; text-decoration: none; background: #F2ECDD; border: 1px solid #F2ECDD; color: #100F0C; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">See where you ranked</a>
+    </sc-if>
   </div>
 
 </div>
@@ -144,7 +151,12 @@ class Component extends DCLogic {
       every[5]
     ];
 
-    const cards = mode === 'key' ? keyList : every;
+    const list = mode === 'key' ? keyList : every;
+    const shown = Math.min(st.shown === undefined ? list.length : st.shown, list.length);
+    if (shown >= list.length && this.timer) { clearInterval(this.timer); this.timer = null; }
+    const cards = list.slice(0, shown).reverse().map((c, i) => Object.assign({}, c, { anim: i === 0 ? 'wdenter 320ms cubic-bezier(0.2, 0.7, 0.2, 1)' : 'none' }));
+    const last = shown > 0 ? list[shown - 1] : null;
+    const mA = last ? last.a : '0.00', mB = last ? last.b : '0.00';
 
     return {
       accent: accent,
@@ -153,7 +165,12 @@ class Component extends DCLogic {
         { label: 'Every beat', bg: mode === 'every' ? '#2A2419' : 'transparent', color: mode === 'every' ? '#F2ECDD' : '#9A9384', pick: () => this.setState({ mode: 'every' }) }
       ],
       listHint: mode === 'key' ? 'WHAT DECIDED IT' : 'ALL THREE FRONTS, EVERY ROUND',
-      cards: cards
+      cards: cards,
+      moraleA: mA, moraleB: mB, moraleBColor: parseFloat(mB) >= 0.8 ? '#D9724F' : '#4FC0E6',
+      playing: shown < list.length, done: shown >= list.length,
+      nextLabel: shown === 0 ? 'Begin' : 'Next beat',
+      next: () => { if (this.timer) { clearInterval(this.timer); this.timer = null; } this.setState({ shown: shown + 1 }); },
+      replay: () => this.start()
     };
   }
 }
