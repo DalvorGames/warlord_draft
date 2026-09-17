@@ -4,7 +4,7 @@ import { cultureShort, cultureTraitId, isElite, traitDef, ROMAN, WING_CLASSES } 
 
 export type Consequence = { text: string; tone: "culture" | "bone" | "faint" | "bad"; disabled: boolean; note: { title: string; text: string } | null };
 
-const pickedUnits = (engine: Engine, state: DraftState): Unit[] => state.rows.filter((r) => r.pick !== null).map((r) => engine.data.unitById.get(r.cards[r.pick!].unitId)!);
+const pickedUnits = (engine: Engine, state: DraftState, except?: number): Unit[] => state.rows.filter((r, i) => r.pick !== null && i !== except).map((r) => engine.data.unitById.get(r.cards[r.pick!].unitId)!);
 const general = (engine: Engine, state: DraftState) => (state.generalIndex === null ? null : engine.data.generalById.get(state.generalPool[state.generalIndex])!);
 
 /** The consequence line under card `card` of row `row` (v3 §4.1), with the note a tap opens. */
@@ -35,14 +35,14 @@ export function consequenceLine(engine: Engine, state: DraftState, row: number, 
   return { text: `${culture} ${after} OF ${t1} · ${t1 - after} MORE FOR ${trait.name.toUpperCase()}`, tone: "faint", disabled: false, note: note(trait.name, `${trait.text} ${culture.charAt(0) + culture.slice(1).toLowerCase()} at ${t1} units wakes it; the general counts as one.`) };
 }
 
-/** Which two stats a row makes loud (v3 §4.2), and why. */
+/** Which two stats a row makes loud (v3 §4.2), and why. A flex row reads the army without its own pick, so the pair holds still while you choose. */
 export function loudStats(engine: Engine, state: DraftState, row: number): { keys: [StatKey, StatKey]; hint: string } {
   const slot = state.rows[row].slot;
   if (slot === "line") return { keys: ["melee", "discipline"], hint: "FIGHT and STEADY decide a line row. Tap a stat for what it means." };
   if (slot === "shock") return { keys: ["shock", "melee"], hint: "CHARGE and FIGHT decide a shock row. Tap a stat for what it means." };
   if (slot === "cavalry") return { keys: ["mobility", "melee"], hint: "SPEED and FIGHT decide a cavalry row. Tap a stat for what it means." };
   if (slot === "ranged") return { keys: ["ranged", "mobility"], hint: "SHOOT and SPEED decide a ranged row. Tap a stat for what it means." };
-  const picked = pickedUnits(engine, state);
+  const picked = pickedUnits(engine, state, row);
   const shooters = picked.filter((u) => u.class === "ranged" || u.stats.ranged >= 50).length;
   const wings = picked.filter((u) => WING_CLASSES.has(u.class) && u.class !== "ranged").length;
   const center = picked.filter((u) => !WING_CLASSES.has(u.class)).length;
