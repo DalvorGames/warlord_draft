@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #14130F; }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: #E08A5F; }
+    @keyframes wdstep {
+      0% { opacity: 0; transform: translateY(12px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #14130F; color: #EDE7D8; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 0 10px 0 6px; height: 52px; flex-shrink: 0;">
+    <a href="Phone-Deploy.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #A39B89; font-size: 20px; text-decoration: none;">&larr;</a>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: #A39B89;">{{counter}}</span>
+    <a href="Phone-Result.dc.html" style="min-width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #6F6858; font-size: 13px; text-decoration: none; padding: 0 8px;">Skip</a>
+  </header>
+
+  <div style="display: flex; gap: 4px; padding: 0 18px 12px 18px; flex-shrink: 0;">
+    <sc-for list="{{dots}}" as="d" hint-placeholder-count="7">
+      <div style="flex-grow: 1; height: 3px; background: {{d.color}}; border-radius: 1px;"></div>
+    </sc-for>
+  </div>
+
+  <div style="padding: 0 18px 10px 18px; flex-shrink: 0; display: flex; flex-direction: column; gap: 7px;">
+    <sc-for list="{{morale}}" as="m" hint-placeholder-count="2">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 12px; width: 72px; color: {{m.nameColor}};">{{m.name}}</span>
+        <div style="flex-grow: 1; height: 8px; background: #262218; border: 1px solid #2E2A23; border-radius: 2px; position: relative;">
+          <div style="height: 8px; width: {{m.pct}}; background: {{m.fill}}; transition: width 700ms ease, background 400ms ease;"></div>
+          <div style="position: absolute; left: 80%; top: -3px; width: 1px; height: 14px; background: #6F6858;"></div>
+        </div>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; width: 34px; text-align: right; color: {{m.fill}};">{{m.label}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="padding: 0 18px 12px 18px; flex-shrink: 0; display: flex; gap: 6px;">
+    <sc-for list="{{fronts}}" as="f" hint-placeholder-count="3">
+      <div style="flex-grow: 1; flex-basis: 0; background: #1C1A15; border: 1px solid {{f.edge}}; border-radius: 3px; padding: 7px 8px; display: flex; flex-direction: column; gap: 5px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.08em; color: {{f.labelColor}};">{{f.label}}</span>
+        <div style="display: flex; flex-direction: column; gap: 3px;">
+          <div style="height: 4px; background: #262218; border-radius: 1px;"><div style="height: 4px; width: {{f.youPct}}; background: {{f.youFill}}; border-radius: 1px; transition: width 700ms ease, background 400ms ease;"></div></div>
+          <div style="height: 4px; background: #262218; border-radius: 1px;"><div style="height: 4px; width: {{f.hisPct}}; background: {{f.hisFill}}; border-radius: 1px; transition: width 700ms ease, background 400ms ease;"></div></div>
+        </div>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: {{f.stateColor}};">{{f.state}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 9px; padding: 0 18px; min-height: 0; overflow: hidden;">
+
+    <sc-if value="{{showStage}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 9px; animation: wdstep 240ms ease-out 1; min-height: 0;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: {{accent}};">{{stageLabel}}</span>
+          <p style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 19px; line-height: 1.3; color: #EDE7D8; text-wrap: pretty;">{{narration}}</p>
+        </div>
+
+        <sc-for list="{{contests}}" as="c" hint-placeholder-count="3">
+          <div style="background: #1C1A15; border: 1px solid #35312A; border-left: 3px solid {{c.mark}}; border-radius: 3px; padding: 9px 11px; display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #A39B89;">{{c.pair}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: {{c.tagColor}};">{{c.tag}}</span>
+            </div>
+            <sc-for list="{{c.sides}}" as="s" hint-placeholder-count="2">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="flex-grow: 1; height: 7px; background: #262218; border-radius: 1px;">
+                  <div style="height: 7px; width: {{s.pct}}; background: {{s.fill}}; border-radius: 1px; transition: width 600ms ease;"></div>
+                </div>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; width: 46px; text-align: right; color: #6F6858;">{{s.score}}</span>
+              </div>
+            </sc-for>
+            <span style="font-size: 11px; color: #8A8271; line-height: 1.35;">{{c.who}}</span>
+          </div>
+        </sc-for>
+
+        <sc-for list="{{events}}" as="ev" hint-placeholder-count="1">
+          <div style="background: #2A1C15; border: 1px solid #6E3620; border-radius: 3px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.14em; color: #D9724F;">{{ev.tag}}</span>
+            <span style="font-size: 12px; color: #EDE7D8; line-height: 1.4;">{{ev.text}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{showResult}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 12px; animation: wdstep 240ms ease-out 1;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #C9A227;">THE FIELD IS YOURS</span>
+        <h2 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; font-weight: 400; line-height: 1.14;">Both wings came back in, and his centre had nothing left to turn to.</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+          <sc-for list="{{outcome}}" as="o" hint-placeholder-count="4">
+            <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 3px; padding: 9px 11px; display: flex; flex-direction: column; gap: 3px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.1em; color: #6F6858;">{{o.k}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 16px; color: {{o.color}};">{{o.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="flex-grow: 1;"></div>
+
+  </div>
+
+  <div style="flex-shrink: 0; border-top: 1px solid #2E2A23; background: #1A1813; padding: 12px 18px 28px 18px; display: flex; gap: 9px;">
+    <button type="button" onClick="{{back}}" aria-label="Previous step" style="width: 56px; background: none; border: 1px solid #3D382F; color: {{backColor}}; font-size: 16px; border-radius: 3px; min-height: 48px;">&larr;</button>
+    <button type="button" onClick="{{play}}" style="width: 96px; background: none; border: 1px solid #3D382F; color: #EDE7D8; font-size: 13px; border-radius: 3px; min-height: 48px;">{{playLabel}}</button>
+    <sc-if value="{{atEnd}}" hint-placeholder-val="{{true}}">
+      <a href="Phone-Result.dc.html" style="flex-grow: 1; display: flex; align-items: center; justify-content: center; text-decoration: none; background: #A8401F; color: #F5EFE3; font-size: 15px; font-weight: 600; border-radius: 3px; min-height: 48px;">See the recap</a>
+    </sc-if>
+    <sc-if value="{{notEnd}}" hint-placeholder-val="{{true}}">
+      <button type="button" onClick="{{next}}" style="flex-grow: 1; background: #A8401F; border: 1px solid #A8401F; color: #F5EFE3; font-size: 15px; font-weight: 600; border-radius: 3px; min-height: 48px;">Next</button>
+    </sc-if>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#C4562E","options":["#C4562E","#C9A227","#7D8C5C","#8A6FA8"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+
+  componentWillUnmount() {
+    if (this.timer) clearInterval(this.timer);
+  }
+
+  log() {
+    const c = (fa, fb, sa, sb, edge, win, da, db, who) => ({ fa: fa, fb: fb, sa: sa, sb: sb, edge: edge, win: win, da: da, db: db, who: who });
+    return [
+      {
+        title: 'Skirmish', blurb: 'Everything with a bow shoots the front opposite it.',
+        line: 'Your longbows open on both his wings and find nothing shooting back. In the centre it runs the other way: his crossbows and Mardian archers pour it into a line you brought no bows to.',
+        contests: [
+          c('L', 'R', 54.1, 0.0, 0.600, 'A', 0.120, 0.480, 'Your longbows, and nothing shooting back.'),
+          c('C', 'C', 0.0, 65.5, 0.600, 'B', 0.480, 0.120, 'His crossbows and Mardian archers, into a centre that brought none.'),
+          c('R', 'L', 51.1, 0.0, 0.600, 'A', 0.120, 0.480, 'The same again on the other wing.')
+        ],
+        events: [], mA: 0.300, mB: 0.221
+      },
+      {
+        title: 'Contact', blurb: 'All three pairs clash at once. Lose by more than 0.25 and that front is shaken all day.',
+        line: 'The lines meet. Persian Heavy Cavalry win the left, the Kshatriya horse win the right, and the centres come out almost even. Nobody is shaken.',
+        contests: [
+          c('L', 'R', 140.0, 114.8, 0.180, 'A', 0.045, 0.180, 'Persian Heavy Cavalry against his Kshatriya horse.'),
+          c('C', 'C', 328.4, 305.0, 0.071, 'A', 0.018, 0.071, 'Near enough even — nobody is shaken.'),
+          c('R', 'L', 130.2, 112.0, 0.139, 'A', 0.035, 0.139, 'His Gallic nobles hit hard and still lose it.')
+        ],
+        events: [], mA: 0.330, mB: 0.318
+      },
+      {
+        title: 'The press, round 1', blurb: 'Centres grind. Wings fight the cavalry fight, where your general’s tactics multiply.',
+        line: 'Six against four in the centre starts to tell, and your Wei Wuzu and Triarii give ground. Out on the wings your horse is winning, slowly.',
+        contests: [
+          c('L', 'R', 153.1, 91.2, 0.404, 'A', 0.056, 0.222, 'Your left pulls away.'),
+          c('C', 'C', 544.5, 718.4, 0.242, 'B', 0.121, 0.030, 'Six against four in the centre tells.'),
+          c('R', 'L', 121.4, 107.5, 0.114, 'A', 0.016, 0.063, 'Your right grinds forward.')
+        ],
+        events: [], mA: 0.408, mB: 0.380
+      },
+      {
+        title: 'The press, round 2', blurb: 'Damage builds against each front’s own cohesion. Nothing has given way yet.',
+        line: 'The centres trade blow for blow and come out level. On your right the Gallic nobles are being worn down; his left is close to done.',
+        contests: [
+          c('L', 'R', 121.1, 113.3, 0.064, 'A', 0.009, 0.035, 'A quiet round on the left.'),
+          c('C', 'C', 572.4, 570.5, 0.003, 'A', 0.000, 0.002, 'The centres come out level.'),
+          c('R', 'L', 142.1, 76.8, 0.459, 'A', 0.063, 0.253, 'His left is nearly done.')
+        ],
+        events: [], mA: 0.427, mB: 0.419
+      },
+      {
+        title: 'The press, round 3', blurb: 'Fronts past their cohesion break at the end of the round.',
+        line: 'Both his wings go in the same round. Gallic and Kshatriya horse leave the field, and your two wings are free. Your centre is at four fifths of its cohesion, and holding.',
+        contests: [
+          c('L', 'R', 136.1, 100.2, 0.263, 'A', 0.036, 0.145, 'Your left finishes his right.'),
+          c('C', 'C', 523.9, 689.6, 0.240, 'B', 0.120, 0.030, 'Your centre is at four fifths and holding.'),
+          c('R', 'L', 167.1, 91.1, 0.455, 'A', 0.063, 0.250, 'Your right finishes his left.')
+        ],
+        events: [{ tag: 'BOTH HIS WINGS BREAK', text: 'His Gallic and Kshatriya horse leave the field. Both of your wings are free.' }],
+        mA: 0.513, mB: 0.645
+      },
+      {
+        title: 'Rolling up', blurb: 'A free wing charges the enemy centre’s side. Only what can turn to face it resists.',
+        line: 'Two free wings wheel inward. Your right is held but marks his centre flanked; your left lands. Carrying two broken wings and two flank marks, Chabrias’s centre folds and the army routs.',
+        contests: [
+          c('L', 'C', 137.4, 125.6, 0.085, 'A', 0.000, 0.075, 'Your left wheels in and lands.'),
+          c('R', 'C', 97.5, 142.1, 0.000, 'B', 0.000, 0.000, 'Your right is held — and still marks his centre as flanked.'),
+          c('C', 'C', 1328.0, 498.2, 0.600, 'A', 0.075, 0.300, 'With both flanks marked, the centre folds.')
+        ],
+        events: [{ tag: 'CHABRIAS ROUTS', text: 'Past 0.80. A centre carrying two broken wings and two flank marks has nowhere to stand.' }],
+        mA: 0.549, mB: 0.934
+      }
+    ];
+  }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#C4562E';
+    const st = this.state || {};
+    const steps = this.log();
+    const last = steps.length;
+    const step = st.step === undefined ? 0 : st.step;
+    const playing = !!st.playing;
+    const mine = '#C9A227';
+    const theirs = '#7E93A8';
+    const atResult = step >= last;
+
+    const setStep = (i) => this.setState({ step: Math.max(0, Math.min(last, i)) });
+
+    const toggle = () => {
+      if (this.timer) { clearInterval(this.timer); this.timer = null; this.setState({ playing: false }); return; }
+      this.setState({ playing: true });
+      this.timer = setInterval(() => {
+        this.setState((s) => {
+          const at = (s && s.step) || 0;
+          if (at >= last) { clearInterval(this.timer); this.timer = null; return { playing: false }; }
+          return { step: at + 1 };
+        });
+      }, 1600);
+    };
+
+    const thr = { A: { L: 0.9518, C: 1.0152, R: 0.9422 }, B: { L: 0.9455, C: 0.9743, R: 0.9262 } };
+    const dmg = { A: { L: 0, C: 0, R: 0 }, B: { L: 0, C: 0, R: 0 } };
+    const shown = Math.min(step, last - 1);
+    for (let i = 0; i <= shown; i++) {
+      for (const c of steps[i].contests) { dmg.A[c.fa] += c.da; dmg.B[c.fb] += c.db; }
+    }
+    const brokeB = step >= 4;
+
+    const pairs = [
+      { label: 'L — HIS R', a: 'L', b: 'R' },
+      { label: 'CENTRES', a: 'C', b: 'C' },
+      { label: 'R — HIS L', a: 'R', b: 'L' }
+    ];
+
+    const fronts = pairs.map((p) => {
+      const you = dmg.A[p.a] / thr.A[p.a];
+      const his = dmg.B[p.b] / thr.B[p.b];
+      const broke = brokeB && p.b !== 'C';
+      return {
+        label: p.label,
+        labelColor: broke ? '#D9724F' : '#8A8271',
+        youPct: Math.min(100, you * 100).toFixed(0) + '%',
+        youFill: you > 0.8 ? '#D9724F' : mine,
+        hisPct: Math.min(100, his * 100).toFixed(0) + '%',
+        hisFill: broke ? '#D9724F' : theirs,
+        state: broke ? 'HIS BROKE' : 'HOLDING',
+        stateColor: broke ? '#D9724F' : '#5C5749',
+        edge: broke ? '#4A3225' : '#35312A'
+      };
+    });
+
+    const cur = steps[Math.min(step, last - 1)];
+    const contests = cur.contests.map((c) => {
+      const max = Math.max(c.sa, c.sb, 1);
+      return {
+        pair: c.fa === 'C' && c.fb === 'C' ? 'THE CENTRES' : (c.fa === 'L' ? 'YOUR LEFT' : 'YOUR RIGHT') + ' — ' + (c.fb === 'C' ? 'HIS CENTRE' : c.fb === 'R' ? 'HIS RIGHT' : 'HIS LEFT'),
+        tag: c.edge === 0 ? 'HELD' : (c.win === 'A' ? 'YOURS BY ' : 'HIS BY ') + Math.round(c.edge * 100) + '%',
+        tagColor: c.edge === 0 ? '#8A8271' : (c.win === 'A' ? mine : theirs),
+        mark: c.edge === 0 ? '#35312A' : (c.win === 'A' ? '#7A6420' : '#3E4E5C'),
+        who: c.who,
+        sides: [
+          { score: c.sa.toFixed(1), pct: (c.sa / max * 100).toFixed(0) + '%', fill: mine },
+          { score: c.sb.toFixed(1), pct: (c.sb / max * 100).toFixed(0) + '%', fill: theirs }
+        ]
+      };
+    });
+
+    const mA = atResult ? 0.549 : cur.mA;
+    const mB = atResult ? 0.934 : cur.mB;
+
+    return {
+      accent: accent,
+      counter: atResult ? 'THE RECKONING' : (step + 1) + ' OF ' + (last + 1),
+      dots: steps.map((s, i) => ({ color: i < step ? '#C9A227' : (i === step ? accent : '#2E2A23') }))
+        .concat([{ color: atResult ? accent : '#2E2A23' }]),
+      morale: [
+        { name: 'Ashoka', nameColor: '#EDE7D8', pct: Math.min(100, mA * 100).toFixed(0) + '%', label: mA.toFixed(2), fill: mA >= 0.8 ? '#D9724F' : mine },
+        { name: 'Chabrias', nameColor: '#EDE7D8', pct: Math.min(100, mB * 100).toFixed(0) + '%', label: mB.toFixed(2), fill: mB >= 0.8 ? '#D9724F' : theirs }
+      ],
+      fronts: fronts,
+      showStage: !atResult,
+      showResult: atResult,
+      stageTitle: cur.title,
+      stageLabel: cur.title.toUpperCase(),
+      narration: cur.line,
+      stageBlurb: cur.blurb,
+      contests: contests,
+      events: atResult ? [] : cur.events,
+      outcome: [
+        { k: 'ENDED AT', v: 'Press 4', color: '#EDE7D8' },
+        { k: 'HIS MORALE', v: '0.93', color: '#D9724F' },
+        { k: 'YOUR LOSSES', v: '11%', color: '#C9A227' },
+        { k: 'HIS LOSSES', v: '35%', color: '#D9724F' }
+      ],
+      back: () => setStep(step - 1),
+      next: () => setStep(step + 1),
+      play: toggle,
+      playLabel: playing ? 'Pause' : 'Play',
+      backColor: step === 0 ? '#5C5749' : '#EDE7D8',
+      atEnd: atResult,
+      notEnd: !atResult
+    };
+  }
+}
+</script>
+</body>
+</html>

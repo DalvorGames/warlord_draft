@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #14130F; }
+    a { color: #E08A5F; } a:hover { color: #F0A87F; }
+    button { font-family: inherit; cursor: pointer; }
+  </style>
+</helmet>
+<div style="width: 1440px; height: 980px; box-sizing: border-box; background: #14130F; color: #EDE7D8; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; border-bottom: 1px solid #2E2A23; flex-shrink: 0;">
+    <a href="Main.dc.html" style="font-family: 'Instrument Serif', Georgia, serif; font-size: 22px; color: #EDE7D8; text-decoration: none;">Warlord Draft</a>
+    <div style="display: flex; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em;">
+      <a href="GeneralPick.dc.html" style="color: #8A8271; padding: 6px 16px; text-decoration: none;">1 GENERAL</a>
+      <a href="Draft.dc.html" style="color: #8A8271; padding: 6px 16px; text-decoration: none;">2 DRAFT</a>
+      <span style="color: #EDE7D8; padding: 6px 16px; border-bottom: 2px solid {{accent}};">3 DEPLOY</span>
+      <a href="Battle.dc.html" style="color: #6F6858; padding: 6px 16px; text-decoration: none;">4 BATTLE</a>
+    </div>
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8271;">SEED 1147 &middot; PLAINS</div>
+  </header>
+
+  <div style="flex-grow: 1; display: flex; gap: 24px; padding: 20px 32px 24px 32px; min-height: 0;">
+
+    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 13px; min-width: 0;">
+
+      <div style="display: flex; align-items: flex-end; justify-content: space-between;">
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 32px; font-weight: 400;">Where do they stand?</h1>
+          <span style="font-size: 13px; color: #A39B89;">You have his roster. You do not have his deployment, and he does not have yours. Drag a unit onto a front, or take one up and place it.</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button type="button" onClick="{{autoDeploy}}" style="background: none; border: 1px solid #3D382F; color: #A39B89; font-size: 12px; padding: 8px 13px; border-radius: 2px;">Standard order</button>
+          <button type="button" onClick="{{clearAll}}" style="background: none; border: 1px solid #3D382F; color: #A39B89; font-size: 12px; padding: 8px 13px; border-radius: 2px;">Clear</button>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 14px;">
+        <sc-for list="{{enemyFronts}}" as="e" hint-placeholder-count="3">
+          <div style="flex-grow: {{e.grow}}; flex-basis: 0; min-width: 0; background: #191712; border: 1px dashed #322E27; border-radius: 3px; padding: 12px 14px; display: flex; flex-direction: column; gap: 7px;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #6F6858;">{{e.label}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #4E4A3F;">HIDDEN</span>
+            </div>
+            <div style="display: flex; gap: 5px;">
+              <sc-for list="{{e.marks}}" as="m" hint-placeholder-count="8">
+                <div style="width: 20px; height: 26px; border: 1px solid #2E2A23; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4E4A3F;">?</div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div style="flex-grow: 1; height: 1px; background: #2E2A23;"></div>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: #8A8271;">PLAINS &middot; WINGS x1.10</span>
+        <div style="flex-grow: 1; height: 1px; background: #2E2A23;"></div>
+      </div>
+
+      <div style="display: flex; gap: 14px; flex-grow: 1; min-height: 0;">
+        <sc-for list="{{fronts}}" as="f" hint-placeholder-count="3">
+          <div onDragOver="{{f.over}}" onDrop="{{f.drop}}" style="flex-grow: {{f.grow}}; flex-basis: 0; min-width: 0; background: {{f.bg}}; border: 1px solid {{f.edge}}; border-radius: 3px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.18em; color: #EDE7D8;">{{f.label}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #6F6858;">{{f.faces}}</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 7px; flex-grow: 1;">
+              <sc-for list="{{f.units}}" as="u" hint-placeholder-count="3">
+                <button type="button" draggable="true" onDragStart="{{u.lift}}" onClick="{{u.lift}}" style="text-align: left; background: {{u.bg}}; border: 1px solid {{u.edge}}; border-radius: 2px; padding: 9px 11px; display: flex; align-items: center; gap: 9px; min-height: 44px; box-sizing: border-box;">
+                  <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; background: {{u.gradeBg}}; color: {{u.gradeText}}; border: 1px solid {{u.gradeEdge}}; border-radius: 2px; padding: 1px 5px;">{{u.grade}}</span>
+                  <span style="flex-grow: 1; min-width: 0; font-size: 13px; color: #EDE7D8; line-height: 1.2;">{{u.name}}</span>
+                  <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: {{u.classColor}}; border: 1px solid {{u.classEdge}}; border-radius: 2px; padding: 1px 5px;">{{u.klass}}</span>
+                  <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8271; width: 34px; text-align: right;">{{u.dis}}</span>
+                </button>
+              </sc-for>
+              <sc-if value="{{f.empty}}" hint-placeholder-val="{{true}}">
+                <div style="flex-grow: 1; border: 1px dashed #4A3228; border-radius: 2px; display: flex; align-items: center; justify-content: center; padding: 14px; text-align: center; min-height: 80px;">
+                  <span style="font-size: 12px; color: #D9724F; line-height: 1.45;">{{f.emptyNote}}</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{f.canPlace}}" hint-placeholder-val="{{true}}">
+                <button type="button" onClick="{{f.place}}" style="background: #2A2419; border: 1px dashed {{accent}}; color: #EDE7D8; font-size: 13px; font-weight: 500; padding: 13px; border-radius: 2px; min-height: 44px;">{{f.placeLabel}}</button>
+              </sc-if>
+            </div>
+
+            <div style="display: flex; align-items: baseline; justify-content: space-between; padding-top: 10px; border-top: 1px solid #2A2720;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: #6F6858;">{{f.count}}</span>
+              <div style="display: flex; align-items: baseline; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #6F6858;">{{f.disLabel}}</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: {{f.cohColor}};">{{f.cohWord}}</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8271;">{{f.cohNum}}</span>
+              </div>
+            </div>
+
+          </div>
+        </sc-for>
+      </div>
+
+      <div onDragOver="{{trayOver}}" onDrop="{{trayDrop}}" style="background: #191712; border: 1px solid #2E2A23; border-radius: 3px; padding: 12px 14px; display: flex; flex-direction: column; gap: 9px; flex-shrink: 0;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">NOT YET PLACED</span>
+          <span style="font-size: 11px; color: {{hintColor}};">{{trayHint}}</span>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; min-height: 44px; align-items: center;">
+          <sc-for list="{{tray}}" as="u" hint-placeholder-count="2">
+            <button type="button" draggable="true" onDragStart="{{u.lift}}" onClick="{{u.lift}}" style="text-align: left; background: {{u.bg}}; border: 1px solid {{u.edge}}; border-radius: 2px; padding: 8px 11px; display: flex; align-items: center; gap: 9px; min-height: 44px; box-sizing: border-box;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; background: {{u.gradeBg}}; color: {{u.gradeText}}; border: 1px solid {{u.gradeEdge}}; border-radius: 2px; padding: 1px 5px;">{{u.grade}}</span>
+              <span style="font-size: 13px; color: #EDE7D8;">{{u.name}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: {{u.classColor}}; border: 1px solid {{u.classEdge}}; border-radius: 2px; padding: 1px 5px;">{{u.klass}}</span>
+            </button>
+          </sc-for>
+          <sc-if value="{{trayEmpty}}" hint-placeholder-val="{{true}}">
+            <span style="font-size: 12px; color: #6F6858; padding: 0 4px;">All eight are on the line.</span>
+          </sc-if>
+          <sc-if value="{{canUnplace}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{trayDrop}}" style="background: none; border: 1px dashed #454036; color: #A39B89; font-size: 12px; padding: 12px 14px; border-radius: 2px; min-height: 44px;">Take off the line</button>
+          </sc-if>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 13px;">
+
+      <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 3px; padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">WHAT CHABRIAS BRINGS</div>
+        <div style="font-size: 12px; color: #A39B89;">Greek City-States &middot; tactics 75</div>
+        <sc-for list="{{enemy}}" as="e" hint-placeholder-count="8">
+          <div style="display: flex; align-items: center; gap: 9px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; width: 18px; text-align: center; background: {{e.gradeBg}}; color: {{e.gradeText}}; border: 1px solid {{e.gradeEdge}}; border-radius: 2px;">{{e.grade}}</span>
+            <span style="font-size: 12px; flex-grow: 1; min-width: 0; color: #C4BDAC;">{{e.name}}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.06em; color: {{e.classColor}};">{{e.klass}}</span>
+          </div>
+        </sc-for>
+        <div style="font-size: 12px; color: #C9A227; line-height: 1.45; padding-top: 8px; border-top: 1px solid #2A2720;">Six that stand, two that ride. If he packs the centre, his wings are one unit each &mdash; and your longbows shoot whatever is opposite them.</div>
+      </div>
+
+      <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 3px; padding: 18px; display: flex; flex-direction: column; gap: 11px;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">DOCTRINE &middot; PICK NOW YOU HAVE SEEN HIM</div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px;">
+          <sc-for list="{{plans}}" as="p" hint-placeholder-count="4">
+            <button type="button" onClick="{{p.pick}}" style="background: {{p.bg}}; border: 1px solid {{p.edge}}; color: {{p.text}}; font-size: 12px; padding: 9px 6px; border-radius: 2px; min-height: 36px;">{{p.name}}</button>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 5px; padding-top: 4px;">
+          <sc-for list="{{planLines}}" as="p" hint-placeholder-count="5">
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <span style="font-size: 12px; color: #A39B89;">{{p.k}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{p.color}};">{{p.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size: 11px; color: {{planNoteColor}}; line-height: 1.45;">{{planNote}}</div>
+      </div>
+
+      <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 3px; padding: 18px; display: flex; flex-direction: column; gap: 9px;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">IF A FRONT GIVES WAY</div>
+        <sc-for list="{{shockLines}}" as="s" hint-placeholder-count="3">
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <span style="font-size: 12px; color: #A39B89;">{{s.k}}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{s.color}};">{{s.v}}</span>
+          </div>
+        </sc-for>
+        <div style="font-size: 11px; color: #6F6858; line-height: 1.45; padding-top: 4px;">The army routs at 0.80. A broken centre puts you at 0.75 on its own.</div>
+      </div>
+
+      <div style="flex-grow: 1;"></div>
+
+      <a href="Battle.dc.html" style="display: block; text-align: center; text-decoration: none; background: {{ctaBg}}; border: 1px solid {{ctaEdge}}; color: {{ctaText}}; font-size: 16px; font-weight: 600; padding: 16px; border-radius: 2px;">{{ctaLabel}}</a>
+
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#C4562E","options":["#C4562E","#C9A227","#7D8C5C","#8A6FA8"]},"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+
+  roster() {
+    // The eight taken on draft seed 1147, with discipline as it stands on plains (cavalry x1.05).
+    return [
+      { name: 'Triarii', klass: 'line', grade: 'B', dis: 90, home: 'C' },
+      { name: 'Wei Wuzu (Armored Infantry)', klass: 'line', grade: 'S', dis: 85, home: 'C' },
+      { name: 'Kshatriya Swordsmen', klass: 'shock', grade: 'B', dis: 65, home: 'C' },
+      { name: 'Kshatriya Swordsmen', klass: 'shock', grade: 'B', dis: 65, home: 'C' },
+      { name: 'Persian Heavy Cavalry', klass: 'cavalry', grade: 'B', dis: 63, home: 'L' },
+      { name: 'Kshatriya Noble Cavalry', klass: 'cavalry', grade: 'B', dis: 57.75, home: 'R' },
+      { name: 'Indian Longbowmen', klass: 'ranged', grade: 'B', dis: 55, home: 'L' },
+      { name: 'Indian Longbowmen', klass: 'ranged', grade: 'B', dis: 55, home: 'R' }
+    ];
+  }
+
+  plans() {
+    // rules.fronts.plans, as shipped.
+    return {
+      Aggressive:  { skirmish: 0.9, contact: 1.15, steadiness: 0.9, center: 1.0, wing: 1.0, morale: 0.95 },
+      Defensive:   { skirmish: 1.0, contact: 0.9, steadiness: 1.1, center: 1.05, wing: 0.9, morale: 1.05 },
+      Envelopment: { skirmish: 1.0, contact: 1.05, steadiness: 0.95, center: 0.9, wing: 1.25, morale: 1.0 },
+      Skirmish:    { skirmish: 1.3, contact: 0.95, steadiness: 1.0, center: 0.95, wing: 1.1, morale: 1.0 }
+    };
+  }
+
+  gradeStyle(g) {
+    if (g === 'S') return { gradeBg: '#C9A227', gradeText: '#14130F', gradeEdge: '#C9A227' };
+    if (g === 'A') return { gradeBg: '#D8CBAE', gradeText: '#14130F', gradeEdge: '#D8CBAE' };
+    if (g === 'B') return { gradeBg: '#9C9686', gradeText: '#14130F', gradeEdge: '#9C9686' };
+    return { gradeBg: 'transparent', gradeText: '#B8B1A0', gradeEdge: '#5F5949' };
+  }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#C4562E';
+    const st = this.state || {};
+    const roster = this.roster();
+    const placed = st.placed || roster.map((u) => u.home);
+    const held = st.held === undefined ? null : st.held;
+    const plan = st.plan || 'Defensive';
+    const P = this.plans()[plan];
+    const wingish = { cavalry: true, skirmish: true, special: true };
+    const CHARISMA = 75;
+    const STYLE_PLAN = 'Defensive';
+
+    const put = (target) => {
+      if (held === null) return;
+      const next = placed.slice();
+      next[held] = target;
+      this.setState({ placed: next, held: null });
+    };
+
+    const chip = (u, i) => Object.assign({
+      name: u.name,
+      grade: u.grade,
+      klass: u.klass.toUpperCase(),
+      classColor: wingish[u.klass] ? '#8FA9C4' : '#C4BDAC',
+      classEdge: wingish[u.klass] ? '#3F5062' : '#4A4538',
+      dis: 'DIS ' + Math.round(u.dis),
+      bg: held === i ? '#2A2419' : '#211E18',
+      edge: held === i ? accent : '#35312A',
+      lift: (ev) => {
+        if (ev && ev.stopPropagation) ev.stopPropagation();
+        this.setState({ held: held === i ? null : i });
+      }
+    }, this.gradeStyle(u.grade));
+
+    const frontDef = [
+      { id: 'L', label: 'LEFT', faces: 'FACES HIS RIGHT', grow: 1, emptyNote: 'An empty wing gives way at contact: 0.25 of the army on the spot, and his right rolls into your centre.' },
+      { id: 'C', label: 'CENTRE', faces: 'FACES HIS CENTRE', grow: 1.5, emptyNote: 'An empty centre is the general standing alone: 0.40 on the spot.' },
+      { id: 'R', label: 'RIGHT', faces: 'FACES HIS LEFT', grow: 1, emptyNote: 'An empty wing gives way at contact: 0.25 of the army on the spot, and his left rolls into your centre.' }
+    ];
+
+    const word = (c) => (c >= 1.0 ? 'FIRM' : (c >= 0.92 ? 'STEADY' : 'BRITTLE'));
+    const wordColor = (c) => (c >= 1.0 ? '#C9A227' : (c >= 0.92 ? '#C4BDAC' : '#D9724F'));
+
+    const fronts = frontDef.map((f) => {
+      const idx = roster.map((u, i) => i).filter((i) => placed[i] === f.id);
+      const n = idx.length;
+      const avgDis = n ? idx.reduce((t, i) => t + roster[i].dis, 0) / n : 0;
+      const coh = n ? (0.55 + (avgDis / 100) * 0.35 + (CHARISMA / 100) * 0.2) * P.morale : 0;
+      const holdingElsewhere = held !== null && placed[held] !== f.id;
+      return {
+        label: f.label,
+        faces: f.faces,
+        grow: String(f.grow),
+        bg: holdingElsewhere ? '#1E1B15' : '#1C1A15',
+        edge: holdingElsewhere ? '#6B5636' : (n === 0 ? '#4A3228' : '#35312A'),
+        units: idx.map((i) => chip(roster[i], i)),
+        empty: n === 0 && !holdingElsewhere,
+        emptyNote: f.emptyNote,
+        canPlace: holdingElsewhere,
+        placeLabel: 'Place on the ' + f.label.toLowerCase(),
+        count: n === 1 ? '1 UNIT' : n + ' UNITS',
+        disLabel: n ? 'AVG DIS ' + avgDis.toFixed(1) : '—',
+        cohWord: n ? word(coh) : 'NOTHING HERE',
+        cohNum: n ? coh.toFixed(2) : '',
+        cohColor: n === 0 ? '#D9724F' : wordColor(coh),
+        over: (ev) => { if (ev && ev.preventDefault) ev.preventDefault(); },
+        drop: (ev) => { if (ev && ev.preventDefault) ev.preventDefault(); put(f.id); },
+        place: () => put(f.id)
+      };
+    });
+
+    const trayIdx = roster.map((u, i) => i).filter((i) => !placed[i]);
+    const allPlaced = trayIdx.length === 0;
+
+    const enemyRows = [
+      ['B', 'Epilektoi (Picked Hoplites)', 'line'],
+      ['C', 'Achaean Thureophoroi', 'line'],
+      ['A', 'Qi Technicians (Ji Ji)', 'shock'],
+      ['A', 'Principes', 'line'],
+      ['B', 'Heavy Crossbow Batteries', 'ranged'],
+      ['C', 'Mardian Archers', 'ranged'],
+      ['B', 'Gallic Noble Cavalry', 'cavalry'],
+      ['B', 'Kshatriya Noble Cavalry', 'cavalry']
+    ];
+
+    const mult = (v) => ({ v: 'x' + v.toFixed(2), color: v > 1 ? '#9DBA72' : (v < 1 ? '#D9724F' : '#A39B89') });
+    const planLines = [
+      Object.assign({ k: 'Skirmish' }, mult(P.skirmish)),
+      Object.assign({ k: 'Contact' }, mult(P.contact)),
+      Object.assign({ k: 'Steadiness' }, mult(P.steadiness)),
+      Object.assign({ k: 'Centre' }, mult(P.center)),
+      Object.assign({ k: 'Wings' }, mult(P.wing))
+    ];
+
+    const plans = Object.keys(this.plans()).map((name) => ({
+      name: name,
+      bg: name === plan ? '#2A2419' : 'transparent',
+      edge: name === plan ? accent : '#3D382F',
+      text: name === plan ? '#EDE7D8' : '#A39B89',
+      pick: () => this.setState({ plan: name })
+    }));
+
+    return {
+      accent: accent,
+      fronts: fronts,
+      tray: trayIdx.map((i) => chip(roster[i], i)),
+      trayEmpty: trayIdx.length === 0 && held === null,
+      canUnplace: held !== null && placed[held] !== null,
+      trayHint: held === null ? 'Take a unit up, then place it' : 'Holding ' + roster[held].name,
+      hintColor: held === null ? '#6F6858' : '#C9A227',
+      trayOver: (ev) => { if (ev && ev.preventDefault) ev.preventDefault(); },
+      trayDrop: (ev) => { if (ev && ev.preventDefault) ev.preventDefault(); put(null); },
+      autoDeploy: () => this.setState({ placed: this.roster().map((u) => u.home), held: null }),
+      clearAll: () => this.setState({ placed: this.roster().map(() => null), held: null }),
+      enemyFronts: [
+        { label: 'HIS RIGHT', grow: '1', marks: [{}, {}, {}] },
+        { label: 'HIS CENTRE', grow: '1.5', marks: [{}, {}, {}] },
+        { label: 'HIS LEFT', grow: '1', marks: [{}, {}] }
+      ],
+      enemy: enemyRows.map((r) => Object.assign({
+        grade: r[0], name: r[1], klass: r[2].toUpperCase(),
+        classColor: wingish[r[2]] ? '#8FA9C4' : '#8A8271'
+      }, this.gradeStyle(r[0]))),
+      plans: plans,
+      planLines: planLines,
+      planNote: plan === STYLE_PLAN
+        ? 'Matches Ashoka’s attrition style: a further +8% on every front.'
+        : 'Off Ashoka’s style. No style bonus, and every front’s cohesion moved with it.',
+      planNoteColor: plan === STYLE_PLAN ? '#C9A227' : '#8A8271',
+      shockLines: [
+        { k: 'A wing breaks', v: '+0.10', color: '#C4BDAC' },
+        { k: 'The centre breaks', v: '+0.25', color: '#D9724F' },
+        { k: 'An empty front gives way', v: '+0.15 of the army', color: '#D9724F' }
+      ],
+      ctaLabel: allPlaced ? 'Give battle' : trayIdx.length + ' still unplaced',
+      ctaBg: allPlaced ? '#A8401F' : '#26221A',
+      ctaEdge: allPlaced ? '#A8401F' : '#454036',
+      ctaText: allPlaced ? '#F5EFE3' : '#8A8271'
+    };
+  }
+}
+</script>
+</body>
+</html>

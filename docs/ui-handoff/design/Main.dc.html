@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #14130F; }
+    a { color: #E08A5F; } a:hover { color: #F0A87F; }
+    button { font-family: inherit; cursor: pointer; }
+  </style>
+</helmet>
+<div style="width: 1280px; height: 860px; box-sizing: border-box; background: #14130F; color: #EDE7D8; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 22px 48px; border-bottom: 1px solid #2E2A23;">
+    <div style="display: flex; align-items: baseline; gap: 14px;">
+      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 26px; letter-spacing: 0.01em;">Warlord Draft</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #8A8271;">ERA I</span>
+    </div>
+    <nav style="display: flex; align-items: center; gap: 28px;">
+      <a href="Draft.dc.html" style="font-size: 14px; color: #EDE7D8; text-decoration: none;">Draft</a>
+      <a href="#armies" style="font-size: 14px; color: #A39B89; text-decoration: none;">My armies</a>
+      <a href="#ladder" style="font-size: 14px; color: #A39B89; text-decoration: none;">Ladder</a>
+      <a href="#rules" style="font-size: 14px; color: #A39B89; text-decoration: none;">How it works</a>
+      <button type="button" style="background: none; border: 1px solid #454036; color: #EDE7D8; font-size: 13px; padding: 9px 18px; border-radius: 2px;">Sign in</button>
+    </nav>
+  </header>
+
+  <div style="flex-grow: 1; display: flex; gap: 56px; padding: 56px 48px 0 48px;">
+
+    <div style="width: 660px; display: flex; flex-direction: column; gap: 26px;">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: {{accent}};">ERA I &middot; THE CLASSICAL WORLD &middot; 400&ndash;200 BC</div>
+      <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 72px; line-height: 1.02; font-weight: 400; letter-spacing: -0.01em;">Draft an army out of<br>the ancient world.<br><span style="font-style: italic; color: #C9A227;">Then see if it holds.</span></h1>
+      <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #A39B89; max-width: 520px; text-wrap: pretty;">Eight slots. Each one rolls a culture and offers you four units out of it &mdash; take what you are given or spend a reroll. Then you set all eight on a left, a centre and a right, against a roster you can see and a deployment you cannot.</p>
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: 6px;">
+        <a href="GeneralPick.dc.html" style="background: #A8401F; color: #F5EFE3; text-decoration: none; font-size: 16px; font-weight: 600; padding: 17px 38px; border-radius: 2px; letter-spacing: 0.01em;">Start a run</a>
+        <a href="Battle.dc.html" style="color: #EDE7D8; text-decoration: none; font-size: 15px; padding: 17px 24px; border: 1px solid #454036; border-radius: 2px;">Watch a battle</a>
+      </div>
+      <div style="display: flex; align-items: flex-end; gap: 12px; margin-top: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <label for="runstring" style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">REPLAY A RUN STRING</label>
+          <input id="runstring" type="text" placeholder="v=2&amp;d=1147&amp;g=1&amp;p=2,3,2,1,0,3,3,0&amp;plan=defensive&amp;dep=CCCLRLRC" style="background: #1C1A15; border: 1px solid #35312A; color: #EDE7D8; font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 13px 14px; border-radius: 2px; width: 100%; box-sizing: border-box;">
+        </div>
+        <button type="button" style="background: none; border: 1px solid #454036; color: #EDE7D8; font-size: 13px; padding: 13px 22px; border-radius: 2px;">Replay</button>
+      </div>
+    </div>
+
+    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 18px;">
+      <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 3px; padding: 26px 26px 24px 26px; display: flex; flex-direction: column; gap: 18px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 24px;">Daily muster</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8271;">16 SEP</span>
+        </div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #A39B89;">Everyone drafts off the same board and fights the same opponent. One run, no rerolls carried over.</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 12px;">
+          <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid #2A2720;"><span style="color: #8A8271;">SEED</span><span>1147</span></div>
+          <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid #2A2720;"><span style="color: #8A8271;">TERRAIN</span><span>Plains</span></div>
+          <div style="display: flex; justify-content: space-between;"><span style="color: #8A8271;">YOUR RESULT</span><span style="color: #8A8271;">&mdash;</span></div>
+        </div>
+        <a href="GeneralPick.dc.html" style="display: block; text-align: center; background: none; border: 1px solid {{accent}}; color: #EDE7D8; text-decoration: none; font-size: 14px; padding: 14px; border-radius: 2px;">Enter today&rsquo;s muster</a>
+      </div>
+
+      <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 3px; padding: 22px 26px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">LAST NIGHT&rsquo;S UPSET</div>
+        <p style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 20px; line-height: 1.35; color: #EDE7D8;">Eight in the centre, both wings empty. They gave way at contact and the whole thing was over in three rounds.</p>
+        <a href="Battle.dc.html" style="font-size: 13px;">Read the recap</a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer style="display: flex; align-items: center; justify-content: space-between; padding: 26px 48px 30px 48px; margin-top: 34px; border-top: 1px solid #2E2A23;">
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <sc-for list="{{cultures}}" as="c" hint-placeholder-count="9">
+        <span style="font-size: 12px; color: #A39B89; border: 1px solid #35312A; padding: 6px 11px; border-radius: 2px;">{{c.name}}</span>
+      </sc-for>
+    </div>
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8271; letter-spacing: 0.08em; white-space: nowrap;">9 CULTURES &middot; 135 UNITS &middot; 81 GENERALS</div>
+  </footer>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#C4562E","options":["#C4562E","#C9A227","#7D8C5C","#8A6FA8"]},"$preview":{"width":1280,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#C4562E',
+      cultures: [
+        { name: 'Rome' }, { name: 'Carthage' }, { name: 'Macedon & Successors' },
+        { name: 'Greek City-States' }, { name: 'Achaemenid Persia' }, { name: 'Warring States China' },
+        { name: 'India' }, { name: 'Steppe Nomads' }, { name: 'Gauls & Celts' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #14130F; }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: #E08A5F; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #14130F; color: #EDE7D8; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 0 10px 0 6px; height: 52px; flex-shrink: 0;">
+    <a href="Phone-Home.dc.html" aria-label="Close" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #A39B89; font-size: 20px; text-decoration: none;">&times;</a>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: #A39B89;">16 SEP &middot; SEED 1147</span>
+    <a href="Phone-Battle.dc.html" style="min-width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #6F6858; font-size: 13px; text-decoration: none; padding: 0 8px;">Replay</a>
+  </header>
+
+  <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 14px; padding: 4px 18px 0 18px; min-height: 0; overflow: hidden;">
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #C9A227;">THE FIELD IS YOURS</span>
+      <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 33px; font-weight: 400; line-height: 1.12;">Both wings came back in, and his centre had nothing left to turn to.</h1>
+      <span style="font-size: 13px; color: #8A8271;">Ashoka of India, defensive, on plains &mdash; against Chabrias.</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+        <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 3px; padding: 9px 8px; display: flex; flex-direction: column; gap: 3px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.08em; color: #6F6858;">{{s.k}}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: {{s.color}};">{{s.v}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 4px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">HOW IT WENT</div>
+      <sc-for list="{{chronicle}}" as="l" hint-placeholder-count="4">
+        <div style="display: flex; gap: 9px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #5C5749; width: 44px; flex-shrink: 0; padding-top: 3px;">{{l.when}}</span>
+          <span style="font-size: 13px; line-height: 1.45; color: {{l.color}};">{{l.text}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background: #1A1813; border: 1px dashed #4A4538; border-radius: 4px; padding: 14px 16px; display: flex; flex-direction: column; gap: 9px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">WHAT GETS SHARED</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #5C5749;">NO SPOILERS</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.5;">
+        <sc-for list="{{shareLines}}" as="s" hint-placeholder-count="5">
+          <span style="color: {{s.color}}; white-space: pre;">{{s.text}}</span>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="flex-grow: 1;"></div>
+
+  </div>
+
+  <div style="flex-shrink: 0; border-top: 1px solid #2E2A23; background: #1A1813; padding: 12px 18px 28px 18px; display: flex; flex-direction: column; gap: 9px;">
+    <div style="display: flex; gap: 9px;">
+      <button type="button" style="flex-grow: 1; background: #A8401F; border: 1px solid #A8401F; color: #F5EFE3; font-size: 16px; font-weight: 600; padding: 15px; border-radius: 3px; min-height: 48px;">Share today&rsquo;s result</button>
+      <button type="button" aria-label="Copy the run string" style="width: 56px; background: none; border: 1px solid #454036; color: #EDE7D8; font-family: 'IBM Plex Mono', monospace; font-size: 11px; border-radius: 3px; min-height: 48px;">RUN</button>
+    </div>
+    <a href="Phone-Home.dc.html" style="display: block; text-align: center; text-decoration: none; color: #A39B89; font-size: 14px; padding: 10px;">Back to today</a>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#C4562E","options":["#C4562E","#C9A227","#7D8C5C","#8A6FA8"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#C4562E';
+    return {
+      accent: accent,
+      stats: [
+        { k: 'ENDED', v: 'P4', color: '#EDE7D8' },
+        { k: 'HIS MORALE', v: '0.93', color: '#D9724F' },
+        { k: 'YOU LOST', v: '11%', color: '#C9A227' },
+        { k: 'HE LOST', v: '35%', color: '#D9724F' }
+      ],
+      chronicle: [
+        { when: 'SKIRM', text: 'Your longbows opened on both his wings. His crossbows answered in a centre you had brought nothing to shoot with.', color: '#A39B89' },
+        { when: 'CONTACT', text: 'You won all three clashes, none by enough to shake him.', color: '#A39B89' },
+        { when: 'PRESS 3', text: 'Both his wings broke in the same round.', color: '#EDE7D8' },
+        { when: 'PRESS 4', text: 'Two free wings wheeled inward. One was held and still marked him flanked; the other landed.', color: '#C9A227' }
+      ],
+      shareLines: [
+        { text: 'Warlord Draft · 16 Sep · 1147', color: '#EDE7D8' },
+        { text: 'me   2 | 4 | 2   Ashoka', color: '#C9A227' },
+        { text: 'him  1 | 6 | 1   Chabrias', color: '#7E93A8' },
+        { text: 'both his wings gone by press 3', color: '#A39B89' },
+        { text: 'routed press 4 · 11% lost', color: '#A39B89' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

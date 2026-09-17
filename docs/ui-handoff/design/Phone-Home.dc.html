@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #14130F; }
+    a { color: #E08A5F; } a:hover { color: #F0A87F; }
+    button { font-family: inherit; cursor: pointer; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #14130F; color: #EDE7D8; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 12px 18px; flex-shrink: 0;">
+    <div style="display: flex; align-items: baseline; gap: 10px;">
+      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 23px;">Warlord Draft</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.18em; color: #6F6858;">ERA I</span>
+    </div>
+    <button type="button" aria-label="Your account" style="width: 44px; height: 44px; background: none; border: 1px solid #35312A; border-radius: 50%; color: #A39B89; font-family: 'IBM Plex Mono', monospace; font-size: 12px;">MP</button>
+  </header>
+
+  <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 14px; padding: 4px 18px 0 18px; min-height: 0; overflow: hidden;">
+
+    <div style="background: #1C1A15; border: 1px solid {{accent}}; border-radius: 4px; padding: 20px 18px 18px 18px; display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: {{accent}};">TODAY&rsquo;S MUSTER</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #6F6858;">WED 16 SEP</span>
+      </div>
+      <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1.12;">One board. One enemy.<br>One attempt.</div>
+      <div style="display: flex; gap: 10px;">
+        <sc-for list="{{todayFacts}}" as="f" hint-placeholder-count="3">
+          <div style="flex-grow: 1; flex-basis: 0; background: #211E18; border: 1px solid #35312A; border-radius: 3px; padding: 9px 10px; display: flex; flex-direction: column; gap: 3px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.1em; color: #6F6858;">{{f.k}}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #EDE7D8;">{{f.v}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <a href="Phone-General.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; background: #A8401F; color: #F5EFE3; font-size: 17px; font-weight: 600; padding: 17px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">Draft today&rsquo;s army</a>
+      <div style="text-align: center; font-size: 12px; color: #6F6858;">Four screens, about three minutes.</div>
+    </div>
+
+    <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 4px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">YESTERDAY</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #C9A227;">WON AT PRESS 4</span>
+      </div>
+      <p style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 19px; line-height: 1.35;">Both wings came back in, and the Greek centre had nothing left to turn to.</p>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid #2A2720;">
+        <div style="display: flex; align-items: center; gap: 7px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #6F6858;">LAST FIVE</span>
+          <div style="display: flex; gap: 4px;">
+            <sc-for list="{{streak}}" as="s" hint-placeholder-count="5">
+              <div style="width: 18px; height: 18px; border-radius: 2px; background: {{s.bg}}; border: 1px solid {{s.edge}}; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: {{s.color}};">{{s.mark}}</div>
+            </sc-for>
+          </div>
+        </div>
+        <a href="Phone-Result.dc.html" style="font-size: 13px;">The recap</a>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <a href="Phone-General.dc.html" style="flex-grow: 1; flex-basis: 0; text-align: center; text-decoration: none; background: none; border: 1px solid #454036; color: #EDE7D8; font-size: 14px; padding: 15px 10px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">Free run</a>
+      <button type="button" style="flex-grow: 1; flex-basis: 0; background: none; border: 1px solid #454036; color: #EDE7D8; font-size: 14px; padding: 15px 10px; border-radius: 3px; min-height: 44px;">Replay a seed</button>
+    </div>
+
+    <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 4px; padding: 16px 18px; display: flex; flex-direction: column; gap: 11px;">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">TODAY&rsquo;S BOARD, SO FAR</div>
+      <sc-for list="{{standings}}" as="s" hint-placeholder-count="3">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6F6858; width: 20px;">{{s.rank}}</span>
+          <span style="font-size: 13px; flex-grow: 1; color: #C4BDAC;">{{s.who}}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: {{s.color}};">{{s.score}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+  </div>
+
+  <nav style="display: flex; border-top: 1px solid #2E2A23; background: #1A1813; padding: 10px 8px 26px 8px; flex-shrink: 0;">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+      <button type="button" style="flex-grow: 1; flex-basis: 0; background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 6px 0; min-height: 44px;">
+        <div style="width: 18px; height: 2px; background: {{t.mark}};"></div>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: {{t.color}};">{{t.label}}</span>
+      </button>
+    </sc-for>
+  </nav>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#C4562E","options":["#C4562E","#C9A227","#7D8C5C","#8A6FA8"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#C4562E';
+    const mark = (w) => w
+      ? { mark: 'W', bg: '#2A2419', edge: '#7A6420', color: '#C9A227' }
+      : { mark: 'L', bg: 'transparent', edge: '#3D382F', color: '#6F6858' };
+    return {
+      accent: accent,
+      todayFacts: [
+        { k: 'SEED', v: '1147' },
+        { k: 'GROUND', v: 'Plains' },
+        { k: 'REROLLS', v: '2' }
+      ],
+      streak: [mark(true), mark(false), mark(true), mark(true), mark(false)],
+      standings: [
+        { rank: '1', who: 'Routed him at press 2', score: '9% lost', color: '#C9A227' },
+        { rank: '2', who: 'Routed him at press 3', score: '12% lost', color: '#C4BDAC' },
+        { rank: '3', who: 'Won on the reckoning', score: '24% lost', color: '#A39B89' }
+      ],
+      tabs: [
+        { label: 'TODAY', color: '#EDE7D8', mark: accent },
+        { label: 'ARMIES', color: '#6F6858', mark: 'transparent' },
+        { label: 'LADDER', color: '#6F6858', mark: 'transparent' },
+        { label: 'RULES', color: '#6F6858', mark: 'transparent' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

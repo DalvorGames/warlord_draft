@@ -1,0 +1,512 @@
+{
+  "dataVersion": 2,
+  "battleModel": "fronts",
+  "fronts": {
+    "rounds": 4,
+    "edgeCap": 0.6,
+    "weights": {
+      "skirmish": 0.4,
+      "contact": 0.5,
+      "press": 0.25,
+      "rollup": 0.4
+    },
+    "plans": {
+      "aggressive": {
+        "skirmish": 0.9,
+        "contact": 1.15,
+        "steadiness": 0.9,
+        "center": 1,
+        "wing": 1,
+        "moraleThreshold": 0.95
+      },
+      "defensive": {
+        "skirmish": 1,
+        "contact": 0.9,
+        "steadiness": 1.1,
+        "center": 1.05,
+        "wing": 0.9,
+        "moraleThreshold": 1.05
+      },
+      "envelopment": {
+        "skirmish": 1,
+        "contact": 1.05,
+        "steadiness": 0.95,
+        "center": 0.9,
+        "wing": 1.25,
+        "moraleThreshold": 1
+      },
+      "skirmish": {
+        "skirmish": 1.3,
+        "contact": 0.95,
+        "steadiness": 1,
+        "center": 0.95,
+        "wing": 1.1,
+        "moraleThreshold": 1
+      }
+    },
+    "terrain": {
+      "plains": {
+        "wing": 1.1
+      },
+      "hills": {
+        "wing": 0.5,
+        "skirmish": 1.1
+      },
+      "forest": {
+        "wing": 0.5,
+        "skirmish": 1.2,
+        "contact": 0.8
+      },
+      "river": {
+        "contact": 0.7
+      }
+    },
+    "chargeCurve": 1,
+    "wingCurve": 0.5,
+    "lineSkirmishMult": 0.5,
+    "steadinessCoef": 0.6,
+    "lanchester": 0.3,
+    "emptyFrontWeight": 0.15,
+    "wingBreakShock": 0.1,
+    "centerBreakShock": 0.25,
+    "routLevel": 0.8,
+    "rollupMult": 1.5,
+    "flankedMult": 0.85,
+    "rampageChance": 0.3,
+    "frontage": 1.5,
+    "reserveMult": 0.25
+  },
+  "grades": {
+    "S": [
+      13,
+      15
+    ],
+    "A": [
+      10,
+      12
+    ],
+    "B": [
+      7,
+      9
+    ],
+    "C": [
+      5,
+      6
+    ],
+    "D": [
+      3,
+      4
+    ],
+    "F": [
+      1,
+      2
+    ]
+  },
+  "draftRarity": {
+    "S": 0.05,
+    "A": 0.15,
+    "B": 0.3,
+    "C": 0.3,
+    "D": 0.15,
+    "F": 0.05
+  },
+  "slots": [
+    "line",
+    "line",
+    "shock",
+    "cavalry",
+    "cavalry",
+    "ranged",
+    "ranged",
+    "flex"
+  ],
+  "cardsPerRow": 4,
+  "onClassCardsPerRow": 3,
+  "rerolls": 2,
+  "homeCultureTilt": 0.3,
+  "generalPool": 3,
+  "eliteCap": {
+    "base": 2,
+    "logisticsThreshold": 80,
+    "withLogistics": 3
+  },
+  "traitThresholds": [
+    4,
+    6
+  ],
+  "generalCountsAsUnit": true,
+  "slotPenalties": {
+    "line": {
+      "line": 1,
+      "shock": 0.9,
+      "cavalry": null,
+      "ranged": 0.55
+    },
+    "shock": {
+      "line": 0.9,
+      "shock": 1,
+      "cavalry": null,
+      "ranged": 0.6
+    },
+    "cavalry": {
+      "line": 0.7,
+      "shock": 0.75,
+      "cavalry": 1,
+      "ranged": 0.8
+    },
+    "ranged": {
+      "line": 0.6,
+      "shock": 0.6,
+      "cavalry": null,
+      "ranged": 1
+    },
+    "skirmish": {
+      "line": 0.6,
+      "shock": 0.6,
+      "cavalry": null,
+      "ranged": 1
+    },
+    "special": {
+      "line": 0.75,
+      "shock": 0.85,
+      "cavalry": null,
+      "ranged": null
+    }
+  },
+  "lightCavInRangedSlot": 0.95,
+  "wreckedThreshold": 0.6,
+  "plans": {
+    "aggressive": {
+      "skirmish": 0.9,
+      "charge": 1.2,
+      "grind": 1,
+      "flank": 1,
+      "moraleThreshold": 0.95
+    },
+    "defensive": {
+      "skirmish": 1,
+      "charge": 0.8,
+      "grind": 1.15,
+      "flank": 0.85,
+      "moraleThreshold": 1.1
+    },
+    "envelopment": {
+      "skirmish": 1,
+      "charge": 0.95,
+      "grind": 0.9,
+      "flank": 1.3,
+      "moraleThreshold": 1
+    },
+    "skirmish": {
+      "skirmish": 1.3,
+      "charge": 0.8,
+      "grind": 0.85,
+      "flank": 1.1,
+      "moraleThreshold": 1
+    }
+  },
+  "styleToPlan": {
+    "hammer": "aggressive",
+    "envelopment": "envelopment",
+    "attrition": "defensive",
+    "skirmish": "skirmish",
+    "defensive": "defensive"
+  },
+  "styleMatchBonus": 1.08,
+  "terrain": {
+    "plains": {
+      "cavalry": 1.05,
+      "chariot": 1.05
+    },
+    "hills": {
+      "cavalry": 0.8,
+      "chariot": 0.7,
+      "elephant": 0.85,
+      "ranged": 1.1,
+      "skirmish": 1.1
+    },
+    "river": {
+      "chargeAttacker": 0.7,
+      "pike": 0.85
+    },
+    "forest": {
+      "cavalry": 0.7,
+      "chariot": 0.6,
+      "pike": 0.75,
+      "elephant": 0.8,
+      "skirmish": 1.15,
+      "warband": 1.1
+    }
+  },
+  "phaseWeights": {
+    "skirmish": 0.5,
+    "charge": 0.5,
+    "grind": 0.4,
+    "flank": 0.6
+  },
+  "noiseSD": 0.15,
+  "lanchesterExponent": 1.3,
+  "grindBodyWeight": {
+    "line": 1,
+    "shock": 1,
+    "special": 0.5,
+    "cavalry": 0,
+    "ranged": 0,
+    "skirmish": 0
+  },
+  "shakenMult": 0.9,
+  "shakenEdge": 0.25,
+  "chargeSteadinessSide": "own",
+  "chargeSteadinessCoef": 0.3,
+  "chargeWallMatchup": false,
+  "chargeWallRoles": [
+    "line",
+    "shock"
+  ],
+  "chargeMinShock": 50,
+  "flankFloor": 40,
+  "events": {
+    "chancePerBattle": 0.08,
+    "list": [
+      {
+        "id": "general_falls",
+        "name": "The general falls",
+        "phase": "charge",
+        "effect": "loser of charge: charisma contribution removed; morale threshold −15%",
+        "weight": 1,
+        "params": {
+          "thresholdMult": 0.85
+        }
+      },
+      {
+        "id": "rampage",
+        "name": "Elephants rampage",
+        "phase": "charge",
+        "effect": "v1 only (fronts uses fronts.rampageChance per battle): side that fields elephants and loses the charge takes charge weight × elephants' share of its impact × damageMult",
+        "weight": 2,
+        "requires": "elephant",
+        "params": {
+          "damageMult": 1
+        }
+      },
+      {
+        "id": "downpour",
+        "name": "Downpour",
+        "phase": "skirmish",
+        "effect": "skirmish phase morale damage ×0.3 (scaling both scores would cancel)",
+        "weight": 1,
+        "params": {
+          "damageMult": 0.3
+        }
+      },
+      {
+        "id": "pursuit_lost",
+        "name": "Cavalry pursues off-field",
+        "phase": "flank",
+        "effect": "winner of charge: cavalry excluded from flank phase",
+        "weight": 1
+      },
+      {
+        "id": "flank_collapse",
+        "name": "Flank collapses early",
+        "phase": "flank",
+        "effect": "loser of flank takes flank damage ×2 (Cannae)",
+        "weight": 1,
+        "params": {
+          "damageMult": 2
+        }
+      },
+      {
+        "id": "reinforcements",
+        "name": "Reinforcements arrive",
+        "phase": "grind",
+        "effect": "campaign only: side with higher logistics gets grind ×1.2",
+        "weight": 1,
+        "campaignOnly": true,
+        "params": {
+          "grindMult": 1.2
+        }
+      }
+    ]
+  },
+  "casualties": {
+    "loserBase": 0.12,
+    "loserMargin": 0.35,
+    "pursuit": 0.15,
+    "loserMax": 0.8,
+    "winnerBase": 0.04,
+    "winnerCloseness": 0.12
+  },
+  "matchups": {
+    "pike": {
+      "heavy_cav": 1.3,
+      "medium_cav": 1.25,
+      "light_cav": 1.3,
+      "cataphract": 1.2,
+      "chariot": 1.3,
+      "elephant": 1.1,
+      "javelin": 0.8,
+      "archer": 0.8,
+      "slinger": 0.8,
+      "crossbow": 0.8,
+      "horse_archer": 0.75,
+      "legion": 0.9
+    },
+    "hoplite": {
+      "heavy_cav": 1.15,
+      "medium_cav": 1.15,
+      "light_cav": 1.15,
+      "chariot": 1.15,
+      "warband": 1.1
+    },
+    "spear": {
+      "heavy_cav": 1.15,
+      "medium_cav": 1.15,
+      "light_cav": 1.15,
+      "chariot": 1.15,
+      "elephant": 1.05
+    },
+    "halberd": {
+      "heavy_cav": 1.2,
+      "medium_cav": 1.2,
+      "chariot": 1.25,
+      "warband": 1.05
+    },
+    "legion": {
+      "warband": 1.15,
+      "sword": 1.05,
+      "pike": 1.1,
+      "hoplite": 1.05,
+      "elephant": 1.1
+    },
+    "light_inf": {
+      "javelin": 1.1,
+      "slinger": 1.1,
+      "archer": 1.1
+    },
+    "elite_inf": {
+      "warband": 1.1,
+      "spear": 1.05,
+      "hoplite": 1.05
+    },
+    "sword": {
+      "pike": 1.05,
+      "archer": 1.15,
+      "slinger": 1.15,
+      "javelin": 1.05
+    },
+    "heavy_cav": {
+      "light_cav": 1.25,
+      "medium_cav": 1.15,
+      "archer": 1.4,
+      "slinger": 1.4,
+      "crossbow": 1.3,
+      "javelin": 1.2,
+      "horse_archer": 0.9,
+      "pike": 0.7,
+      "hoplite": 0.8,
+      "spear": 0.8,
+      "halberd": 0.75,
+      "elephant": 0.6
+    },
+    "cataphract": {
+      "light_cav": 1.3,
+      "medium_cav": 1.2,
+      "heavy_cav": 1.1,
+      "archer": 1.4,
+      "slinger": 1.4,
+      "crossbow": 1.2,
+      "horse_archer": 1,
+      "pike": 0.75,
+      "hoplite": 0.85,
+      "spear": 0.85,
+      "elephant": 0.65
+    },
+    "medium_cav": {
+      "light_cav": 1.1,
+      "archer": 1.3,
+      "slinger": 1.3,
+      "javelin": 1.1,
+      "heavy_cav": 0.85,
+      "pike": 0.7,
+      "hoplite": 0.8,
+      "spear": 0.8,
+      "elephant": 0.6
+    },
+    "light_cav": {
+      "archer": 1.3,
+      "slinger": 1.3,
+      "javelin": 1.1,
+      "heavy_cav": 0.8,
+      "cataphract": 0.7,
+      "elephant": 0.6
+    },
+    "horse_archer": {
+      "line": 1.3,
+      "pike": 1.35,
+      "hoplite": 1.3,
+      "legion": 1.2,
+      "heavy_cav": 0.85,
+      "cataphract": 0.9,
+      "light_cav": 1,
+      "elephant": 1.15
+    },
+    "elephant": {
+      "heavy_cav": 1.4,
+      "medium_cav": 1.4,
+      "light_cav": 1.4,
+      "cataphract": 1.3,
+      "horse_archer": 1.2,
+      "javelin": 0.7,
+      "slinger": 0.7,
+      "archer": 0.8,
+      "pike": 0.9,
+      "legion": 0.85
+    },
+    "chariot": {
+      "archer": 1.3,
+      "slinger": 1.3,
+      "crossbow": 1.2,
+      "javelin": 1.1,
+      "warband": 1.1,
+      "pike": 0.6,
+      "hoplite": 0.75,
+      "spear": 0.75,
+      "halberd": 0.7,
+      "legion": 0.8
+    },
+    "warband": {
+      "archer": 1.2,
+      "slinger": 1.2,
+      "hoplite": 1.05,
+      "pike": 0.85,
+      "legion": 0.9,
+      "elite_inf": 0.9
+    },
+    "javelin": {
+      "elephant": 1.3,
+      "chariot": 1.2,
+      "pike": 1.15,
+      "cataphract": 1.05
+    },
+    "slinger": {
+      "elephant": 1.25,
+      "chariot": 1.15,
+      "pike": 1.1,
+      "hoplite": 1.05
+    },
+    "archer": {
+      "pike": 1.15,
+      "elephant": 1.15,
+      "warband": 1.1,
+      "light_cav": 0.9
+    },
+    "crossbow": {
+      "pike": 1.2,
+      "elephant": 1.2,
+      "cataphract": 1.15,
+      "heavy_cav": 1.1,
+      "warband": 1.15
+    }
+  }
+}

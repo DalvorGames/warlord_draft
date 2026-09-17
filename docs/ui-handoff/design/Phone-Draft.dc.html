@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #14130F; }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: #E08A5F; }
+    @keyframes wdreel { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+    @keyframes wdland {
+      0% { transform: translateY(-10px); opacity: 0.2; }
+      55% { transform: translateY(2px); opacity: 1; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #14130F; color: #EDE7D8; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 0 10px 0 6px; height: 52px; flex-shrink: 0;">
+    <a href="Phone-General.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #A39B89; font-size: 20px; text-decoration: none;">←</a>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: #A39B89;">ROW 6 OF 8</span>
+    <a href="Phone-Board.dc.html" style="min-width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #EDE7D8; font-size: 13px; text-decoration: none; padding: 0 8px;">Board</a>
+  </header>
+
+  <div style="display: flex; gap: 3px; padding: 0 18px 12px 18px; flex-shrink: 0;">
+    <sc-for list="{{progress}}" as="p" hint-placeholder-count="8">
+      <div style="flex-grow: 1; height: 3px; background: {{p.color}}; border-radius: 1px;"></div>
+    </sc-for>
+  </div>
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; padding: 0 18px 12px 18px; flex-shrink: 0;">
+    <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.2em; color: {{accent}};">RANGED</span>
+      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; line-height: 1.05;">India</span>
+      <span style="font-size: 11px; color: #6F6858; line-height: 1.4;">The row picks the culture. Where it stands is your call.</span>
+    </div>
+    <button type="button" onClick="{{reroll}}" style="flex-shrink: 0; background: none; border: 1px solid {{rerollEdge}}; color: {{rerollColor}}; font-size: 12px; padding: 11px 13px; border-radius: 3px; min-height: 44px;">{{rerollLabel}}</button>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 9px; padding: 0 18px; min-height: 0; overflow: hidden;">
+    <sc-for list="{{cards}}" as="card" hint-placeholder-count="4">
+      <div style="flex-grow: 1; flex-basis: 0; min-height: 0; position: relative;">
+
+        <sc-if value="{{card.spinning}}" hint-placeholder-val="{{true}}">
+          <div style="position: absolute; inset: 0; background: #1A1813; border: 1px solid #2E2A23; border-radius: 4px; overflow: hidden;">
+            <div style="animation: wdreel {{card.reelSpeed}} linear infinite; animation-delay: {{card.reelDelay}};">
+              <sc-for list="{{card.reel}}" as="n" hint-placeholder-count="12">
+                <div style="height: 30px; display: flex; align-items: center; gap: 10px; padding: 0 16px; box-sizing: border-box;">
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5C5749; width: 12px;">{{n.grade}}</span>
+                  <span style="font-size: 14px; color: #6F6858; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{n.name}}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="position: absolute; inset: 0; background: linear-gradient(#1A1813 0%, rgba(26, 24, 19, 0) 30%, rgba(26, 24, 19, 0) 70%, #1A1813 100%);"></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{card.settled}}" hint-placeholder-val="{{true}}">
+          <button type="button" onClick="{{card.pick}}" style="position: absolute; inset: 0; text-align: left; background: {{card.bg}}; border: 1px solid {{card.edge}}; border-radius: 4px; padding: 12px 14px; display: flex; flex-direction: column; justify-content: space-between; opacity: {{card.opacity}}; animation: wdland 240ms ease-out 1;">
+
+            <div style="display: flex; align-items: flex-start; gap: 9px;">
+              <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; background: {{card.gradeBg}}; color: {{card.gradeText}}; border: 1px solid {{card.gradeEdge}}; border-radius: 2px; padding: 2px 7px;">{{card.grade}}</span>
+              <span style="flex-grow: 1; min-width: 0; font-size: 15px; font-weight: 500; color: #EDE7D8; line-height: 1.2;">{{card.name}}</span>
+              <span style="flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; border: 1px solid {{card.dotEdge}}; background: {{card.dotBg}}; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #14130F;">{{card.dot}}</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: {{card.classColor}}; border: 1px solid {{card.classEdge}}; border-radius: 2px; padding: 2px 6px;">{{card.klass}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #8A8271; flex-grow: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{card.meta}}</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 5px;">
+              <sc-for list="{{card.stats}}" as="s" hint-placeholder-count="6">
+                <div style="display: flex; flex-direction: column; gap: 1px;">
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.06em; color: #6F6858;">{{s.k}}</span>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: {{s.color}};">{{s.v}}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: {{card.whyColor}};">{{card.why}}</div>
+
+          </button>
+        </sc-if>
+
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex-shrink: 0; border-top: 1px solid #2E2A23; background: #1A1813; padding: 12px 18px 28px 18px; display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; gap: 7px;">
+      <sc-for list="{{chips}}" as="c" hint-placeholder-count="3">
+        <div style="flex-grow: 1; flex-basis: 0; background: #211E18; border: 1px solid {{c.edge}}; border-radius: 3px; padding: 7px 8px; display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.08em; color: #6F6858;">{{c.k}}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{c.color}};">{{c.v}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <a href="Phone-Draft.dc.html" style="display: block; text-align: center; text-decoration: none; background: {{ctaBg}}; border: 1px solid {{ctaEdge}}; color: {{ctaText}}; font-size: 16px; font-weight: 600; padding: 15px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">{{ctaLabel}}</a>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#C4562E","options":["#C4562E","#C9A227","#7D8C5C","#8A6FA8"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+
+  componentDidMount() {
+    this.timers = [];
+    this.roll();
+  }
+
+  componentWillUnmount() {
+    (this.timers || []).forEach((t) => clearTimeout(t));
+  }
+
+  cards() {
+    // Row 6 of draft seed 1147: a ranged row, dealt out of India. Ashoka plus two Indians are already in.
+    return [
+      ['Hill Tribe Archers', 'ranged', 'archer', 5, 'C', [30, 70, 20, 65, 55, 10]],
+      ['Mauryan Infantry', 'line', 'spear', 6, 'C', [65, 0, 55, 40, 70, 40]],
+      ['Javelin Skirmishers', 'skirmish', 'javelin', 6, 'C', [45, 60, 20, 80, 50, 25]],
+      ['Indian Longbowmen', 'ranged', 'archer', 9, 'B', [35, 85, 20, 50, 55, 10]]
+    ];
+  }
+
+  roll() {
+    (this.timers || []).forEach((t) => clearTimeout(t));
+    this.timers = [];
+    const n = this.cards().length;
+    this.setState({ spin: n, picked: null });
+    for (let i = 0; i < n; i++) {
+      this.timers.push(setTimeout(() => this.setState({ spin: n - 1 - i }), 620 + i * 210));
+    }
+  }
+
+  gradeStyle(g) {
+    if (g === 'S') return { gradeBg: '#C9A227', gradeText: '#14130F', gradeEdge: '#C9A227' };
+    if (g === 'A') return { gradeBg: '#D8CBAE', gradeText: '#14130F', gradeEdge: '#D8CBAE' };
+    if (g === 'B') return { gradeBg: '#9C9686', gradeText: '#14130F', gradeEdge: '#9C9686' };
+    return { gradeBg: 'transparent', gradeText: '#B8B1A0', gradeEdge: '#5F5949' };
+  }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#C4562E';
+    const st = this.state || {};
+    const spin = st.spin === undefined ? 0 : st.spin;
+    const picked = st.picked === undefined ? null : st.picked;
+    const rerolls = st.rerolls === undefined ? 2 : st.rerolls;
+    const data = this.cards();
+    const keys = ['MEL', 'RNG', 'ARM', 'MOB', 'DIS', 'SHK'];
+    const wingish = { cavalry: true, skirmish: true, special: true };
+
+    const pool = data.map((c) => ({ grade: c[4], name: c[0] })).concat([
+      { grade: 'C', name: 'Sword-and-Buckler Infantry' },
+      { grade: 'B', name: 'Kshatriya Noble Cavalry' },
+      { grade: 'D', name: 'Levy Spearmen' },
+      { grade: 'C', name: 'Javelin Skirmishers' }
+    ]);
+    const strip = pool.concat(pool);
+
+    const cards = data.map((c, i) => {
+      const isSpinning = i < spin;
+      const sel = picked === i;
+      const dimmed = picked !== null && !sel;
+      const wing = !!wingish[c[1]];
+      return Object.assign({
+        name: c[0],
+        klass: c[1].toUpperCase(),
+        classColor: wing ? '#8FA9C4' : '#C4BDAC',
+        classEdge: wing ? '#3F5062' : '#4A4538',
+        meta: c[2] + ' · ' + (wing ? 'WINS A WING' : 'HOLDS A CENTRE'),
+        why: sel ? 'INDIA 4 · ELEPHANT LINE IS ON' : 'INDIA 4 → ELEPHANT LINE ON',
+        whyColor: '#C9A227',
+        grade: c[4],
+        stats: keys.map((k, j) => ({ k: k, v: c[5][j], color: c[5][j] >= 75 ? '#C9A227' : (c[5][j] === 0 ? '#4E4A3F' : '#C4BDAC') })),
+        spinning: isSpinning,
+        settled: !isSpinning,
+        reel: strip,
+        reelSpeed: (340 + i * 45) + 'ms',
+        reelDelay: (-i * 90) + 'ms',
+        bg: sel ? '#2A2419' : '#1C1A15',
+        edge: sel ? accent : '#35312A',
+        opacity: dimmed ? '0.45' : '1',
+        dot: sel ? '✓' : '',
+        dotBg: sel ? '#C9A227' : 'transparent',
+        dotEdge: sel ? '#C9A227' : '#3D382F',
+        pick: () => this.setState({ picked: picked === i ? null : i })
+      }, this.gradeStyle(c[4]));
+    });
+
+    const progress = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => ({
+      color: i < 5 ? '#C9A227' : (i === 5 ? accent : '#2E2A23')
+    }));
+
+    const indiaCount = picked === null ? 3 : 4;
+
+    return {
+      accent: accent,
+      cards: cards,
+      progress: progress,
+      reroll: () => {
+        if (rerolls <= 0 || spin > 0) return;
+        this.setState({ rerolls: rerolls - 1 });
+        this.roll();
+      },
+      rerollLabel: rerolls > 0 ? 'Reroll · ' + rerolls : 'No rerolls',
+      rerollEdge: rerolls > 0 ? '#454036' : '#2E2A23',
+      rerollColor: rerolls > 0 ? '#EDE7D8' : '#5C5749',
+      chips: [
+        { k: 'ELITE', v: '1 / 3', color: '#C9A227', edge: '#35312A' },
+        { k: 'TAKEN', v: (picked === null ? 5 : 6) + ' / 8', color: '#C4BDAC', edge: '#35312A' },
+        { k: 'INDIA', v: indiaCount + ' / 4', color: indiaCount >= 4 ? '#C9A227' : '#C4BDAC', edge: indiaCount >= 4 ? '#7A6420' : '#35312A' }
+      ],
+      ctaLabel: spin > 0 ? 'Rolling…' : (picked === null ? 'Take one to go on' : 'Next row'),
+      ctaBg: picked === null || spin > 0 ? '#26221A' : '#A8401F',
+      ctaEdge: picked === null || spin > 0 ? '#454036' : '#A8401F',
+      ctaText: picked === null || spin > 0 ? '#8A8271' : '#F5EFE3'
+    };
+  }
+}
+</script>
+</body>
+</html>

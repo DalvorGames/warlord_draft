@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #14130F; }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: #E08A5F; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #14130F; color: #EDE7D8; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 6px; height: 52px; flex-shrink: 0;">
+    <a href="Phone-Home.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #A39B89; font-size: 20px; text-decoration: none;">&larr;</a>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: #A39B89;">1 &middot; YOUR GENERAL</span>
+    <span style="width: 44px;"></span>
+  </header>
+
+  <div style="display: flex; gap: 4px; padding: 0 18px 14px 18px; flex-shrink: 0;">
+    <sc-for list="{{progress}}" as="p" hint-placeholder-count="4">
+      <div style="flex-grow: 1; height: 3px; background: {{p.color}}; border-radius: 1px;"></div>
+    </sc-for>
+  </div>
+
+  <div style="padding: 0 18px 14px 18px; flex-shrink: 0;">
+    <h1 style="margin: 0 0 6px 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; font-weight: 400; line-height: 1.1;">Three names came up.</h1>
+    <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #8A8271;">He sets your doctrine, your elite slots, and how steady your fronts are. He stands in the centre.</p>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 10px; padding: 0 18px; min-height: 0; overflow: hidden;">
+    <sc-for list="{{generals}}" as="g" hint-placeholder-count="3">
+      <button type="button" onClick="{{g.pick}}" style="text-align: left; background: {{g.bg}}; border: 1px solid {{g.edge}}; border-radius: 4px; padding: 15px 16px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0;">
+
+        <div style="display: flex; align-items: flex-start; gap: 10px;">
+          <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.14em; color: #8A8271;">{{g.culture}}</span>
+            <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 26px; line-height: 1.1;">{{g.name}}</span>
+          </div>
+          <div style="flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; border: 1px solid {{g.dotEdge}}; background: {{g.dotBg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #14130F;">{{g.dot}}</div>
+        </div>
+
+        <span style="font-size: 12px; color: #8A8271; font-style: italic; line-height: 1.4;">{{g.note}}</span>
+
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+          <sc-for list="{{g.stats}}" as="s" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.08em; color: #6F6858;">{{s.k}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 16px; color: {{s.color}};">{{s.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <sc-for list="{{g.chips}}" as="c" hint-placeholder-count="3">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: {{c.color}}; border: 1px solid {{c.edge}}; border-radius: 2px; padding: 3px 7px;">{{c.text}}</span>
+          </sc-for>
+        </div>
+
+      </button>
+    </sc-for>
+  </div>
+
+  <div style="flex-shrink: 0; border-top: 1px solid #2E2A23; background: #1A1813; padding: 14px 18px 28px 18px; display: flex; flex-direction: column; gap: 9px;">
+    <div style="font-size: 12px; color: #C9A227; line-height: 1.4; min-height: 34px;">{{hint}}</div>
+    <a href="Phone-Draft.dc.html" style="display: block; text-align: center; text-decoration: none; background: {{ctaBg}}; border: 1px solid {{ctaEdge}}; color: {{ctaText}}; font-size: 16px; font-weight: 600; padding: 16px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">{{ctaLabel}}</a>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#C4562E","options":["#C4562E","#C9A227","#7D8C5C","#8A6FA8"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#C4562E';
+    const st = this.state || {};
+    const chosen = st.chosen === undefined ? 1 : st.chosen;
+    const stat = (k, v) => ({ k: k, v: v, color: v >= 85 ? '#C9A227' : '#C4BDAC' });
+    const chip = (text, hot) => ({ text: text, color: hot ? '#C9A227' : '#A39B89', edge: hot ? '#7A6420' : '#3D382F' });
+
+    const data = [
+      {
+        culture: 'GAULS & CELTS', name: 'Viridomarus', note: 'Insubres; killed by Marcellus at Clastidium 222',
+        stats: [stat('CMD', 65), stat('TAC', 60), stat('LOG', 50), stat('CHA', 80)],
+        chips: [chip('AGGRESSIVE', false), chip('2 ELITE', false), chip('FUROR · CONTACT', false)],
+        hint: 'Charisma 80 raises every front’s cohesion. Logistics 50 keeps you at two elites.'
+      },
+      {
+        culture: 'INDIA (NANDA / MAURYA)', name: 'Ashoka', note: 'Kalinga 261 — before the remorse',
+        stats: [stat('CMD', 70), stat('TAC', 65), stat('LOG', 90), stat('CHA', 75)],
+        chips: [chip('DEFENSIVE', false), chip('3 ELITE', true), chip('ELEPHANT LINE · CONTACT', false)],
+        hint: 'Logistics 90 buys a third elite slot — the only general here who gets one.'
+      },
+      {
+        culture: 'CARTHAGE', name: 'Hasdrubal Barca', note: 'Spain; Metaurus 207',
+        stats: [stat('CMD', 70), stat('TAC', 65), stat('LOG', 75), stat('CHA', 65)],
+        chips: [chip('AGGRESSIVE', false), chip('2 ELITE', false), chip('MERCENARY ARMY', false)],
+        hint: 'Nothing spikes. Mercenary Army scales every unit that is not Carthaginian.'
+      }
+    ];
+
+    const generals = data.map((g, i) => ({
+      culture: g.culture,
+      name: g.name,
+      note: g.note,
+      stats: g.stats,
+      chips: g.chips,
+      bg: i === chosen ? '#2A2419' : '#1C1A15',
+      edge: i === chosen ? accent : '#35312A',
+      dot: i === chosen ? '✓' : '',
+      dotBg: i === chosen ? '#C9A227' : 'transparent',
+      dotEdge: i === chosen ? '#C9A227' : '#4A4538',
+      pick: () => this.setState({ chosen: i })
+    }));
+
+    return {
+      accent: accent,
+      generals: generals,
+      progress: [{ color: accent }, { color: '#2E2A23' }, { color: '#2E2A23' }, { color: '#2E2A23' }],
+      hint: data[chosen].hint,
+      ctaLabel: 'Take the field with ' + data[chosen].name.split(' ')[0],
+      ctaBg: '#A8401F',
+      ctaEdge: '#A8401F',
+      ctaText: '#F5EFE3'
+    };
+  }
+}
+</script>
+</body>
+</html>

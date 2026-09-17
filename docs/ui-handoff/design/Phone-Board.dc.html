@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #14130F; }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: #E08A5F; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0C0B09; color: #EDE7D8; display: flex; flex-direction: column; justify-content: flex-end;">
+
+  <div style="flex-shrink: 0; padding: 20px 18px 0 18px; display: flex; flex-direction: column; gap: 8px; opacity: 0.35;">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: #A39B89;">ROW 6 OF 8</span>
+    <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 26px; color: #6F6858;">India &middot; ranged</span>
+  </div>
+
+  <div style="flex-grow: 1;"></div>
+
+  <div style="background: #14130F; border-top: 1px solid #35312A; border-radius: 14px 14px 0 0; display: flex; flex-direction: column; box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.5);">
+
+    <div style="display: flex; justify-content: center; padding: 10px 0 4px 0;">
+      <div style="width: 38px; height: 4px; border-radius: 2px; background: #3D382F;"></div>
+    </div>
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 6px 18px 12px 18px;">
+      <div style="display: flex; align-items: baseline; gap: 12px;">
+        <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 26px;">The whole board</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #6F6858;">5 OF 8 TAKEN</span>
+      </div>
+      <a href="Phone-Draft.dc.html" style="font-size: 14px; text-decoration: none; color: #EDE7D8; padding: 8px 0;">Close</a>
+    </div>
+
+    <div style="display: flex; flex-direction: column; padding: 0 18px 24px 18px;">
+      <sc-for list="{{rows}}" as="row" hint-placeholder-count="8">
+        <a href="Phone-Draft.dc.html" style="text-decoration: none; display: flex; gap: 12px; padding: 9px 0; border-top: 1px solid {{row.rule}};">
+          <div style="width: 78px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; padding-top: 2px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: {{row.slotColor}};">{{row.slot}}</span>
+            <span style="font-size: 10px; color: #6F6858; line-height: 1.3;">{{row.culture}}</span>
+          </div>
+          <div style="flex-grow: 1; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px;">
+            <sc-for list="{{row.cards}}" as="c" hint-placeholder-count="4">
+              <div style="display: flex; align-items: center; gap: 6px; background: {{c.bg}}; border: 1px solid {{c.edge}}; border-radius: 2px; padding: 5px 7px; min-width: 0;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 600; color: {{c.gradeColor}}; flex-shrink: 0;">{{c.grade}}</span>
+                <span style="font-size: 11px; color: {{c.nameColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{c.name}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+
+    <div style="padding: 0 18px 28px 18px; display: flex; gap: 10px;">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 3px; justify-content: center;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #6F6858;">ELITE 1 / 3 &middot; REROLLS 2</span>
+        <span style="font-size: 11px; color: #C9A227;">India 3 of 4 &mdash; any card in this row turns Elephant Line on</span>
+      </div>
+      <a href="Phone-Draft.dc.html" style="flex-shrink: 0; text-align: center; text-decoration: none; background: #A8401F; color: #F5EFE3; font-size: 14px; font-weight: 600; padding: 14px 20px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">Back to row 6</a>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#C4562E","options":["#C4562E","#C9A227","#7D8C5C","#8A6FA8"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#C4562E';
+    const gradeColor = (g) => (g === 'S' ? '#C9A227' : g === 'A' ? '#D8CBAE' : g === 'B' ? '#9C9686' : '#6F6858');
+
+    const mk = (grade, name, taken) => ({
+      grade: grade,
+      name: name,
+      gradeColor: taken ? '#C9A227' : gradeColor(grade),
+      nameColor: taken ? '#EDE7D8' : '#8A8271',
+      bg: taken ? '#2A2419' : 'transparent',
+      edge: taken ? accent : '#2E2A23'
+    });
+
+    const rows = [
+      { slot: 'LINE', culture: 'Rome', state: 'done', cards: [
+        mk('B', 'Hastati', false), mk('A', 'Extraordinarii', false),
+        mk('B', 'Triarii', true), mk('C', 'Roman Hoplites', false)] },
+      { slot: 'LINE', culture: 'China', state: 'done', cards: [
+        mk('C', 'Ge Dagger-Axe', false), mk('C', 'Qin Conscripts', false),
+        mk('C', 'War Chariots', false), mk('S', 'Wei Wuzu', true)] },
+      { slot: 'SHOCK', culture: 'India', state: 'done', cards: [
+        mk('B', 'Mace Infantry', false), mk('B', 'Mauryan Guard', false),
+        mk('B', 'Kshatriya Swords', true), mk('C', 'Kamboja Cavalry', false)] },
+      { slot: 'CAVALRY', culture: 'Persia', state: 'done', cards: [
+        mk('C', 'Bactrian Cav', false), mk('B', 'Persian Heavy Cav', true),
+        mk('C', 'Saka Horse Arch', false), mk('D', 'Hyrcanian Cav', false)] },
+      { slot: 'CAVALRY', culture: 'India', state: 'done', cards: [
+        mk('B', 'Kshatriya Noble', true), mk('C', 'Kamboja Cavalry', false),
+        mk('D', 'Indian Cavalry', false)] },
+      { slot: 'RANGED', culture: 'India', state: 'now', cards: [
+        mk('C', 'Hill Tribe Arch', false), mk('C', 'Mauryan Infantry', false),
+        mk('C', 'Javelin Skirm', false), mk('B', 'Indian Longbows', false)] },
+      { slot: 'RANGED', culture: 'India', state: 'open', cards: [
+        mk('C', 'Hill Tribe Arch', false), mk('B', 'Kshatriya Noble', false),
+        mk('C', 'Javelin Skirm', false), mk('B', 'Indian Longbows', false)] },
+      { slot: 'FLEX', culture: 'India', state: 'open', cards: [
+        mk('B', 'Kshatriya Swords', false), mk('C', 'Sword-and-Buckler', false),
+        mk('C', 'Javelin Skirm', false), mk('B', 'Kshatriya Noble', false)] }
+    ];
+
+    return {
+      accent: accent,
+      rows: rows.map((r) => ({
+        slot: r.slot,
+        culture: r.culture,
+        cards: r.cards,
+        slotColor: r.state === 'now' ? accent : (r.state === 'done' ? '#C9A227' : '#A39B89'),
+        rule: r.state === 'now' ? accent : '#2A2720'
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,2851 @@
+[
+  {
+    "id": "mac_pezhetairoi",
+    "name": "Pezhetairoi (Foot Companions)",
+    "culture": "mac",
+    "class": "line",
+    "subtype": "pike",
+    "archetype": "pike",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 60,
+      "mobility": 35,
+      "discipline": 80,
+      "shock": 45
+    },
+    "tags": [
+      "phalanx"
+    ]
+  },
+  {
+    "id": "mac_argyraspides",
+    "name": "Argyraspides (Silver Shields)",
+    "culture": "mac",
+    "class": "line",
+    "subtype": "pike",
+    "archetype": "pike",
+    "cost": 9,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 77,
+      "ranged": 0,
+      "armor": 65,
+      "mobility": 35,
+      "discipline": 90,
+      "shock": 50
+    },
+    "tags": [
+      "phalanx",
+      "veteran"
+    ]
+  },
+  {
+    "id": "mac_hypaspists",
+    "name": "Hypaspists",
+    "culture": "mac",
+    "class": "shock",
+    "subtype": "elite_inf",
+    "archetype": "elite_inf",
+    "cost": 13,
+    "grade": "S",
+    "period": "mid",
+    "stats": {
+      "melee": 80,
+      "ranged": 10,
+      "armor": 65,
+      "mobility": 55,
+      "discipline": 85,
+      "shock": 65
+    },
+    "tags": [
+      "guard"
+    ]
+  },
+  {
+    "id": "mac_successor_pike",
+    "name": "Successor Phalangites",
+    "culture": "mac",
+    "class": "line",
+    "subtype": "pike",
+    "archetype": "pike",
+    "cost": 5,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 62,
+      "ranged": 0,
+      "armor": 55,
+      "mobility": 35,
+      "discipline": 70,
+      "shock": 42
+    },
+    "tags": [
+      "phalanx"
+    ]
+  },
+  {
+    "id": "mac_thureophoroi",
+    "name": "Thureophoroi",
+    "culture": "mac",
+    "class": "line",
+    "subtype": "light_inf",
+    "archetype": "light_inf",
+    "cost": 7,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 55,
+      "ranged": 35,
+      "armor": 40,
+      "mobility": 65,
+      "discipline": 60,
+      "shock": 35
+    },
+    "tags": []
+  },
+  {
+    "id": "mac_antigonid_pelt",
+    "name": "Antigonid Peltastai (Guard)",
+    "culture": "mac",
+    "class": "shock",
+    "subtype": "elite_inf",
+    "archetype": "elite_inf",
+    "cost": 11,
+    "grade": "A",
+    "period": "late",
+    "stats": {
+      "melee": 77,
+      "ranged": 10,
+      "armor": 60,
+      "mobility": 55,
+      "discipline": 85,
+      "shock": 60
+    },
+    "tags": [
+      "guard"
+    ]
+  },
+  {
+    "id": "mac_companions",
+    "name": "Companion Cavalry",
+    "culture": "mac",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 13,
+    "grade": "S",
+    "period": "mid",
+    "stats": {
+      "melee": 80,
+      "ranged": 0,
+      "armor": 65,
+      "mobility": 75,
+      "discipline": 80,
+      "shock": 95
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "mac_prodromoi",
+    "name": "Prodromoi (Lancers)",
+    "culture": "mac",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 7,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 40,
+      "mobility": 85,
+      "discipline": 60,
+      "shock": 75
+    },
+    "tags": [
+      "lancer"
+    ]
+  },
+  {
+    "id": "mac_cataphracts",
+    "name": "Seleucid Cataphracts",
+    "culture": "mac",
+    "class": "cavalry",
+    "subtype": "cataphract",
+    "archetype": "cataphract",
+    "cost": 12,
+    "grade": "A",
+    "period": "late",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 80,
+      "mobility": 60,
+      "discipline": 70,
+      "shock": 85
+    },
+    "tags": [
+      "armored"
+    ]
+  },
+  {
+    "id": "mac_tarantines",
+    "name": "Tarantine Cavalry",
+    "culture": "mac",
+    "class": "cavalry",
+    "subtype": "light_cav",
+    "archetype": "light_cav",
+    "cost": 6,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 45,
+      "ranged": 55,
+      "armor": 20,
+      "mobility": 90,
+      "discipline": 55,
+      "shock": 30
+    },
+    "tags": [
+      "skirmish"
+    ]
+  },
+  {
+    "id": "mac_archers",
+    "name": "Macedonian Archers",
+    "culture": "mac",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "archer",
+    "cost": 4,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 30,
+      "ranged": 65,
+      "armor": 20,
+      "mobility": 60,
+      "discipline": 55,
+      "shock": 10
+    },
+    "tags": []
+  },
+  {
+    "id": "mac_agrianians",
+    "name": "Agrianian Javelinmen",
+    "culture": "mac",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "javelin",
+    "cost": 10,
+    "grade": "A",
+    "period": "mid",
+    "stats": {
+      "melee": 45,
+      "ranged": 65,
+      "armor": 20,
+      "mobility": 85,
+      "discipline": 65,
+      "shock": 25
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "mac_thracians",
+    "name": "Thracian Peltasts",
+    "culture": "mac",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "peltast",
+    "cost": 7,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 55,
+      "ranged": 55,
+      "armor": 25,
+      "mobility": 70,
+      "discipline": 50,
+      "shock": 35
+    },
+    "tags": [
+      "rhomphaia"
+    ]
+  },
+  {
+    "id": "mac_galatians",
+    "name": "Galatian Mercenaries",
+    "culture": "mac",
+    "class": "shock",
+    "subtype": "warband",
+    "archetype": "warband",
+    "cost": 5,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 30,
+      "mobility": 55,
+      "discipline": 40,
+      "shock": 75
+    },
+    "tags": [
+      "mercenary"
+    ]
+  },
+  {
+    "id": "mac_elephants",
+    "name": "Indian Elephants (Seleucid)",
+    "culture": "mac",
+    "class": "special",
+    "subtype": "elephant",
+    "archetype": "elephant",
+    "cost": 15,
+    "grade": "S",
+    "period": "late",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 70,
+      "mobility": 55,
+      "discipline": 45,
+      "shock": 90
+    },
+    "tags": [
+      "elephant"
+    ]
+  },
+  {
+    "id": "grk_militia",
+    "name": "Militia Hoplites",
+    "culture": "grk",
+    "class": "line",
+    "subtype": "hoplite",
+    "archetype": "hoplite",
+    "cost": 5,
+    "grade": "C",
+    "period": "early",
+    "stats": {
+      "melee": 60,
+      "ranged": 0,
+      "armor": 55,
+      "mobility": 35,
+      "discipline": 65,
+      "shock": 35
+    },
+    "tags": []
+  },
+  {
+    "id": "grk_epilektoi",
+    "name": "Epilektoi (Picked Hoplites)",
+    "culture": "grk",
+    "class": "line",
+    "subtype": "hoplite",
+    "archetype": "hoplite",
+    "cost": 8,
+    "grade": "B",
+    "period": "early",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 65,
+      "mobility": 35,
+      "discipline": 80,
+      "shock": 45
+    },
+    "tags": [
+      "veteran"
+    ]
+  },
+  {
+    "id": "grk_spartans",
+    "name": "Spartan Hoplites",
+    "culture": "grk",
+    "class": "line",
+    "subtype": "hoplite",
+    "archetype": "hoplite",
+    "cost": 12,
+    "grade": "A",
+    "period": "early",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 65,
+      "mobility": 35,
+      "discipline": 90,
+      "shock": 45
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "grk_sacred_band",
+    "name": "Theban Sacred Band",
+    "culture": "grk",
+    "class": "shock",
+    "subtype": "elite_inf",
+    "archetype": "elite_inf",
+    "cost": 12,
+    "grade": "A",
+    "period": "early",
+    "stats": {
+      "melee": 80,
+      "ranged": 0,
+      "armor": 70,
+      "mobility": 45,
+      "discipline": 90,
+      "shock": 60
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "grk_mercenaries",
+    "name": "Greek Mercenary Hoplites",
+    "culture": "grk",
+    "class": "line",
+    "subtype": "hoplite",
+    "archetype": "hoplite",
+    "cost": 7,
+    "grade": "B",
+    "period": "early",
+    "stats": {
+      "melee": 68,
+      "ranged": 0,
+      "armor": 60,
+      "mobility": 40,
+      "discipline": 75,
+      "shock": 40
+    },
+    "tags": [
+      "mercenary"
+    ]
+  },
+  {
+    "id": "grk_syracusan_hop",
+    "name": "Syracusan Hoplites",
+    "culture": "grk",
+    "class": "line",
+    "subtype": "hoplite",
+    "archetype": "hoplite",
+    "cost": 6,
+    "grade": "C",
+    "period": "early",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 60,
+      "mobility": 35,
+      "discipline": 70,
+      "shock": 40
+    },
+    "tags": []
+  },
+  {
+    "id": "grk_achaean_thureo",
+    "name": "Achaean Thureophoroi",
+    "culture": "grk",
+    "class": "line",
+    "subtype": "light_inf",
+    "archetype": "light_inf",
+    "cost": 6,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 55,
+      "ranged": 35,
+      "armor": 40,
+      "mobility": 65,
+      "discipline": 60,
+      "shock": 35
+    },
+    "tags": []
+  },
+  {
+    "id": "grk_achaean_pike",
+    "name": "Achaean Phalanx",
+    "culture": "grk",
+    "class": "line",
+    "subtype": "pike",
+    "archetype": "pike",
+    "cost": 4,
+    "grade": "D",
+    "period": "late",
+    "stats": {
+      "melee": 60,
+      "ranged": 0,
+      "armor": 55,
+      "mobility": 35,
+      "discipline": 70,
+      "shock": 45
+    },
+    "tags": [
+      "phalanx"
+    ]
+  },
+  {
+    "id": "grk_iphicrateans",
+    "name": "Iphicratean Peltasts",
+    "culture": "grk",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "peltast",
+    "cost": 10,
+    "grade": "A",
+    "period": "early",
+    "stats": {
+      "melee": 55,
+      "ranged": 60,
+      "armor": 30,
+      "mobility": 75,
+      "discipline": 65,
+      "shock": 35
+    },
+    "tags": [
+      "reformed"
+    ]
+  },
+  {
+    "id": "grk_peltasts",
+    "name": "Peltasts",
+    "culture": "grk",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "peltast",
+    "cost": 5,
+    "grade": "C",
+    "period": "early",
+    "stats": {
+      "melee": 45,
+      "ranged": 55,
+      "armor": 30,
+      "mobility": 70,
+      "discipline": 50,
+      "shock": 30
+    },
+    "tags": []
+  },
+  {
+    "id": "grk_cretans",
+    "name": "Cretan Archers",
+    "culture": "grk",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "archer",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 30,
+      "ranged": 80,
+      "armor": 20,
+      "mobility": 60,
+      "discipline": 60,
+      "shock": 10
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "grk_rhodians",
+    "name": "Rhodian Slingers",
+    "culture": "grk",
+    "class": "ranged",
+    "subtype": "slinger",
+    "archetype": "slinger",
+    "cost": 4,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 25,
+      "ranged": 75,
+      "armor": 10,
+      "mobility": 65,
+      "discipline": 50,
+      "shock": 5
+    },
+    "tags": []
+  },
+  {
+    "id": "grk_thessalians",
+    "name": "Thessalian Cavalry",
+    "culture": "grk",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 9,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 80,
+      "discipline": 65,
+      "shock": 75
+    },
+    "tags": []
+  },
+  {
+    "id": "grk_hippeis",
+    "name": "Athenian Hippeis",
+    "culture": "grk",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 5,
+    "grade": "C",
+    "period": "early",
+    "stats": {
+      "melee": 60,
+      "ranged": 10,
+      "armor": 40,
+      "mobility": 80,
+      "discipline": 60,
+      "shock": 60
+    },
+    "tags": []
+  },
+  {
+    "id": "grk_syracusan_cav",
+    "name": "Syracusan Cavalry",
+    "culture": "grk",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 8,
+    "grade": "B",
+    "period": "early",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 80,
+      "discipline": 65,
+      "shock": 75
+    },
+    "tags": []
+  },
+  {
+    "id": "per_immortals",
+    "name": "Immortals",
+    "culture": "per",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 11,
+    "grade": "A",
+    "period": "early",
+    "stats": {
+      "melee": 65,
+      "ranged": 35,
+      "armor": 60,
+      "mobility": 40,
+      "discipline": 70,
+      "shock": 40
+    },
+    "tags": [
+      "guard"
+    ]
+  },
+  {
+    "id": "per_apple_bearers",
+    "name": "Melophoroi (Apple-Bearers)",
+    "culture": "per",
+    "class": "shock",
+    "subtype": "elite_inf",
+    "archetype": "elite_inf",
+    "cost": 9,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 75,
+      "ranged": 10,
+      "armor": 60,
+      "mobility": 50,
+      "discipline": 80,
+      "shock": 55
+    },
+    "tags": [
+      "guard"
+    ]
+  },
+  {
+    "id": "per_kardakes",
+    "name": "Kardakes",
+    "culture": "per",
+    "class": "line",
+    "subtype": "hoplite",
+    "archetype": "hoplite",
+    "cost": 3,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 55,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 40,
+      "discipline": 55,
+      "shock": 35
+    },
+    "tags": []
+  },
+  {
+    "id": "per_sparabara",
+    "name": "Sparabara Levy",
+    "culture": "per",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "levy",
+    "cost": 3,
+    "grade": "D",
+    "period": "early",
+    "stats": {
+      "melee": 45,
+      "ranged": 20,
+      "armor": 40,
+      "mobility": 40,
+      "discipline": 45,
+      "shock": 30
+    },
+    "tags": [
+      "levy"
+    ]
+  },
+  {
+    "id": "per_greek_mercs",
+    "name": "Greek Mercenaries (Persian)",
+    "culture": "per",
+    "class": "line",
+    "subtype": "hoplite",
+    "archetype": "hoplite",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 68,
+      "ranged": 0,
+      "armor": 60,
+      "mobility": 35,
+      "discipline": 75,
+      "shock": 40
+    },
+    "tags": [
+      "mercenary"
+    ]
+  },
+  {
+    "id": "per_takabara",
+    "name": "Takabara",
+    "culture": "per",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "peltast",
+    "cost": 4,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 45,
+      "ranged": 55,
+      "armor": 30,
+      "mobility": 70,
+      "discipline": 50,
+      "shock": 30
+    },
+    "tags": []
+  },
+  {
+    "id": "per_archers",
+    "name": "Persian Archers",
+    "culture": "per",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "archer",
+    "cost": 4,
+    "grade": "D",
+    "period": "early",
+    "stats": {
+      "melee": 30,
+      "ranged": 70,
+      "armor": 20,
+      "mobility": 60,
+      "discipline": 55,
+      "shock": 10
+    },
+    "tags": []
+  },
+  {
+    "id": "per_mardians",
+    "name": "Mardian Archers",
+    "culture": "per",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "archer",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 35,
+      "ranged": 75,
+      "armor": 20,
+      "mobility": 65,
+      "discipline": 60,
+      "shock": 10
+    },
+    "tags": []
+  },
+  {
+    "id": "per_heavy_cav",
+    "name": "Persian Heavy Cavalry",
+    "culture": "per",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 9,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 55,
+      "mobility": 75,
+      "discipline": 60,
+      "shock": 75
+    },
+    "tags": []
+  },
+  {
+    "id": "per_bactrians",
+    "name": "Bactrian Cavalry",
+    "culture": "per",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 20,
+      "armor": 45,
+      "mobility": 80,
+      "discipline": 60,
+      "shock": 65
+    },
+    "tags": []
+  },
+  {
+    "id": "per_saka",
+    "name": "Saka Horse Archers (Allied)",
+    "culture": "per",
+    "class": "cavalry",
+    "subtype": "horse_archer",
+    "archetype": "horse_archer",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 40,
+      "ranged": 75,
+      "armor": 20,
+      "mobility": 95,
+      "discipline": 50,
+      "shock": 30
+    },
+    "tags": []
+  },
+  {
+    "id": "per_cappadocians",
+    "name": "Cappadocian Cavalry",
+    "culture": "per",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 4,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 55,
+      "ranged": 15,
+      "armor": 40,
+      "mobility": 80,
+      "discipline": 55,
+      "shock": 60
+    },
+    "tags": []
+  },
+  {
+    "id": "per_hyrcanians",
+    "name": "Hyrcanian Cavalry",
+    "culture": "per",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 4,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 60,
+      "ranged": 15,
+      "armor": 40,
+      "mobility": 80,
+      "discipline": 55,
+      "shock": 60
+    },
+    "tags": []
+  },
+  {
+    "id": "per_scythed",
+    "name": "Scythed Chariots",
+    "culture": "per",
+    "class": "special",
+    "subtype": "chariot",
+    "archetype": "scythed",
+    "cost": 2,
+    "grade": "F",
+    "period": "mid",
+    "stats": {
+      "melee": 45,
+      "ranged": 0,
+      "armor": 35,
+      "mobility": 85,
+      "discipline": 25,
+      "shock": 90
+    },
+    "tags": [
+      "chariot"
+    ]
+  },
+  {
+    "id": "per_elephants",
+    "name": "War Elephants (Gaugamela)",
+    "culture": "per",
+    "class": "special",
+    "subtype": "elephant",
+    "archetype": "elephant",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 60,
+      "mobility": 55,
+      "discipline": 30,
+      "shock": 80
+    },
+    "tags": [
+      "elephant"
+    ]
+  },
+  {
+    "id": "car_libyans",
+    "name": "Libyan Spearmen",
+    "culture": "car",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 8,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 65,
+      "mobility": 40,
+      "discipline": 75,
+      "shock": 45
+    },
+    "tags": []
+  },
+  {
+    "id": "car_libyan_vets",
+    "name": "Libyan Veterans (Roman Kit)",
+    "culture": "car",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 12,
+    "grade": "A",
+    "period": "late",
+    "stats": {
+      "melee": 77,
+      "ranged": 0,
+      "armor": 70,
+      "mobility": 45,
+      "discipline": 85,
+      "shock": 48
+    },
+    "tags": [
+      "veteran"
+    ]
+  },
+  {
+    "id": "car_sacred_band",
+    "name": "Sacred Band of Carthage",
+    "culture": "car",
+    "class": "shock",
+    "subtype": "elite_inf",
+    "archetype": "elite_inf",
+    "cost": 11,
+    "grade": "A",
+    "period": "mid",
+    "stats": {
+      "melee": 80,
+      "ranged": 0,
+      "armor": 75,
+      "mobility": 40,
+      "discipline": 85,
+      "shock": 55
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "car_citizens",
+    "name": "Citizen Militia",
+    "culture": "car",
+    "class": "line",
+    "subtype": "hoplite",
+    "archetype": "hoplite",
+    "cost": 3,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 55,
+      "ranged": 0,
+      "armor": 55,
+      "mobility": 35,
+      "discipline": 55,
+      "shock": 30
+    },
+    "tags": [
+      "levy"
+    ]
+  },
+  {
+    "id": "car_sicilian_greeks",
+    "name": "Sicilian Greek Mercenaries",
+    "culture": "car",
+    "class": "line",
+    "subtype": "hoplite",
+    "archetype": "hoplite",
+    "cost": 6,
+    "grade": "C",
+    "period": "early",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 60,
+      "mobility": 35,
+      "discipline": 70,
+      "shock": 40
+    },
+    "tags": [
+      "mercenary"
+    ]
+  },
+  {
+    "id": "car_scutarii",
+    "name": "Iberian Scutarii",
+    "culture": "car",
+    "class": "shock",
+    "subtype": "sword",
+    "archetype": "sword",
+    "cost": 8,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 50,
+      "discipline": 65,
+      "shock": 65
+    },
+    "tags": [
+      "mercenary"
+    ]
+  },
+  {
+    "id": "car_gauls",
+    "name": "Gallic Mercenaries",
+    "culture": "car",
+    "class": "shock",
+    "subtype": "warband",
+    "archetype": "warband",
+    "cost": 5,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 30,
+      "mobility": 55,
+      "discipline": 40,
+      "shock": 75
+    },
+    "tags": [
+      "mercenary"
+    ]
+  },
+  {
+    "id": "car_caetrati",
+    "name": "Iberian Caetrati",
+    "culture": "car",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "peltast",
+    "cost": 7,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 55,
+      "ranged": 55,
+      "armor": 30,
+      "mobility": 75,
+      "discipline": 55,
+      "shock": 30
+    },
+    "tags": [
+      "mercenary"
+    ]
+  },
+  {
+    "id": "car_ligurians",
+    "name": "Ligurian Mercenaries",
+    "culture": "car",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "peltast",
+    "cost": 5,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 50,
+      "ranged": 50,
+      "armor": 30,
+      "mobility": 75,
+      "discipline": 50,
+      "shock": 30
+    },
+    "tags": [
+      "mercenary"
+    ]
+  },
+  {
+    "id": "car_balearics",
+    "name": "Balearic Slingers",
+    "culture": "car",
+    "class": "ranged",
+    "subtype": "slinger",
+    "archetype": "slinger",
+    "cost": 6,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 25,
+      "ranged": 80,
+      "armor": 10,
+      "mobility": 65,
+      "discipline": 50,
+      "shock": 5
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "car_moorish_archers",
+    "name": "Moorish Archers",
+    "culture": "car",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "archer",
+    "cost": 3,
+    "grade": "D",
+    "period": "late",
+    "stats": {
+      "melee": 30,
+      "ranged": 60,
+      "armor": 20,
+      "mobility": 60,
+      "discipline": 45,
+      "shock": 10
+    },
+    "tags": []
+  },
+  {
+    "id": "car_numidians",
+    "name": "Numidian Cavalry",
+    "culture": "car",
+    "class": "cavalry",
+    "subtype": "light_cav",
+    "archetype": "light_cav",
+    "cost": 6,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 40,
+      "ranged": 60,
+      "armor": 15,
+      "mobility": 95,
+      "discipline": 55,
+      "shock": 30
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "car_iberian_cav",
+    "name": "Iberian Heavy Cavalry",
+    "culture": "car",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 8,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 75,
+      "discipline": 60,
+      "shock": 70
+    },
+    "tags": [
+      "mercenary"
+    ]
+  },
+  {
+    "id": "car_noble_cav",
+    "name": "Carthaginian Noble Cavalry",
+    "culture": "car",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 7,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 55,
+      "mobility": 70,
+      "discipline": 60,
+      "shock": 75
+    },
+    "tags": []
+  },
+  {
+    "id": "car_elephants",
+    "name": "War Elephants",
+    "culture": "car",
+    "class": "special",
+    "subtype": "elephant",
+    "archetype": "elephant",
+    "cost": 13,
+    "grade": "S",
+    "period": "late",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 70,
+      "mobility": 55,
+      "discipline": 40,
+      "shock": 90
+    },
+    "tags": [
+      "elephant"
+    ]
+  },
+  {
+    "id": "rom_hoplites",
+    "name": "Roman Hoplites (Servian)",
+    "culture": "rom",
+    "class": "line",
+    "subtype": "hoplite",
+    "archetype": "hoplite",
+    "cost": 5,
+    "grade": "C",
+    "period": "early",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 60,
+      "mobility": 35,
+      "discipline": 70,
+      "shock": 40
+    },
+    "tags": []
+  },
+  {
+    "id": "rom_hastati",
+    "name": "Hastati",
+    "culture": "rom",
+    "class": "line",
+    "subtype": "legion",
+    "archetype": "legion",
+    "cost": 9,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 20,
+      "armor": 50,
+      "mobility": 55,
+      "discipline": 70,
+      "shock": 55
+    },
+    "tags": [
+      "manipular"
+    ]
+  },
+  {
+    "id": "rom_principes",
+    "name": "Principes",
+    "culture": "rom",
+    "class": "line",
+    "subtype": "legion",
+    "archetype": "legion",
+    "cost": 10,
+    "grade": "A",
+    "period": "mid",
+    "stats": {
+      "melee": 70,
+      "ranged": 20,
+      "armor": 60,
+      "mobility": 50,
+      "discipline": 80,
+      "shock": 55
+    },
+    "tags": [
+      "manipular"
+    ]
+  },
+  {
+    "id": "rom_triarii",
+    "name": "Triarii",
+    "culture": "rom",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 8,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 70,
+      "mobility": 35,
+      "discipline": 90,
+      "shock": 35
+    },
+    "tags": [
+      "manipular",
+      "veteran"
+    ]
+  },
+  {
+    "id": "rom_veterans",
+    "name": "Punic War Veterans",
+    "culture": "rom",
+    "class": "line",
+    "subtype": "legion",
+    "archetype": "legion",
+    "cost": 15,
+    "grade": "S",
+    "period": "late",
+    "stats": {
+      "melee": 78,
+      "ranged": 20,
+      "armor": 65,
+      "mobility": 50,
+      "discipline": 90,
+      "shock": 60
+    },
+    "tags": [
+      "veteran"
+    ]
+  },
+  {
+    "id": "rom_leves",
+    "name": "Leves",
+    "culture": "rom",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "javelin",
+    "cost": 3,
+    "grade": "D",
+    "period": "early",
+    "stats": {
+      "melee": 40,
+      "ranged": 50,
+      "armor": 15,
+      "mobility": 80,
+      "discipline": 45,
+      "shock": 20
+    },
+    "tags": []
+  },
+  {
+    "id": "rom_velites",
+    "name": "Velites",
+    "culture": "rom",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "javelin",
+    "cost": 7,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 45,
+      "ranged": 60,
+      "armor": 20,
+      "mobility": 80,
+      "discipline": 60,
+      "shock": 25
+    },
+    "tags": []
+  },
+  {
+    "id": "rom_extraordinarii",
+    "name": "Extraordinarii",
+    "culture": "rom",
+    "class": "shock",
+    "subtype": "elite_inf",
+    "archetype": "elite_inf",
+    "cost": 10,
+    "grade": "A",
+    "period": "late",
+    "stats": {
+      "melee": 75,
+      "ranged": 10,
+      "armor": 60,
+      "mobility": 55,
+      "discipline": 80,
+      "shock": 60
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "rom_samnites",
+    "name": "Samnite Allies",
+    "culture": "rom",
+    "class": "shock",
+    "subtype": "sword",
+    "archetype": "sword",
+    "cost": 7,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 70,
+      "ranged": 10,
+      "armor": 45,
+      "mobility": 55,
+      "discipline": 60,
+      "shock": 65
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "rom_equites",
+    "name": "Roman Equites",
+    "culture": "rom",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 60,
+      "ranged": 5,
+      "armor": 40,
+      "mobility": 75,
+      "discipline": 60,
+      "shock": 60
+    },
+    "tags": []
+  },
+  {
+    "id": "rom_socii_cav",
+    "name": "Italian Allied Cavalry",
+    "culture": "rom",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 60,
+      "ranged": 10,
+      "armor": 40,
+      "mobility": 80,
+      "discipline": 60,
+      "shock": 60
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "rom_campanians",
+    "name": "Campanian Cavalry",
+    "culture": "rom",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 8,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 75,
+      "discipline": 65,
+      "shock": 75
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "rom_numidians",
+    "name": "Numidian Allies (Masinissa)",
+    "culture": "rom",
+    "class": "cavalry",
+    "subtype": "light_cav",
+    "archetype": "light_cav",
+    "cost": 6,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 40,
+      "ranged": 55,
+      "armor": 15,
+      "mobility": 95,
+      "discipline": 50,
+      "shock": 30
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "rom_archers",
+    "name": "Allied Archers",
+    "culture": "rom",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "archer",
+    "cost": 3,
+    "grade": "D",
+    "period": "late",
+    "stats": {
+      "melee": 30,
+      "ranged": 60,
+      "armor": 20,
+      "mobility": 60,
+      "discipline": 45,
+      "shock": 10
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "rom_slingers",
+    "name": "Allied Slingers",
+    "culture": "rom",
+    "class": "ranged",
+    "subtype": "slinger",
+    "archetype": "slinger",
+    "cost": 2,
+    "grade": "F",
+    "period": "late",
+    "stats": {
+      "melee": 25,
+      "ranged": 60,
+      "armor": 10,
+      "mobility": 65,
+      "discipline": 35,
+      "shock": 5
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "chn_qin_conscripts",
+    "name": "Qin Conscript Spearmen",
+    "culture": "chn",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 5,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 60,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 45,
+      "discipline": 65,
+      "shock": 40
+    },
+    "tags": [
+      "levy"
+    ]
+  },
+  {
+    "id": "chn_wuzu",
+    "name": "Wei Wuzu (Armored Infantry)",
+    "culture": "chn",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 13,
+    "grade": "S",
+    "period": "early",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 75,
+      "mobility": 40,
+      "discipline": 85,
+      "shock": 45
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "chn_ji",
+    "name": "Ji Halberdiers",
+    "culture": "chn",
+    "class": "line",
+    "subtype": "halberd",
+    "archetype": "halberd",
+    "cost": 7,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 40,
+      "discipline": 70,
+      "shock": 50
+    },
+    "tags": []
+  },
+  {
+    "id": "chn_ge",
+    "name": "Ge Dagger-Axe Infantry",
+    "culture": "chn",
+    "class": "line",
+    "subtype": "halberd",
+    "archetype": "halberd",
+    "cost": 5,
+    "grade": "C",
+    "period": "early",
+    "stats": {
+      "melee": 60,
+      "ranged": 0,
+      "armor": 45,
+      "mobility": 40,
+      "discipline": 60,
+      "shock": 45
+    },
+    "tags": []
+  },
+  {
+    "id": "chn_jiji",
+    "name": "Qi Technicians (Ji Ji)",
+    "culture": "chn",
+    "class": "shock",
+    "subtype": "elite_inf",
+    "archetype": "elite_inf",
+    "cost": 10,
+    "grade": "A",
+    "period": "mid",
+    "stats": {
+      "melee": 75,
+      "ranged": 5,
+      "armor": 55,
+      "mobility": 55,
+      "discipline": 80,
+      "shock": 55
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "chn_qin_sword",
+    "name": "Qin Sword Infantry",
+    "culture": "chn",
+    "class": "shock",
+    "subtype": "sword",
+    "archetype": "sword",
+    "cost": 7,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 50,
+      "discipline": 65,
+      "shock": 60
+    },
+    "tags": []
+  },
+  {
+    "id": "chn_crossbows",
+    "name": "Crossbowmen",
+    "culture": "chn",
+    "class": "ranged",
+    "subtype": "crossbow",
+    "archetype": "crossbow",
+    "cost": 10,
+    "grade": "A",
+    "period": "mid",
+    "stats": {
+      "melee": 25,
+      "ranged": 85,
+      "armor": 30,
+      "mobility": 45,
+      "discipline": 70,
+      "shock": 5
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "chn_heavy_crossbows",
+    "name": "Heavy Crossbow Batteries",
+    "culture": "chn",
+    "class": "ranged",
+    "subtype": "crossbow",
+    "archetype": "crossbow",
+    "cost": 8,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 20,
+      "ranged": 90,
+      "armor": 35,
+      "mobility": 35,
+      "discipline": 65,
+      "shock": 5
+    },
+    "tags": []
+  },
+  {
+    "id": "chn_chu_archers",
+    "name": "Chu Archers",
+    "culture": "chn",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "archer",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 30,
+      "ranged": 70,
+      "armor": 20,
+      "mobility": 60,
+      "discipline": 55,
+      "shock": 10
+    },
+    "tags": []
+  },
+  {
+    "id": "chn_skirmishers",
+    "name": "Light Skirmish Infantry",
+    "culture": "chn",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "javelin",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 45,
+      "ranged": 50,
+      "armor": 20,
+      "mobility": 80,
+      "discipline": 55,
+      "shock": 25
+    },
+    "tags": []
+  },
+  {
+    "id": "chn_zhao_cav",
+    "name": "Zhao Cavalry",
+    "culture": "chn",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 8,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 65,
+      "ranged": 20,
+      "armor": 40,
+      "mobility": 85,
+      "discipline": 60,
+      "shock": 65
+    },
+    "tags": []
+  },
+  {
+    "id": "chn_qin_cav",
+    "name": "Qin Cavalry",
+    "culture": "chn",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 6,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 60,
+      "ranged": 15,
+      "armor": 40,
+      "mobility": 80,
+      "discipline": 60,
+      "shock": 60
+    },
+    "tags": []
+  },
+  {
+    "id": "chn_zhao_ha",
+    "name": "Zhao Horse Archers",
+    "culture": "chn",
+    "class": "cavalry",
+    "subtype": "horse_archer",
+    "archetype": "horse_archer",
+    "cost": 8,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 40,
+      "ranged": 75,
+      "armor": 20,
+      "mobility": 95,
+      "discipline": 55,
+      "shock": 30
+    },
+    "tags": []
+  },
+  {
+    "id": "chn_yan_cav",
+    "name": "Yan Border Cavalry",
+    "culture": "chn",
+    "class": "cavalry",
+    "subtype": "light_cav",
+    "archetype": "light_cav",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 40,
+      "ranged": 50,
+      "armor": 15,
+      "mobility": 90,
+      "discipline": 50,
+      "shock": 30
+    },
+    "tags": []
+  },
+  {
+    "id": "chn_chariots",
+    "name": "War Chariots",
+    "culture": "chn",
+    "class": "special",
+    "subtype": "chariot",
+    "archetype": "chariot",
+    "cost": 5,
+    "grade": "C",
+    "period": "early",
+    "stats": {
+      "melee": 50,
+      "ranged": 30,
+      "armor": 45,
+      "mobility": 75,
+      "discipline": 45,
+      "shock": 70
+    },
+    "tags": [
+      "chariot"
+    ]
+  },
+  {
+    "id": "stp_scythian_ha",
+    "name": "Scythian Horse Archers",
+    "culture": "stp",
+    "class": "cavalry",
+    "subtype": "horse_archer",
+    "archetype": "horse_archer",
+    "cost": 8,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 40,
+      "ranged": 80,
+      "armor": 20,
+      "mobility": 95,
+      "discipline": 55,
+      "shock": 30
+    },
+    "tags": []
+  },
+  {
+    "id": "stp_saka_ha",
+    "name": "Saka Horse Archers",
+    "culture": "stp",
+    "class": "cavalry",
+    "subtype": "horse_archer",
+    "archetype": "horse_archer",
+    "cost": 8,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 40,
+      "ranged": 75,
+      "armor": 20,
+      "mobility": 95,
+      "discipline": 60,
+      "shock": 30
+    },
+    "tags": []
+  },
+  {
+    "id": "stp_dahae",
+    "name": "Dahae Horse Archers",
+    "culture": "stp",
+    "class": "cavalry",
+    "subtype": "horse_archer",
+    "archetype": "horse_archer",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 40,
+      "ranged": 70,
+      "armor": 20,
+      "mobility": 95,
+      "discipline": 50,
+      "shock": 30
+    },
+    "tags": []
+  },
+  {
+    "id": "stp_massagetae",
+    "name": "Massagetae Cataphracts",
+    "culture": "stp",
+    "class": "cavalry",
+    "subtype": "cataphract",
+    "archetype": "cataphract",
+    "cost": 9,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 75,
+      "mobility": 60,
+      "discipline": 65,
+      "shock": 85
+    },
+    "tags": [
+      "armored"
+    ]
+  },
+  {
+    "id": "stp_scythian_nobles",
+    "name": "Scythian Noble Lancers",
+    "culture": "stp",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 10,
+    "grade": "A",
+    "period": "mid",
+    "stats": {
+      "melee": 70,
+      "ranged": 10,
+      "armor": 55,
+      "mobility": 80,
+      "discipline": 65,
+      "shock": 80
+    },
+    "tags": []
+  },
+  {
+    "id": "stp_sarmatians",
+    "name": "Sarmatian Lancers",
+    "culture": "stp",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 10,
+    "grade": "A",
+    "period": "late",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 60,
+      "mobility": 75,
+      "discipline": 65,
+      "shock": 85
+    },
+    "tags": [
+      "lancer"
+    ]
+  },
+  {
+    "id": "stp_sogdians",
+    "name": "Bactrian-Sogdian Cavalry",
+    "culture": "stp",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 60,
+      "ranged": 25,
+      "armor": 40,
+      "mobility": 85,
+      "discipline": 60,
+      "shock": 60
+    },
+    "tags": []
+  },
+  {
+    "id": "stp_parni",
+    "name": "Parni Cavalry",
+    "culture": "stp",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 6,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 60,
+      "ranged": 25,
+      "armor": 40,
+      "mobility": 85,
+      "discipline": 55,
+      "shock": 60
+    },
+    "tags": []
+  },
+  {
+    "id": "stp_foot_archers",
+    "name": "Scythian Foot Archers",
+    "culture": "stp",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "archer",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 30,
+      "ranged": 75,
+      "armor": 20,
+      "mobility": 60,
+      "discipline": 55,
+      "shock": 10
+    },
+    "tags": []
+  },
+  {
+    "id": "stp_levy",
+    "name": "Steppe Levy Infantry",
+    "culture": "stp",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "levy",
+    "cost": 2,
+    "grade": "F",
+    "period": "mid",
+    "stats": {
+      "melee": 45,
+      "ranged": 0,
+      "armor": 35,
+      "mobility": 45,
+      "discipline": 45,
+      "shock": 30
+    },
+    "tags": [
+      "levy"
+    ]
+  },
+  {
+    "id": "stp_getae",
+    "name": "Getae Allied Infantry",
+    "culture": "stp",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 60,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 45,
+      "discipline": 65,
+      "shock": 40
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "stp_sindi",
+    "name": "Sindi-Maeotian Infantry",
+    "culture": "stp",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 60,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 45,
+      "discipline": 60,
+      "shock": 40
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "stp_getae_pelt",
+    "name": "Getae Peltasts",
+    "culture": "stp",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "peltast",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 50,
+      "ranged": 55,
+      "armor": 30,
+      "mobility": 70,
+      "discipline": 50,
+      "shock": 30
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "stp_axemen",
+    "name": "Steppe Axemen",
+    "culture": "stp",
+    "class": "shock",
+    "subtype": "warband",
+    "archetype": "warband",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 35,
+      "mobility": 55,
+      "discipline": 45,
+      "shock": 70
+    },
+    "tags": []
+  },
+  {
+    "id": "stp_camp_guard",
+    "name": "Camp Guard (Dismounted)",
+    "culture": "stp",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 15,
+      "armor": 50,
+      "mobility": 40,
+      "discipline": 70,
+      "shock": 40
+    },
+    "tags": []
+  },
+  {
+    "id": "ind_elephants",
+    "name": "War Elephants",
+    "culture": "ind",
+    "class": "special",
+    "subtype": "elephant",
+    "archetype": "elephant",
+    "cost": 13,
+    "grade": "S",
+    "period": "mid",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 70,
+      "mobility": 55,
+      "discipline": 45,
+      "shock": 90
+    },
+    "tags": [
+      "elephant"
+    ]
+  },
+  {
+    "id": "ind_armored_eleph",
+    "name": "Armored War Elephants",
+    "culture": "ind",
+    "class": "special",
+    "subtype": "elephant",
+    "archetype": "elephant",
+    "cost": 15,
+    "grade": "S",
+    "period": "late",
+    "stats": {
+      "melee": 80,
+      "ranged": 5,
+      "armor": 85,
+      "mobility": 50,
+      "discipline": 50,
+      "shock": 95
+    },
+    "tags": [
+      "elephant",
+      "elite"
+    ]
+  },
+  {
+    "id": "ind_longbows",
+    "name": "Indian Longbowmen",
+    "culture": "ind",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "longbow",
+    "cost": 9,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 35,
+      "ranged": 85,
+      "armor": 20,
+      "mobility": 50,
+      "discipline": 55,
+      "shock": 10
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "ind_hill_archers",
+    "name": "Hill Tribe Archers",
+    "culture": "ind",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "archer",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 30,
+      "ranged": 70,
+      "armor": 20,
+      "mobility": 65,
+      "discipline": 55,
+      "shock": 10
+    },
+    "tags": []
+  },
+  {
+    "id": "ind_kshatriya_sword",
+    "name": "Kshatriya Swordsmen",
+    "culture": "ind",
+    "class": "shock",
+    "subtype": "sword",
+    "archetype": "sword",
+    "cost": 8,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 50,
+      "discipline": 65,
+      "shock": 65
+    },
+    "tags": []
+  },
+  {
+    "id": "ind_mace",
+    "name": "Mace Infantry",
+    "culture": "ind",
+    "class": "shock",
+    "subtype": "sword",
+    "archetype": "sword",
+    "cost": 7,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 45,
+      "mobility": 50,
+      "discipline": 55,
+      "shock": 70
+    },
+    "tags": []
+  },
+  {
+    "id": "ind_levy",
+    "name": "Levy Spearmen",
+    "culture": "ind",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "levy",
+    "cost": 2,
+    "grade": "F",
+    "period": "mid",
+    "stats": {
+      "melee": 45,
+      "ranged": 0,
+      "armor": 35,
+      "mobility": 45,
+      "discipline": 45,
+      "shock": 30
+    },
+    "tags": [
+      "levy"
+    ]
+  },
+  {
+    "id": "ind_mauryan_inf",
+    "name": "Mauryan Infantry",
+    "culture": "ind",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 6,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 55,
+      "mobility": 40,
+      "discipline": 70,
+      "shock": 40
+    },
+    "tags": []
+  },
+  {
+    "id": "ind_guard",
+    "name": "Mauryan Guard Infantry",
+    "culture": "ind",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 8,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 65,
+      "mobility": 40,
+      "discipline": 75,
+      "shock": 40
+    },
+    "tags": [
+      "guard"
+    ]
+  },
+  {
+    "id": "ind_buckler",
+    "name": "Sword-and-Buckler Infantry",
+    "culture": "ind",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 45,
+      "discipline": 65,
+      "shock": 40
+    },
+    "tags": []
+  },
+  {
+    "id": "ind_javelins",
+    "name": "Javelin Skirmishers",
+    "culture": "ind",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "javelin",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 45,
+      "ranged": 60,
+      "armor": 20,
+      "mobility": 80,
+      "discipline": 50,
+      "shock": 25
+    },
+    "tags": []
+  },
+  {
+    "id": "ind_chariots",
+    "name": "Indian Chariots",
+    "culture": "ind",
+    "class": "special",
+    "subtype": "chariot",
+    "archetype": "chariot",
+    "cost": 3,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 50,
+      "ranged": 20,
+      "armor": 40,
+      "mobility": 75,
+      "discipline": 35,
+      "shock": 70
+    },
+    "tags": [
+      "chariot"
+    ]
+  },
+  {
+    "id": "ind_cavalry",
+    "name": "Indian Cavalry",
+    "culture": "ind",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 4,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 55,
+      "ranged": 15,
+      "armor": 35,
+      "mobility": 80,
+      "discipline": 50,
+      "shock": 55
+    },
+    "tags": []
+  },
+  {
+    "id": "ind_noble_cav",
+    "name": "Kshatriya Noble Cavalry",
+    "culture": "ind",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 7,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 45,
+      "mobility": 75,
+      "discipline": 55,
+      "shock": 70
+    },
+    "tags": []
+  },
+  {
+    "id": "ind_kamboja",
+    "name": "Kamboja Cavalry",
+    "culture": "ind",
+    "class": "cavalry",
+    "subtype": "medium_cav",
+    "archetype": "medium_cav",
+    "cost": 6,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 60,
+      "ranged": 20,
+      "armor": 40,
+      "mobility": 85,
+      "discipline": 60,
+      "shock": 65
+    },
+    "tags": [
+      "allied"
+    ]
+  },
+  {
+    "id": "gal_levy_warband",
+    "name": "Levy Warband",
+    "culture": "gal",
+    "class": "shock",
+    "subtype": "warband",
+    "archetype": "warband",
+    "cost": 3,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 55,
+      "ranged": 0,
+      "armor": 25,
+      "mobility": 55,
+      "discipline": 30,
+      "shock": 70
+    },
+    "tags": [
+      "levy"
+    ]
+  },
+  {
+    "id": "gal_warband",
+    "name": "Warband",
+    "culture": "gal",
+    "class": "shock",
+    "subtype": "warband",
+    "archetype": "warband",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 30,
+      "mobility": 55,
+      "discipline": 40,
+      "shock": 75
+    },
+    "tags": []
+  },
+  {
+    "id": "gal_boii",
+    "name": "Boii Warband",
+    "culture": "gal",
+    "class": "shock",
+    "subtype": "warband",
+    "archetype": "warband",
+    "cost": 6,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 30,
+      "mobility": 55,
+      "discipline": 40,
+      "shock": 80
+    },
+    "tags": []
+  },
+  {
+    "id": "gal_gaesatae",
+    "name": "Gaesatae",
+    "culture": "gal",
+    "class": "shock",
+    "subtype": "warband",
+    "archetype": "warband",
+    "cost": 8,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 20,
+      "mobility": 60,
+      "discipline": 40,
+      "shock": 90
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "gal_nobles",
+    "name": "Noble Retinue (Soldurii)",
+    "culture": "gal",
+    "class": "shock",
+    "subtype": "elite_inf",
+    "archetype": "elite_inf",
+    "cost": 10,
+    "grade": "A",
+    "period": "mid",
+    "stats": {
+      "melee": 80,
+      "ranged": 0,
+      "armor": 65,
+      "mobility": 50,
+      "discipline": 75,
+      "shock": 65
+    },
+    "tags": [
+      "elite"
+    ]
+  },
+  {
+    "id": "gal_celtiberians",
+    "name": "Celtiberian Mercenaries",
+    "culture": "gal",
+    "class": "shock",
+    "subtype": "sword",
+    "archetype": "sword",
+    "cost": 8,
+    "grade": "B",
+    "period": "late",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 55,
+      "mobility": 50,
+      "discipline": 65,
+      "shock": 65
+    },
+    "tags": [
+      "mercenary"
+    ]
+  },
+  {
+    "id": "gal_galatians",
+    "name": "Galatian Warband",
+    "culture": "gal",
+    "class": "shock",
+    "subtype": "warband",
+    "archetype": "warband",
+    "cost": 5,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 30,
+      "mobility": 55,
+      "discipline": 40,
+      "shock": 75
+    },
+    "tags": []
+  },
+  {
+    "id": "gal_spearmen",
+    "name": "Gallic Spearmen",
+    "culture": "gal",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 65,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 45,
+      "discipline": 60,
+      "shock": 45
+    },
+    "tags": []
+  },
+  {
+    "id": "gal_swordsmen",
+    "name": "Veteran Swordsmen",
+    "culture": "gal",
+    "class": "line",
+    "subtype": "spear",
+    "archetype": "spear",
+    "cost": 6,
+    "grade": "C",
+    "period": "late",
+    "stats": {
+      "melee": 75,
+      "ranged": 0,
+      "armor": 55,
+      "mobility": 45,
+      "discipline": 65,
+      "shock": 50
+    },
+    "tags": [
+      "veteran"
+    ]
+  },
+  {
+    "id": "gal_noble_cav",
+    "name": "Gallic Noble Cavalry",
+    "culture": "gal",
+    "class": "cavalry",
+    "subtype": "heavy_cav",
+    "archetype": "heavy_cav",
+    "cost": 8,
+    "grade": "B",
+    "period": "mid",
+    "stats": {
+      "melee": 70,
+      "ranged": 0,
+      "armor": 50,
+      "mobility": 75,
+      "discipline": 60,
+      "shock": 80
+    },
+    "tags": []
+  },
+  {
+    "id": "gal_light_cav",
+    "name": "Gallic Light Cavalry",
+    "culture": "gal",
+    "class": "cavalry",
+    "subtype": "light_cav",
+    "archetype": "light_cav",
+    "cost": 4,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 45,
+      "ranged": 40,
+      "armor": 15,
+      "mobility": 95,
+      "discipline": 50,
+      "shock": 35
+    },
+    "tags": []
+  },
+  {
+    "id": "gal_chariots",
+    "name": "Gallic Chariots",
+    "culture": "gal",
+    "class": "special",
+    "subtype": "chariot",
+    "archetype": "chariot",
+    "cost": 4,
+    "grade": "D",
+    "period": "early",
+    "stats": {
+      "melee": 50,
+      "ranged": 15,
+      "armor": 40,
+      "mobility": 80,
+      "discipline": 35,
+      "shock": 75
+    },
+    "tags": [
+      "chariot"
+    ]
+  },
+  {
+    "id": "gal_javelinmen",
+    "name": "Gallic Javelinmen",
+    "culture": "gal",
+    "class": "skirmish",
+    "subtype": "javelin",
+    "archetype": "javelin",
+    "cost": 5,
+    "grade": "C",
+    "period": "mid",
+    "stats": {
+      "melee": 45,
+      "ranged": 55,
+      "armor": 20,
+      "mobility": 80,
+      "discipline": 50,
+      "shock": 25
+    },
+    "tags": []
+  },
+  {
+    "id": "gal_slingers",
+    "name": "Gallic Slingers",
+    "culture": "gal",
+    "class": "ranged",
+    "subtype": "slinger",
+    "archetype": "slinger",
+    "cost": 2,
+    "grade": "F",
+    "period": "mid",
+    "stats": {
+      "melee": 25,
+      "ranged": 60,
+      "armor": 10,
+      "mobility": 65,
+      "discipline": 35,
+      "shock": 5
+    },
+    "tags": []
+  },
+  {
+    "id": "gal_archers",
+    "name": "Gallic Archers",
+    "culture": "gal",
+    "class": "ranged",
+    "subtype": "archer",
+    "archetype": "archer",
+    "cost": 3,
+    "grade": "D",
+    "period": "mid",
+    "stats": {
+      "melee": 30,
+      "ranged": 60,
+      "armor": 20,
+      "mobility": 60,
+      "discipline": 45,
+      "shock": 10
+    },
+    "tags": []
+  }
+]

@@ -1,0 +1,139 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Battle.dc.html": {
+      "h": 1020,
+      "is_interactive": true,
+      "title": "4 — Battle, step by step",
+      "w": 1440,
+      "x": 5800,
+      "y": 0
+    },
+    "Deploy.dc.html": {
+      "h": 980,
+      "is_interactive": true,
+      "title": "3 — Deploy: left, centre, right",
+      "w": 1440,
+      "x": 4280,
+      "y": 0
+    },
+    "Draft.dc.html": {
+      "h": 1320,
+      "is_interactive": true,
+      "title": "2 — The draft board",
+      "w": 1480,
+      "x": 2720,
+      "y": 0
+    },
+    "GeneralPick.dc.html": {
+      "h": 860,
+      "title": "1 — Pick a general",
+      "w": 1280,
+      "x": 1360,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 860,
+      "title": "Home",
+      "w": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "Phone-Home.dc.html": {
+      "h": 844,
+      "title": "Today — the daily muster",
+      "w": 390,
+      "x": 0,
+      "y": 1650
+    },
+    "Phone-General.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "1 — Your general",
+      "w": 390,
+      "x": 470,
+      "y": 1650
+    },
+    "Phone-Draft.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "2 — One row at a time",
+      "w": 390,
+      "x": 940,
+      "y": 1650
+    },
+    "Phone-Board.dc.html": {
+      "h": 844,
+      "title": "2b — The whole board, as a sheet",
+      "w": 390,
+      "x": 1410,
+      "y": 1650
+    },
+    "Phone-Deploy.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "3 — Tap a unit, tap a front",
+      "w": 390,
+      "x": 1880,
+      "y": 1650
+    },
+    "Phone-Battle.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "4 — Battle, one beat per tap",
+      "w": 390,
+      "x": 2350,
+      "y": 1650
+    },
+    "Phone-Result.dc.html": {
+      "h": 844,
+      "title": "5 — Result and what gets shared",
+      "w": 390,
+      "x": 2820,
+      "y": 1650
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-09-16T19:05:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "n1": {
+      "kind": "title1",
+      "maxW": 7240,
+      "text": "Desktop — the wide version of the run",
+      "w": 240,
+      "x": 0,
+      "y": -280
+    },
+    "n2": {
+      "kind": "title1",
+      "maxW": 3210,
+      "text": "The phone app — one run, start to finish",
+      "w": 240,
+      "x": 0,
+      "y": 1390
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "GeneralPick.dc.html",
+    "Draft.dc.html",
+    "Deploy.dc.html",
+    "Battle.dc.html",
+    "Phone-Home.dc.html",
+    "Phone-General.dc.html",
+    "Phone-Draft.dc.html",
+    "Phone-Board.dc.html",
+    "Phone-Deploy.dc.html",
+    "Phone-Battle.dc.html",
+    "Phone-Result.dc.html"
+  ],
+  "pages": [],
+  "title": "Warlord Draft — site design"
+}

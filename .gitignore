@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+out/
+dist/
+.next/
+.vercel/
+.env*.local
+apps/web/public/data/
+*.tsbuildinfo
