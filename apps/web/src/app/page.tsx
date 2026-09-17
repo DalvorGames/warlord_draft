@@ -39,7 +39,8 @@ export default function TodayPage() {
     });
   }, [engine, preview]);
 
-  const inProgress = hydrated && save && !save.finishedAt ? save : null;
+  // A finished campaign whose result screen has not been reached yet still resumes (the battle may be unwatched).
+  const inProgress = hydrated && save && save.stage !== "result" ? save : null;
   const dailyDone = history.find((h) => h.id === key);
   const yesterday = history.find((h) => h.kind === "daily" && h.id !== key) ?? history[0];
   const lastFive = history.slice(0, 5);

@@ -34,8 +34,9 @@ export interface CampaignContextValue {
   setRow(row: number): void;
   setStage(stage: Stage): void;
   setBattlePlan(i: number, plan: PlanName): void;
-  setBattleDeployment(i: number, deployment: Front[] | null): void;
-  giveBattle(i: number): void;
+  setBattleDeployment(i: number, deployment: (Front | null)[] | null): void;
+  /** Mark battle i fought with this plan; resolves it from inputs and ends the campaign if it is over. */
+  giveBattle(i: number, plan: PlanName): void;
   marchOn(): void;
 }
 
@@ -43,9 +44,9 @@ export interface CampaignContextValue {
 function resolveAll(engine: Engine, save: CampaignSave, army: Army): (BattleResult | null)[] {
   return save.spec.battles.map((spec, i) => {
     const play = save.battles[i];
-    if (!play.fought || !play.plan || !play.deployment) return null;
+    if (!play.fought || !play.plan || !play.deployment || play.deployment.some((f) => f === null)) return null;
     const foeArmy = engine.replayDraft(spec.foe).army!;
-    const mine: Army = { ...army, plan: play.plan, deployment: play.deployment };
+    const mine: Army = { ...army, plan: play.plan, deployment: play.deployment as Front[] };
     const foe: Army = { ...foeArmy, deployment: engine.aiDeploy(foeArmy, mine, spec.terrain) };
     return engine.resolve(mine, foe, spec.terrain, spec.battleSeed);
   });
@@ -83,8 +84,11 @@ export function CampaignProvider({ children }: { children: ReactNode }) {
   );
 
   const army = useMemo(() => {
-    if (!engine || !save) return null;
-    return engine.validate(save.draft).length === 0 ? engine.toArmy(save.draft) : null;
+    if (!engine || !save || save.draft.generalIndex === null) return null;
+    // The plan is chosen per battle at deploy; validate the draft with the general's own doctrine as a stand-in.
+    const general = engine.data.generalById.get(save.draft.generalPool[save.draft.generalIndex])!;
+    const draft: DraftState = { ...save.draft, plan: save.draft.plan ?? engine.data.rules.styleToPlan[general.style] };
+    return engine.validate(draft).length === 0 ? engine.toArmy(draft) : null;
   }, [engine, save]);
 
   const battles = useMemo<BattleView[]>(() => {
@@ -126,9 +130,9 @@ export function CampaignProvider({ children }: { children: ReactNode }) {
     setStage: (stage) => patch((s) => ({ ...s, stage })),
     setBattlePlan: (i, plan) => patch((s) => ({ ...s, battles: s.battles.map((b, j) => (j === i ? { ...b, plan } : b)) })),
     setBattleDeployment: (i, deployment) => patch((s) => ({ ...s, battles: s.battles.map((b, j) => (j === i ? { ...b, deployment } : b)) })),
-    giveBattle: (i) => {
+    giveBattle: (i, plan) => {
       if (!engine || !save || !army) return;
-      const next: CampaignSave = { ...save, stage: "battle", battleIndex: i, battles: save.battles.map((b, j) => (j === i ? { ...b, fought: true } : b)) };
+      const next: CampaignSave = { ...save, stage: "battle", battleIndex: i, battles: save.battles.map((b, j) => (j === i ? { ...b, plan, fought: true } : b)) };
       // Resolve now so the campaign's end is known and recorded once, from inputs only.
       const results = resolveAll(engine, next, army);
       const won = results.filter((r) => r?.winner === "A").length;
@@ -148,7 +152,7 @@ export function CampaignProvider({ children }: { children: ReactNode }) {
           lossPct,
           headline: lost ? `Fell at battle ${lastIdx + 1} to ${foeName}` : `Conquered, ${(lossPct * 100).toFixed(0)}% lost`,
           finishedAt,
-          runs: next.battles.filter((b) => b.fought).map((b) => engine.toRunString({ ...next.draft, plan: b.plan, deployment: b.deployment })),
+          runs: next.battles.filter((b) => b.fought).map((b) => engine.toRunString({ ...next.draft, plan: b.plan, deployment: b.deployment as Front[] })),
         };
         setHistory(storage.pushHistory(entry));
         next.finishedAt = finishedAt;

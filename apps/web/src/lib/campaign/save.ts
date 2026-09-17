@@ -8,7 +8,8 @@ export type Stage = "general" | "draft" | "deploy" | "battle" | "between" | "res
 
 export interface BattlePlay {
   plan: PlanName | null;
-  deployment: Front[] | null;
+  /** One entry per slot; null = not yet placed. All set before "Give battle". */
+  deployment: (Front | null)[] | null;
   /** Set once "Give battle" is pressed; the result is recomputed from inputs. */
   fought: boolean;
 }
