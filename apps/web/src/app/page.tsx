@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/AppHeader";
-import { EngineSmoke } from "@/components/EngineSmoke";
 import { Screen } from "@/components/Screen";
 import { TabBar } from "@/components/TabBar";
 import { useCampaign } from "@/lib/campaign/CampaignProvider";
@@ -142,9 +141,6 @@ export default function TodayPage() {
           <button type="button" disabled className="min-h-11 flex-1 basis-0 rounded-md border border-rule-btn bg-transparent px-2.5 py-[15px] text-sm text-faint-2">
             Replay a run
           </button>
-        </div>
-        <div className="mt-auto">
-          <EngineSmoke seed={seed} />
         </div>
       </main>
       <TabBar />
