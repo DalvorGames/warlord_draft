@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #14130F; }
+    a { color: #E08A5F; } a:hover { color: #F0A87F; }
+    button { font-family: inherit; cursor: pointer; }
+    @keyframes wdreel { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+    @keyframes wdland {
+      0% { transform: translateY(-9px); opacity: 0.2; }
+      55% { transform: translateY(2px); opacity: 1; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes wdflash {
+      0% { box-shadow: inset 0 0 0 1px #C9A227, 0 0 18px rgba(201, 162, 39, 0.35); }
+      100% { box-shadow: inset 0 0 0 1px transparent, 0 0 0 rgba(201, 162, 39, 0); }
+    }
+  </style>
+</helmet>
+<div style="width: 1480px; height: 1320px; box-sizing: border-box; background: #14130F; color: #EDE7D8; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; border-bottom: 1px solid #2E2A23; flex-shrink: 0;">
+    <a href="Main.dc.html" style="font-family: 'Instrument Serif', Georgia, serif; font-size: 22px; color: #EDE7D8; text-decoration: none;">Warlord Draft</a>
+    <div style="display: flex; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em;">
+      <a href="GeneralPick.dc.html" style="color: #8A8271; padding: 6px 16px; text-decoration: none;">1 GENERAL</a>
+      <span style="color: #EDE7D8; padding: 6px 16px; border-bottom: 2px solid {{accent}};">2 DRAFT</span>
+      <a href="Deploy.dc.html" style="color: #6F6858; padding: 6px 16px; text-decoration: none;">3 DEPLOY</a>
+      <span style="color: #6F6858; padding: 6px 16px;">4 BATTLE</span>
+    </div>
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8271;">SEED 1147</div>
+  </header>
+
+  <div style="flex-grow: 1; display: flex; gap: 24px; padding: 18px 32px 24px 32px; min-height: 0;">
+
+    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 9px; min-width: 0;">
+
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 2px;">
+        <div style="display: flex; align-items: baseline; gap: 16px;">
+          <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; font-weight: 400;">The board</h1>
+          <span style="font-size: 13px; color: #A39B89;">Each card says what taking it does. A row decides the culture on offer, not where the unit stands.</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="display: flex; align-items: center; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em;">
+            <span style="color: #C4BDAC;">&#9632; HOLDS A CENTRE</span>
+            <span style="color: #8FA9C4;">&#9632; WINS A WING</span>
+          </div>
+          <button type="button" onClick="{{rollAll}}" style="background: none; border: 1px solid #3D382F; color: #A39B89; font-size: 12px; padding: 7px 13px; border-radius: 2px;">Replay the roll</button>
+        </div>
+      </div>
+
+      <sc-for list="{{rows}}" as="row" hint-placeholder-count="8">
+        <div style="display: flex; gap: 14px; align-items: stretch;">
+
+          <div style="width: 118px; flex-shrink: 0; display: flex; flex-direction: column; gap: 5px; padding-top: 2px;">
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; color: {{row.slotColor}};">{{row.slot}}</div>
+            <div style="font-size: 12px; color: #A39B89; line-height: 1.3;">{{row.culture}}</div>
+            <sc-if value="{{row.canReroll}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{row.reroll}}" style="margin-top: 2px; background: none; border: 1px solid #3D382F; color: #A39B89; font-size: 11px; padding: 5px 8px; border-radius: 2px; text-align: left;">Reroll row</button>
+            </sc-if>
+            <sc-if value="{{row.locked}}" hint-placeholder-val="{{true}}">
+              <div style="margin-top: 2px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #C9A227; letter-spacing: 0.1em;">PICKED</div>
+            </sc-if>
+          </div>
+
+          <div style="flex-grow: 1; display: flex; gap: 10px; min-width: 0;">
+            <sc-for list="{{row.cards}}" as="card" hint-placeholder-count="4">
+              <div style="flex-grow: 1; flex-basis: 0; min-width: 0; height: 134px; position: relative;">
+
+                <sc-if value="{{card.spinning}}" hint-placeholder-val="{{true}}">
+                  <div style="position: absolute; inset: 0; background: #1A1813; border: 1px solid #2E2A23; border-radius: 3px; overflow: hidden;">
+                    <div style="animation: wdreel {{card.reelSpeed}} linear infinite; animation-delay: {{card.reelDelay}};">
+                      <sc-for list="{{card.reel}}" as="n" hint-placeholder-count="16">
+                        <div style="height: 27px; display: flex; align-items: center; gap: 8px; padding: 0 12px; box-sizing: border-box;">
+                          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #5C5749; width: 10px;">{{n.grade}}</span>
+                          <span style="font-size: 12px; color: #6F6858; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{n.name}}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div style="position: absolute; inset: 0; background: linear-gradient(#1A1813 0%, rgba(26, 24, 19, 0) 26%, rgba(26, 24, 19, 0) 74%, #1A1813 100%);"></div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{card.settled}}" hint-placeholder-val="{{true}}">
+                  <button type="button" onClick="{{card.pick}}" disabled="{{card.blocked}}" style="position: absolute; inset: 0; text-align: left; background: {{card.bg}}; border: 1px solid {{card.edge}}; border-radius: 3px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; opacity: {{card.opacity}}; animation: wdland 260ms ease-out 1, wdflash 700ms ease-out 1;">
+
+                    <div style="display: flex; align-items: flex-start; gap: 8px;">
+                      <span style="flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; background: {{card.gradeBg}}; color: {{card.gradeText}}; border: 1px solid {{card.gradeEdge}}; border-radius: 2px; padding: 2px 6px;">{{card.grade}}</span>
+                      <span style="font-size: 13px; font-weight: 500; color: #EDE7D8; line-height: 1.22;">{{card.name}}</span>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 7px;">
+                      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: {{card.classColor}}; border: 1px solid {{card.classEdge}}; border-radius: 2px; padding: 1px 5px;">{{card.klass}}</span>
+                      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #6F6858;">{{card.sub}}</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px;">
+                      <sc-for list="{{card.stats}}" as="s" hint-placeholder-count="6">
+                        <div style="display: flex; flex-direction: column; gap: 1px;">
+                          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.06em; color: #6F6858;">{{s.k}}</span>
+                          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{s.color}};">{{s.v}}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+
+                    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.08em; color: {{card.whyColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{card.why}}</div>
+
+                  </button>
+                </sc-if>
+
+              </div>
+            </sc-for>
+
+            <sc-if value="{{row.short}}" hint-placeholder-val="{{true}}">
+              <div style="flex-grow: 1; flex-basis: 0; min-width: 0; height: 134px; border: 1px dashed #2E2A23; border-radius: 3px; display: flex; align-items: center; justify-content: center; padding: 10px; text-align: center;">
+                <span style="font-size: 11px; color: #6F6858; line-height: 1.4;">India fields three cavalry units. The row deals what exists.</span>
+              </div>
+            </sc-if>
+          </div>
+
+        </div>
+      </sc-for>
+
+    </div>
+
+    <div style="width: 312px; flex-shrink: 0; display: flex; flex-direction: column; gap: 13px;">
+
+      <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 3px; padding: 18px 18px 16px 18px; display: flex; flex-direction: column; gap: 11px;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">YOUR GENERAL</div>
+        <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 26px; line-height: 1.1;">Ashoka</div>
+        <div style="font-size: 12px; color: #A39B89;">India &middot; attrition &middot; stands in the centre</div>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding-top: 3px;">
+          <sc-for list="{{generalStats}}" as="s" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.06em; color: #6F6858;">{{s.k}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: {{s.color}};">{{s.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 3px; padding: 18px; display: flex; flex-direction: column; gap: 13px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">SLOTS</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px;">{{filledLabel}}</span>
+        </div>
+        <div style="display: flex; gap: 5px;">
+          <sc-for list="{{pips}}" as="p" hint-placeholder-count="8">
+            <div style="flex-grow: 1; height: 5px; background: {{p.color}}; border-radius: 1px;"></div>
+          </sc-for>
+        </div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; padding-top: 6px; border-top: 1px solid #2A2720;">
+          <span style="font-size: 12px; color: #A39B89;">Elite units (S and A)</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{eliteColor}};">{{eliteLabel}}</span>
+        </div>
+        <div style="font-size: 11px; color: #6F6858; line-height: 1.45; margin-top: -7px;">{{eliteNote}}</div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; padding-top: 9px; border-top: 1px solid #2A2720;">
+          <span style="font-size: 12px; color: #A39B89;">Rerolls</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{rerollColor}};">{{rerollLabel}}</span>
+        </div>
+      </div>
+
+      <div style="background: #1C1A15; border: 1px solid #35312A; border-radius: 3px; padding: 18px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">CULTURES &middot; 4 FOR A TRAIT, 6 TO UPGRADE</div>
+        <sc-for list="{{tally}}" as="t" hint-placeholder-count="3">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between;">
+              <span style="font-size: 13px; color: #EDE7D8;">{{t.name}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8A8271;">{{t.count}}</span>
+            </div>
+            <div style="display: flex; gap: 3px;">
+              <sc-for list="{{t.cells}}" as="c" hint-placeholder-count="6">
+                <div style="flex-grow: 1; height: 4px; background: {{c.color}}; border-radius: 1px;"></div>
+              </sc-for>
+            </div>
+            <span style="font-size: 11px; color: {{t.noteColor}}; line-height: 1.4;">{{t.note}}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background: #191712; border: 1px dashed #322E27; border-radius: 3px; padding: 14px 18px; display: flex; flex-direction: column; gap: 6px;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #6F6858;">DOCTRINE</div>
+        <div style="font-size: 12px; color: #8A8271; line-height: 1.45;">Chosen at deployment, once you have seen his roster. Ashoka&rsquo;s own is defensive.</div>
+      </div>
+
+      <div style="flex-grow: 1;"></div>
+
+      <a href="Deploy.dc.html" style="display: block; text-align: center; text-decoration: none; background: {{ctaBg}}; border: 1px solid {{ctaEdge}}; color: {{ctaText}}; font-size: 14px; font-weight: 500; padding: 15px; border-radius: 2px;">{{ctaLabel}}</a>
+
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#C4562E","options":["#C4562E","#C9A227","#7D8C5C","#8A6FA8"]},"$preview":{"width":1480,"height":1320}}'>
+class Component extends DCLogic {
+
+  componentDidMount() {
+    this.timers = [];
+    this.rollAll();
+  }
+
+  componentWillUnmount() {
+    (this.timers || []).forEach((t) => clearTimeout(t));
+  }
+
+  board() {
+    // Board dealt by the engine for draft seed 1147 with Ashoka taken as general.
+    return [
+      { slot: 'LINE', culture: 'Rome', key: 'Rome', cards: [
+        ['Hastati', 'line', 'legion', 'B', [65, 20, 50, 55, 70, 55]],
+        ['Extraordinarii', 'shock', 'elite_inf', 'A', [75, 10, 60, 55, 80, 60]],
+        ['Triarii', 'line', 'spear', 'B', [70, 0, 70, 35, 90, 35]],
+        ['Roman Hoplites (Servian)', 'line', 'hoplite', 'C', [65, 0, 60, 35, 70, 40]]
+      ] },
+      { slot: 'LINE', culture: 'Warring States China', key: 'China', cards: [
+        ['Ge Dagger-Axe Infantry', 'line', 'halberd', 'C', [60, 0, 45, 40, 60, 45]],
+        ['Qin Conscript Spearmen', 'line', 'spear', 'C', [60, 0, 50, 45, 65, 40]],
+        ['War Chariots', 'special', 'chariot', 'C', [50, 30, 45, 75, 45, 70]],
+        ['Wei Wuzu (Armored Infantry)', 'line', 'spear', 'S', [75, 0, 75, 40, 85, 45]]
+      ] },
+      { slot: 'SHOCK', culture: 'India (Nanda / Maurya)', key: 'India', cards: [
+        ['Mace Infantry', 'shock', 'sword', 'B', [70, 0, 45, 50, 55, 70]],
+        ['Mauryan Guard Infantry', 'line', 'spear', 'B', [70, 0, 65, 40, 75, 40]],
+        ['Kshatriya Swordsmen', 'shock', 'sword', 'B', [75, 0, 50, 50, 65, 65]],
+        ['Kamboja Cavalry', 'cavalry', 'medium_cav', 'C', [60, 20, 40, 85, 60, 65]]
+      ] },
+      { slot: 'CAVALRY', culture: 'Achaemenid Persia', key: 'Persia', cards: [
+        ['Bactrian Cavalry', 'cavalry', 'medium_cav', 'C', [65, 20, 45, 80, 60, 65]],
+        ['Persian Heavy Cavalry', 'cavalry', 'heavy_cav', 'B', [65, 0, 55, 75, 60, 75]],
+        ['Saka Horse Archers (Allied)', 'cavalry', 'horse_archer', 'C', [40, 75, 20, 95, 50, 30]],
+        ['Hyrcanian Cavalry', 'cavalry', 'medium_cav', 'D', [60, 15, 40, 80, 55, 60]]
+      ] },
+      { slot: 'CAVALRY', culture: 'India (Nanda / Maurya)', key: 'India', short: true, cards: [
+        ['Kshatriya Noble Cavalry', 'cavalry', 'heavy_cav', 'B', [65, 0, 45, 75, 55, 70]],
+        ['Kamboja Cavalry', 'cavalry', 'medium_cav', 'C', [60, 20, 40, 85, 60, 65]],
+        ['Indian Cavalry', 'cavalry', 'medium_cav', 'D', [55, 15, 35, 80, 50, 55]]
+      ] },
+      { slot: 'RANGED', culture: 'India (Nanda / Maurya)', key: 'India', cards: [
+        ['Hill Tribe Archers', 'ranged', 'archer', 'C', [30, 70, 20, 65, 55, 10]],
+        ['Mauryan Infantry', 'line', 'spear', 'C', [65, 0, 55, 40, 70, 40]],
+        ['Javelin Skirmishers', 'skirmish', 'javelin', 'C', [45, 60, 20, 80, 50, 25]],
+        ['Indian Longbowmen', 'ranged', 'archer', 'B', [35, 85, 20, 50, 55, 10]]
+      ] },
+      { slot: 'RANGED', culture: 'India (Nanda / Maurya)', key: 'India', cards: [
+        ['Hill Tribe Archers', 'ranged', 'archer', 'C', [30, 70, 20, 65, 55, 10]],
+        ['Kshatriya Noble Cavalry', 'cavalry', 'heavy_cav', 'B', [65, 0, 45, 75, 55, 70]],
+        ['Javelin Skirmishers', 'skirmish', 'javelin', 'C', [45, 60, 20, 80, 50, 25]],
+        ['Indian Longbowmen', 'ranged', 'archer', 'B', [35, 85, 20, 50, 55, 10]]
+      ] },
+      { slot: 'FLEX', culture: 'India (Nanda / Maurya)', key: 'India', cards: [
+        ['Kshatriya Swordsmen', 'shock', 'sword', 'B', [75, 0, 50, 50, 65, 65]],
+        ['Sword-and-Buckler Infantry', 'line', 'spear', 'C', [70, 0, 50, 45, 65, 40]],
+        ['Javelin Skirmishers', 'skirmish', 'javelin', 'C', [45, 60, 20, 80, 50, 25]],
+        ['Kshatriya Noble Cavalry', 'cavalry', 'heavy_cav', 'B', [65, 0, 45, 75, 55, 70]]
+      ] }
+    ];
+  }
+
+  traits() {
+    return {
+      India: { name: 'Elephant Line', on: 'contact x1.08 on every front', up: 'contact x1.15, rampage chance halved' },
+      Rome: { name: 'Manipular Reserve', on: 'cohesion x1.10', up: 'never shaken by contact' },
+      China: { name: 'Crossbow Volleys', on: 'skirmish x1.20', up: 'skirmish x1.30 and heavier' },
+      Persia: { name: 'Weight of Numbers', on: 'one more elite slot', up: 'two more, and a steadier line' }
+    };
+  }
+
+  rollRow(r, base) {
+    const n = this.board()[r].cards.length;
+    this.setState((st) => {
+      const spin = Object.assign({}, st && st.spin);
+      spin[r] = n;
+      return { spin: spin };
+    });
+    for (let i = 0; i < n; i++) {
+      const t = setTimeout(() => {
+        this.setState((st) => {
+          const spin = Object.assign({}, st && st.spin);
+          spin[r] = n - 1 - i;
+          return { spin: spin };
+        });
+      }, base + 520 + i * 170);
+      this.timers.push(t);
+    }
+  }
+
+  rollAll() {
+    (this.timers || []).forEach((t) => clearTimeout(t));
+    this.timers = [];
+    for (let r = 0; r < 8; r++) this.rollRow(r, r * 90);
+  }
+
+  gradeStyle(g) {
+    if (g === 'S') return { gradeBg: '#C9A227', gradeText: '#14130F', gradeEdge: '#C9A227' };
+    if (g === 'A') return { gradeBg: '#D8CBAE', gradeText: '#14130F', gradeEdge: '#D8CBAE' };
+    if (g === 'B') return { gradeBg: '#9C9686', gradeText: '#14130F', gradeEdge: '#9C9686' };
+    if (g === 'C') return { gradeBg: 'transparent', gradeText: '#B8B1A0', gradeEdge: '#5F5949' };
+    return { gradeBg: 'transparent', gradeText: '#8A8271', gradeEdge: '#413C33' };
+  }
+
+  renderVals() {
+    const accent = this.props.accent ?? '#C4562E';
+    const st = this.state || {};
+    const spin = st.spin || {};
+    const picks = st.picks || { 0: 2, 1: 3, 2: 2, 4: 0, 5: 3 };
+    const rerolls = st.rerolls === undefined ? 2 : st.rerolls;
+    const data = this.board();
+    const traits = this.traits();
+    const keys = ['MEL', 'RNG', 'ARM', 'MOB', 'DIS', 'SHK'];
+    const wingish = { cavalry: true, skirmish: true, special: true };
+    const ELITE_CAP = 3;
+    const GENERAL_CULTURE = 'India';
+    const isElite = (g) => g === 'S' || g === 'A';
+
+    // Live counts from the current picks, general included.
+    const counts = {};
+    counts[GENERAL_CULTURE] = 1;
+    let eliteUsed = 0;
+    for (let r = 0; r < 8; r++) {
+      const c = picks[r];
+      if (c === null || c === undefined) continue;
+      counts[data[r].key] = (counts[data[r].key] || 0) + 1;
+      if (isElite(data[r].cards[c][3])) eliteUsed += 1;
+    }
+
+    const reelNames = data.map((row) => row.cards.map((c) => ({ grade: c[3], name: c[0] })));
+
+    const rows = data.map((r, ri) => {
+      const chosen = picks[ri];
+      const isPicked = chosen !== undefined && chosen !== null;
+      const spinning = spin[ri] === undefined ? 0 : spin[ri];
+      const pool = reelNames[ri].concat(reelNames[(ri + 3) % 8]).concat(reelNames[(ri + 5) % 8]).slice(0, 8);
+      const strip = pool.concat(pool);
+
+      // What this row currently contributes, so a swap within the row is judged from the same base.
+      const baseCount = (counts[r.key] || 0) - (isPicked ? 1 : 0);
+      const baseElite = eliteUsed - (isPicked && isElite(r.cards[chosen][3]) ? 1 : 0);
+
+      return {
+        slot: r.slot,
+        slotColor: isPicked && spinning === 0 ? '#6F6858' : '#EDE7D8',
+        culture: r.culture,
+        canReroll: spinning === 0 && !isPicked && rerolls > 0,
+        locked: spinning === 0 && isPicked,
+        short: !!r.short && spinning === 0,
+        reroll: () => {
+          if (rerolls <= 0) return;
+          this.setState({ rerolls: rerolls - 1 });
+          this.rollRow(ri, 0);
+        },
+        cards: r.cards.map((c, ci) => {
+          const isSpinning = ci < spinning;
+          const sel = chosen === ci;
+          const dimmed = isPicked && !sel;
+          const g = this.gradeStyle(c[3]);
+          const wing = !!wingish[c[1]];
+          const elite = isElite(c[3]);
+          const blocked = !sel && elite && baseElite >= ELITE_CAP;
+          const after = baseCount + 1;
+          const t = traits[r.key];
+          let why, whyColor;
+          if (blocked) {
+            why = 'ELITE CAP FULL — DROP ONE TO TAKE THIS';
+            whyColor = '#D9724F';
+          } else if (after === 4) {
+            why = r.key.toUpperCase() + ' 4 → ' + t.name.toUpperCase() + ' ON';
+            whyColor = '#C9A227';
+          } else if (after === 6) {
+            why = r.key.toUpperCase() + ' 6 → ' + t.name.toUpperCase() + ' II';
+            whyColor = '#C9A227';
+          } else if (elite) {
+            why = 'ELITE ' + (baseElite + 1) + ' OF ' + ELITE_CAP + ' · ' + r.key.toUpperCase() + ' ' + after;
+            whyColor = '#C4BDAC';
+          } else {
+            why = r.key.toUpperCase() + ' ' + after + (after < 4 ? ' OF 4' : ' OF 6');
+            whyColor = after >= 4 ? '#A39B89' : '#6F6858';
+          }
+          return Object.assign({
+            name: c[0],
+            klass: c[1].toUpperCase(),
+            classColor: wing ? '#8FA9C4' : '#C4BDAC',
+            classEdge: wing ? '#3F5062' : '#4A4538',
+            sub: c[2],
+            grade: c[3],
+            stats: keys.map((k, i) => ({ k: k, v: c[4][i], color: c[4][i] >= 75 ? '#C9A227' : (c[4][i] === 0 ? '#4E4A3F' : '#C4BDAC') })),
+            spinning: isSpinning,
+            settled: !isSpinning,
+            reel: strip,
+            reelSpeed: (360 + ci * 40) + 'ms',
+            reelDelay: (-ci * 80) + 'ms',
+            bg: sel ? '#2A2419' : '#1C1A15',
+            edge: sel ? accent : (blocked ? '#4A3228' : '#35312A'),
+            opacity: dimmed ? '0.42' : (blocked ? '0.6' : '1'),
+            blocked: blocked,
+            why: why,
+            whyColor: whyColor,
+            pick: () => {
+              if (blocked) return;
+              const next = Object.assign({}, picks);
+              next[ri] = sel ? null : ci;
+              this.setState({ picks: next });
+            }
+          }, g);
+        })
+      };
+    });
+
+    const filledIdx = [0, 1, 2, 3, 4, 5, 6, 7].filter((i) => picks[i] !== null && picks[i] !== undefined);
+    const filled = filledIdx.length;
+    const pips = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => ({
+      color: filledIdx.indexOf(i) > -1 ? '#C9A227' : '#2E2A23'
+    }));
+
+    const meter = (n, threshold) => [0, 1, 2, 3, 4, 5].map((i) => ({
+      color: i < n ? (n >= threshold ? '#C9A227' : '#7A7462') : '#2A2720'
+    }));
+
+    const tally = Object.keys(counts)
+      .sort((a, b) => counts[b] - counts[a])
+      .slice(0, 3)
+      .map((k) => {
+        const n = counts[k];
+        const t = traits[k];
+        let note, noteColor;
+        if (n >= 6) { note = t.name + ' II is on: ' + t.up + '.'; noteColor = '#C9A227'; }
+        else if (n >= 4) { note = t.name + ' is on: ' + t.on + '. ' + (6 - n) + ' more upgrades it.'; noteColor = '#C9A227'; }
+        else { note = (4 - n) + ' more for ' + t.name + '.'; noteColor = '#6F6858'; }
+        return {
+          name: k,
+          count: k === GENERAL_CULTURE ? n + ' (with Ashoka)' : String(n),
+          cells: meter(n, 4),
+          note: note,
+          noteColor: noteColor
+        };
+      });
+
+    return {
+      accent: accent,
+      rows: rows,
+      pips: pips,
+      tally: tally,
+      rollAll: () => this.rollAll(),
+      filledLabel: filled + ' of 8',
+      eliteLabel: eliteUsed + ' of ' + ELITE_CAP,
+      eliteColor: eliteUsed >= ELITE_CAP ? '#D9724F' : '#C9A227',
+      eliteNote: eliteUsed >= ELITE_CAP ? 'Full. S and A cards are locked until you drop one.' : 'Three, not two, because Ashoka’s logistics clears 80.',
+      rerollLabel: rerolls + ' of 2',
+      rerollColor: rerolls === 0 ? '#8A8271' : '#EDE7D8',
+      ctaLabel: filled === 8 ? 'Take it to the field' : (8 - filled) + ' slots still empty',
+      ctaBg: filled === 8 ? '#A8401F' : '#26221A',
+      ctaEdge: filled === 8 ? '#A8401F' : '#454036',
+      ctaText: filled === 8 ? '#F5EFE3' : '#8A8271',
+      generalStats: [
+        { k: 'CMD', v: 70, color: '#C4BDAC' },
+        { k: 'TAC', v: 65, color: '#C4BDAC' },
+        { k: 'LOG', v: 90, color: '#C9A227' },
+        { k: 'CHA', v: 75, color: '#C4BDAC' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

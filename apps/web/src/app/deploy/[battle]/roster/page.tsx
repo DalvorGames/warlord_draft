@@ -8,7 +8,7 @@ import { GradeChip } from "@/components/draft/GradeChip";
 import { StatGrid } from "@/components/draft/StatGrid";
 import { useCampaign } from "@/lib/campaign/CampaignProvider";
 import { enemyRead } from "@/lib/deployText";
-import { PLAN_LABEL, classTint, cultureName } from "@/lib/text";
+import { GENERAL_STATS, PLAN_LABEL, classTint, cultureColor, cultureName } from "@/lib/text";
 
 export default function RosterPage() {
   const params = useParams<{ battle: string }>();
@@ -17,23 +17,26 @@ export default function RosterPage() {
   const b = battles[n - 1];
   if (!engine || !b) return <Screen />;
   const g = engine.data.generalById.get(b.foe.generalId)!;
+  const cc = cultureColor(g.culture);
   const units = b.foe.slots.map((s) => engine.data.unitById.get(s.unitId)!);
   return (
     <Screen>
       <RunHeader back={`/deploy/${n}`} label={`His roster · Battle ${n}`} right={<Link href={`/deploy/${n}`} className="px-2 text-[13px] text-bone no-underline">Close</Link>} />
       <main className="flex grow flex-col gap-3 px-[18px] pb-6">
-        <div className="flex flex-col gap-0.5">
-          <span className="font-mono text-[9px] tracking-[0.14em] uppercase text-faint">{cultureName(engine, g.culture)}</span>
-          <span className="display text-[26px]">{g.name}</span>
-          <span className="font-mono text-[10px] text-faint-2">
-            CMD {g.stats.command} · TAC {g.stats.tactics} · LOG {g.stats.logistics} · CHA {g.stats.charisma} · {PLAN_LABEL[b.foe.plan]}
+        <div className="flex flex-col gap-1 rounded-lg px-4 py-3.5" style={{ background: cc.deep, border: `1px solid ${cc.bright}` }}>
+          <span className="font-mono text-[9px] tracking-[0.18em] uppercase" style={{ color: cc.bright }}>
+            {cultureName(engine, g.culture)}
+          </span>
+          <span className="display text-[26px] text-bone">{g.name}</span>
+          <span className="font-mono text-[10px]" style={{ color: "#e6decb" }}>
+            {GENERAL_STATS.map(([k, key]) => `${k} ${g.stats[key]}`).join(" · ")} · {PLAN_LABEL[b.foe.plan]}
           </span>
         </div>
         <p className="m-0 text-[13px] leading-snug text-dim">{enemyRead(engine, b.foe)}</p>
-        <p className="m-0 text-[11px] text-faint-2">You have his roster. You do not have his deployment, and he does not have yours.</p>
+        <p className="m-0 text-[11px] text-faint-2">You have his roster. You do not have his line, and he does not have yours.</p>
         <ul className="m-0 flex list-none flex-col gap-2 p-0">
           {units.map((u, k) => (
-            <li key={k} className="flex flex-col gap-2 rounded-lg border border-rule-2 bg-panel px-3.5 py-3">
+            <li key={k} className="flex flex-col gap-2 rounded-lg border border-rule bg-panel py-3 pr-3.5 pl-3.5" style={{ borderLeft: `3px solid ${cultureColor(u.culture).bright}` }}>
               <div className="flex items-center gap-2">
                 <GradeChip grade={u.grade} />
                 <span className="grow text-[15px] font-medium">{u.name}</span>

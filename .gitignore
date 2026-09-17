@@ -7,3 +7,8 @@ dist/
 .env*.local
 apps/web/public/data/
 *.tsbuildinfo
+
+# === Claude Code Game Studios local ===
+.claude/settings.local.json
+CLAUDE.local.md
+production/session-logs/

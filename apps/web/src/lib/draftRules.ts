@@ -2,7 +2,7 @@
 import type { DraftState, Engine, Grade } from "@warlord/engine";
 import { describeTrait, isElite, traitName, cultureShort } from "./text";
 
-export type Consequence = { text: string; tone: "brass" | "bone" | "faint" | "bad"; disabled: boolean };
+export type Consequence = { text: string; tone: "culture" | "bone" | "faint" | "bad"; disabled: boolean };
 
 /** The consequence line under card `card` of row `row`, given the current picks. */
 export function consequenceLine(engine: Engine, state: DraftState, row: number, card: number): Consequence {
@@ -25,8 +25,8 @@ export function consequenceLine(engine: Engine, state: DraftState, row: number, 
     const n = (s.cultureCounts[unit.culture] ?? 0) - (rowPickUnit && rowPickUnit.culture === unit.culture ? 1 : 0) + 1;
     return { text: elite ? `ELITE ${baseElite + 1} OF ${s.eliteCap} · ${own} ${n}` : `${own} ${n} OF ${t1}`, tone: elite ? "bone" : "faint", disabled: false };
   }
-  if (after === t1) return { text: already ? `${culture} ${t1} · ${trait} IS ON` : `${culture} ${t1} → ${trait} ON`, tone: "brass", disabled: false };
-  if (after === t2) return { text: already ? `${culture} ${t2} · ${trait} II IS ON` : `${culture} ${t2} → ${trait} II`, tone: "brass", disabled: false };
+  if (after === t1) return { text: already ? `${culture} ${t1} · ${trait} IS ON` : `${culture} ${t1} → ${trait} ON`, tone: "culture", disabled: false };
+  if (after === t2) return { text: already ? `${culture} ${t2} · ${trait} II IS ON` : `${culture} ${t2} → ${trait} II`, tone: "culture", disabled: false };
   if (elite) return { text: `ELITE ${baseElite + 1} OF ${s.eliteCap} · ${culture} ${after}`, tone: "bone", disabled: false };
   return { text: `${culture} ${after} OF ${after < t1 ? t1 : t2}`, tone: "faint", disabled: false };
 }
@@ -73,12 +73,12 @@ export function generalHint(engine: Engine, generalId: string): string {
   const cap = engine.data.rules.eliteCap;
   const c = engine.data.cultures[g.culture];
   const parts: string[] = [];
-  if (g.stats.logistics >= cap.logisticsThreshold) parts.push(`Logistics ${g.stats.logistics} buys a third elite slot.`);
-  if (g.stats.charisma >= 75) parts.push(`Charisma ${g.stats.charisma} raises every front's cohesion.`);
+  if (g.stats.logistics >= cap.logisticsThreshold) parts.push(`Supply ${g.stats.logistics} buys a third elite slot.`);
+  if (g.stats.charisma >= 75) parts.push(`Charisma ${g.stats.charisma} steadies every front.`);
   if (g.stats.command >= 75) parts.push(`Command ${g.stats.command} lifts every fight a little.`);
   if (g.stats.tactics >= 75) parts.push(`Tactics ${g.stats.tactics} sharpen the wings.`);
   if (!parts.length) parts.push("Nothing spikes.");
-  if (g.stats.logistics < cap.logisticsThreshold && parts.length < 2) parts.push(`Logistics ${g.stats.logistics} keeps you at ${cap.base === 2 ? "two" : cap.base} elites.`);
+  if (g.stats.logistics < cap.logisticsThreshold && parts.length < 2) parts.push(`Supply ${g.stats.logistics} keeps you at ${cap.base === 2 ? "two" : cap.base} elites.`);
   parts.push(`${c.trait}: ${describeTrait(c.level1)}.`);
   return parts.slice(0, 2).join(" ");
 }

@@ -1,5 +1,5 @@
 // Copy the Deploy screen derives from the rules and the enemy roster (handoff §3.4).
-import type { Army, Engine, PlanName, TerrainName } from "@warlord/engine";
+import type { Army, Engine, PlanName, TerrainName, Unit } from "@warlord/engine";
 import { WING_CLASSES } from "./text";
 
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight"];
@@ -30,7 +30,7 @@ export function planNote(engine: Engine, plan: PlanName, generalId: string): { t
   const bits: string[] = [];
   const x = (label: string, v: number) => v !== 1 && bits.push(`${label} ×${v.toFixed(2)}`);
   x("Skirmish", p.skirmish);
-  x("Contact", p.contact);
+  x("Clash", p.contact);
   x("Steadiness", p.steadiness);
   x("Center", p.center);
   x("Wings", p.wing);
@@ -39,26 +39,32 @@ export function planNote(engine: Engine, plan: PlanName, generalId: string): { t
   return { text: `${bits.join(", ")}. ${matches ? `Matches ${g.name.split(" ")[0]}: +${pct}% everywhere.` : `Off ${g.name.split(" ")[0]}’s style.`}`, matches };
 }
 
-/** What this ground does to the stakes of each kind of fight. */
-export function terrainNote(engine: Engine, terrain: TerrainName): string {
+/** The field's mono line: "FOREST · WINGS ×0.5 · SKIRMISH ×1.2". */
+export function terrainLine(engine: Engine, terrain: TerrainName): string {
   const t = engine.data.rules.fronts.terrain[terrain] ?? {};
   const bits: string[] = [];
-  const say = (k: string, v: number | undefined, label: string) => {
-    if (v === undefined || v === 1) return;
-    bits.push(`${label} ${v > 1 ? "count for more" : v <= 0.5 ? "count for half" : "count for less"}`);
-    void k;
-  };
-  say("wing", t.wing, "wing fights");
-  say("skirmish", t.skirmish, "the skirmish");
-  say("contact", t.contact, "the contact");
-  say("center", t.center, "the center press");
-  return bits.length ? `${terrain[0].toUpperCase()}${terrain.slice(1)}: ${bits.join(", ")}.` : `${terrain[0].toUpperCase()}${terrain.slice(1)}: nothing is weighted.`;
+  if (t.wing !== undefined && t.wing !== 1) bits.push(`WINGS ×${t.wing.toFixed(2).replace(/0$/, "")}`);
+  if (t.skirmish !== undefined && t.skirmish !== 1) bits.push(`SKIRMISH ×${t.skirmish.toFixed(2).replace(/0$/, "")}`);
+  if (t.contact !== undefined && t.contact !== 1) bits.push(`CLASH ×${t.contact.toFixed(2).replace(/0$/, "")}`);
+  if (t.center !== undefined && t.center !== 1) bits.push(`CENTER ×${t.center.toFixed(2).replace(/0$/, "")}`);
+  return [terrain.toUpperCase(), ...bits].join(" · ");
 }
 
 /** The cost of an empty front, from the rules: flat break shock plus the empty-front weight. */
 export function emptyFrontNote(engine: Engine, front: "L" | "C" | "R", generalName: string): string {
   const R = engine.data.rules.fronts;
-  if (front === "C") return `Empty. ${generalName.split(" ")[0]} would be standing alone: ${(R.centerBreakShock + R.emptyFrontWeight).toFixed(2)} on the spot.`;
-  const his = front === "L" ? "right" : "left";
-  return `Empty. It gives way at contact: ${(R.wingBreakShock + R.emptyFrontWeight).toFixed(2)} of the army, and his ${his} rolls into your center.`;
+  if (front === "C") return `Empty. ${generalName.split(" ")[0]} alone: ${(R.centerBreakShock + R.emptyFrontWeight).toFixed(2)}.`;
+  return `Empty. Gives way at the clash: ${(R.wingBreakShock + R.emptyFrontWeight).toFixed(2)}.`;
+}
+
+/** The inspector sentence (v2 §4.6), from the engine's press weights. */
+export function inspectorFit(unit: Unit): { wingScore: number; centerScore: number; text: string } {
+  const s = unit.stats;
+  const wingScore = Math.round(s.mobility * 0.4 + s.melee * 0.4 + s.shock * 0.2);
+  const centerScore = Math.round(s.melee * 0.5 + s.armor * 0.3 + s.discipline * 0.2);
+  let text: string;
+  if (unit.class === "ranged") text = `Shoots ${s.ranged} in the skirmish, then presses at only ${wingScore} on a wing, ${centerScore} in the center. Keep it where the fight is short.`;
+  else if (WING_CLASSES.has(unit.class)) text = `On a wing it presses at ${wingScore} and charges ${s.shock}. In the center it would grind at ${centerScore} and lose its Speed.`;
+  else text = `In the center it grinds at ${centerScore} and holds with Steady ${Math.round(s.discipline)}. On a wing it would press at only ${wingScore}.`;
+  return { wingScore, centerScore, text };
 }

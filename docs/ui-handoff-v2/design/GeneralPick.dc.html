@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #14130F; }
+    a { color: #E08A5F; } a:hover { color: #F0A87F; }
+    button { font-family: inherit; cursor: pointer; }
+  </style>
+</helmet>
+<div style="width: 1280px; height: 860px; box-sizing: border-box; background: #14130F; color: #EDE7D8; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; border-bottom: 1px solid #2E2A23;">
+    <a href="Main.dc.html" style="font-family: 'Instrument Serif', Georgia, serif; font-size: 22px; color: #EDE7D8; text-decoration: none;">Warlord Draft</a>
+    <div style="display: flex; align-items: center; gap: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em;">
+      <span style="color: #EDE7D8; padding: 6px 16px; border-bottom: 2px solid {{accent}};">1 GENERAL</span>
+      <span style="color: #6F6858; padding: 6px 16px;">2 DRAFT</span>
+      <span style="color: #6F6858; padding: 6px 16px;">3 DEPLOY</span>
+      <span style="color: #6F6858; padding: 6px 16px;">4 BATTLE</span>
+    </div>
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8271;">SEED 1147</div>
+  </header>
+
+  <div style="padding: 40px 48px 0 48px; display: flex; align-items: flex-end; justify-content: space-between;">
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 44px; font-weight: 400;">Three names came up. Take one.</h1>
+      <p style="margin: 0; font-size: 15px; color: #A39B89; max-width: 660px; line-height: 1.55;">Your general sets the doctrine that comes free, how many elite units you can field, which culture the board leans toward, and how steady your fronts are on the day. He counts as one unit of his own culture, and he stands in the centre.</p>
+    </div>
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A8271; text-align: right; line-height: 1.7;">DRAWN UNIFORM<br>FROM 81 GENERALS</div>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; gap: 20px; padding: 32px 48px 44px 48px;">
+    <sc-for list="{{generals}}" as="g" hint-placeholder-count="3">
+      <div style="flex-grow: 1; flex-basis: 0; background: #1C1A15; border: 1px solid {{g.edge}}; border-radius: 3px; padding: 26px 24px 24px 24px; display: flex; flex-direction: column; gap: 18px;">
+
+        <div style="display: flex; flex-direction: column; gap: 7px;">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; color: #8A8271;">{{g.culture}}</div>
+          <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 34px; line-height: 1.1;">{{g.name}}</div>
+          <div style="font-size: 13px; color: #A39B89; font-style: italic;">{{g.note}}</div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 9px;">
+          <sc-for list="{{g.stats}}" as="s" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: #8A8271; width: 74px;">{{s.label}}</span>
+              <div style="flex-grow: 1; height: 6px; background: #2A2720; border-radius: 1px;">
+                <div style="height: 6px; width: {{s.pct}}; background: {{s.fill}}; border-radius: 1px;"></div>
+              </div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; width: 26px; text-align: right;">{{s.value}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 0; border-top: 1px solid #2A2720; border-bottom: 1px solid #2A2720;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; color: #8A8271;">Doctrine, free</span>
+            <span style="font-size: 12px; color: #EDE7D8; border: 1px solid #454036; padding: 4px 10px; border-radius: 2px;">{{g.plan}}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; color: #8A8271;">Elite slots</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{g.eliteColor}};">{{g.elite}}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; color: #8A8271;">Board leans</span>
+            <span style="font-size: 12px;">{{g.lean}}</span>
+          </div>
+        </div>
+
+        <p style="margin: 0; font-size: 13px; line-height: 1.55; color: #A39B89; flex-grow: 1;">{{g.read}}</p>
+
+        <a href="Draft.dc.html" style="display: block; text-align: center; text-decoration: none; background: {{g.btnBg}}; border: 1px solid {{g.btnEdge}}; color: {{g.btnText}}; font-size: 14px; font-weight: 500; padding: 14px; border-radius: 2px;">{{g.cta}}</a>
+
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#C4562E","options":["#C4562E","#C9A227","#7D8C5C","#8A6FA8"]},"$preview":{"width":1280,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#C4562E';
+    const bar = (label, value) => ({ label: label, value: value, pct: value + '%', fill: value >= 85 ? '#C9A227' : '#7A7462' });
+    const list = [
+      {
+        name: 'Viridomarus', culture: 'GAULS & CELTS', note: 'Insubres; killed by Marcellus at Clastidium 222',
+        stats: [bar('COMMAND', 65), bar('TACTICS', 60), bar('LOGISTICS', 50), bar('CHARISMA', 80)],
+        plan: 'Aggressive', elite: '2 of 8', eliteColor: '#EDE7D8', lean: 'Gauls',
+        read: 'Charisma 80 raises every front’s cohesion threshold; logistics 50 keeps you at two elites. Furor multiplies contact, which is the stage that decides whether a wing is shaken for the rest of the battle.',
+        cta: 'Take the field with Viridomarus', btnBg: 'none', btnEdge: '#454036', btnText: '#EDE7D8', edge: '#35312A'
+      },
+      {
+        name: 'Ashoka', culture: 'INDIA (NANDA / MAURYA)', note: 'Kalinga 261 — before the remorse',
+        stats: [bar('COMMAND', 70), bar('TACTICS', 65), bar('LOGISTICS', 90), bar('CHARISMA', 75)],
+        plan: 'Defensive', elite: '3 of 8', eliteColor: '#C9A227', lean: 'India',
+        read: 'Logistics 90 buys a third elite. Elephant Line multiplies contact on all three fronts at once, and at six Indians the rampage chance halves — the trait that punishes elephants for losing the clash.',
+        cta: 'Take the field with Ashoka', btnBg: '#A8401F', btnEdge: '#A8401F', btnText: '#F5EFE3', edge: accent
+      },
+      {
+        name: 'Hasdrubal Barca', culture: 'CARTHAGE', note: 'Spain; Metaurus 207',
+        stats: [bar('COMMAND', 70), bar('TACTICS', 65), bar('LOGISTICS', 75), bar('CHARISMA', 65)],
+        plan: 'Aggressive', elite: '2 of 8', eliteColor: '#EDE7D8', lean: 'Carthage',
+        read: 'Nothing spikes. Mercenary Army scales every unit that is not Carthaginian, so his army wants to be broad rather than loyal — and broad is what the board gives you anyway.',
+        cta: 'Take the field with Hasdrubal', btnBg: 'none', btnEdge: '#454036', btnText: '#EDE7D8', edge: '#35312A'
+      }
+    ];
+    return { accent: accent, generals: list };
+  }
+}
+</script>
+</body>
+</html>

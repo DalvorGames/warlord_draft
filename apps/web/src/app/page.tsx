@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { AppHeader } from "@/components/AppHeader";
 import { Screen } from "@/components/Screen";
 import { TabBar } from "@/components/TabBar";
 import { useCampaign } from "@/lib/campaign/CampaignProvider";
 import { campaignFromSeed } from "@/lib/campaign/spec";
-import { dailyKey, formatMusterDate, seedFromKey } from "@/lib/daily";
-import { useEffect, useMemo, useState } from "react";
+import { dailyKey, seedFromKey } from "@/lib/daily";
+import { cultureColor, cultureShort } from "@/lib/text";
 
-const STAGE_LABEL: Record<string, string> = { general: "pick a general", draft: "the draft", deploy: "deploy", battle: "the battle", between: "between battles", result: "the result" };
+const STAGE_LABEL: Record<string, string> = { general: "pick a general", draft: "the draft", deploy: "the field", battle: "the battle", between: "between battles", result: "the result" };
 
 function routeFor(stage: string, row: number, battle: number): string {
   switch (stage) {
@@ -22,39 +23,35 @@ function routeFor(stage: string, row: number, battle: number): string {
     default: return "/result";
   }
 }
+const longDate = (d: Date) => d.toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long" });
+const dayOf = (iso: string) => new Date(iso).toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
 
 export default function TodayPage() {
   const router = useRouter();
   const { engine, hydrated, save, history, start, abandon } = useCampaign();
-  // The date is the player's local date, so it is only known on the client: compute after mount to keep
-  // the prerendered HTML and the first client render identical.
   const [today, setToday] = useState<{ key: string; seed: number; label: string } | null>(null);
   useEffect(() => {
     const key = dailyKey();
     // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only date, once after mount
-    setToday({ key, seed: seedFromKey(key), label: formatMusterDate() });
+    setToday({ key, seed: seedFromKey(key), label: longDate(new Date()) });
   }, []);
-  const key = today?.key ?? "";
-  const seed = today?.seed ?? 0;
   const preview = useMemo(() => (engine && today ? campaignFromSeed(engine, today.seed, today.key) : null), [engine, today]);
   const foes = useMemo(() => {
     if (!engine || !preview) return [];
     return preview.battles.map((b) => {
       const foe = engine.replayDraft(b.foe).army!;
       const g = engine.data.generalById.get(foe.generalId)!;
-      return { name: g.name, culture: engine.data.cultures[g.culture]?.name ?? g.culture, terrain: b.terrain };
+      return { name: g.name, culture: g.culture, short: cultureShort(engine, g.culture), terrain: b.terrain };
     });
   }, [engine, preview]);
 
-  // A finished campaign whose result screen has not been reached yet still resumes (the battle may be unwatched).
   const inProgress = hydrated && save && save.stage !== "result" ? save : null;
-  const dailyDone = today ? history.find((h) => h.id === key) : undefined;
-  const yesterday = history.find((h) => h.kind === "daily" && h.id !== key) ?? history[0];
+  const dailyDone = today ? history.find((h) => h.id === today.key) : undefined;
   const lastFive = history.slice(0, 5);
 
   const begin = (kind: "daily" | "free") => {
-    if (!engine) return;
-    if (kind === "daily") start("daily", seed, key);
+    if (!engine || !today) return;
+    if (kind === "daily") start("daily", today.seed, today.key);
     else {
       const s = Math.floor(Math.random() * 2147483647);
       start("free", s, `free-${s}`);
@@ -62,48 +59,40 @@ export default function TodayPage() {
     router.push("/general");
   };
 
-  const facts = [
-    { k: "SEED", v: today ? String(seed) : "…" },
-    { k: "BATTLES", v: "3" },
-    { k: "REROLLS", v: String(engine?.data.rules.rerolls ?? 2) },
-  ];
-
   return (
     <Screen>
       <AppHeader />
-      <main className="flex grow flex-col gap-3.5 px-[18px] pt-1 pb-4">
-        <section className="flex flex-col gap-3.5 rounded-lg border border-accent bg-panel px-[18px] pt-5 pb-[18px]">
-          <div className="flex items-baseline justify-between">
-            <span className="label text-accent">Today’s muster</span>
-            <span className="font-mono text-[10px] text-faint-2">{today?.label ?? ""}</span>
-          </div>
-          <h1 className="display m-0 text-[30px]">
-            One army. Three generals.
-            <br />
-            One attempt.
-          </h1>
-          <ul className="m-0 flex list-none flex-col gap-1 p-0">
-            {foes.map((f, i) => (
-              <li key={i} className="flex items-baseline gap-2 text-[13px]">
-                <span className="font-mono text-[10px] text-faint-2">{i + 1}</span>
-                <span className="text-bone">{f.name}</span>
-                <span className="text-faint">of {f.culture}</span>
-                <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.1em] text-dim">{f.terrain}</span>
-              </li>
-            ))}
-            {!foes.length && <li className="font-mono text-[10px] text-faint-2">Mustering the enemy…</li>}
-          </ul>
-          <div className="flex gap-2.5">
-            {facts.map((f) => (
-              <div key={f.k} className="flex flex-1 basis-0 flex-col gap-[3px] rounded-md border border-rule-2 bg-panel-2 px-2.5 py-[9px]">
-                <span className="label text-[8px] tracking-[0.1em] text-faint-2">{f.k}</span>
-                <span className="font-mono text-[13px] text-bone">{f.v}</span>
+      <main className="flex grow flex-col gap-4 px-[18px] pb-4">
+        <div className="display pt-1 text-center text-[22px] tracking-[0.14em] text-bone">TODAY’S MUSTER</div>
+        <section className="flex flex-col items-center gap-3 rounded-lg border border-rule bg-panel px-5 pt-[22px] pb-[18px] text-center" style={{ borderTop: "3px solid var(--rust)" }}>
+          <div className="flex items-end gap-1">
+            {[34, 52, 34].map((w, k) => (
+              <div key={k} className="flex h-[34px] items-center justify-center rounded-[3px] border border-dashed border-rule-btn font-mono text-xs text-faint-2" style={{ width: w }}>
+                ?
               </div>
             ))}
           </div>
+          <div className="display text-[26px] leading-[1.15]">{today?.label ?? " "}</div>
+          {foes.length ? (
+            <ul className="m-0 flex w-full list-none flex-col gap-1 p-0 text-left">
+              {foes.map((f, i) => (
+                <li key={i} className="flex items-baseline gap-2 text-[13px]">
+                  <span className="font-mono text-[10px] text-faint-2">{i + 1}</span>
+                  <span className="text-bone">{f.name}</span>
+                  <span style={{ color: cultureColor(f.culture).bright }}>of {f.short}</span>
+                  <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.1em] text-dim">{f.terrain}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="text-[13px] leading-normal text-dim">Three generals, three grounds, one army.<br />The same for everyone. One attempt.</div>
+          )}
+          <div className="font-mono text-[10px] tracking-[0.12em] text-faint-2">
+            SEED {today ? today.seed : "…"} · {engine?.data.rules.rerolls ?? 2} REROLLS · ABOUT 6 MIN
+          </div>
           {inProgress ? (
             <>
-              <Link href={routeFor(inProgress.stage, inProgress.row, inProgress.battleIndex)} className="flex min-h-11 items-center justify-center rounded-md bg-accent-fill px-4 py-[17px] text-[17px] font-semibold text-accent-text no-underline">
+              <Link href={routeFor(inProgress.stage, inProgress.row, inProgress.battleIndex)} className="box-border mt-1 flex min-h-11 w-full items-center justify-center rounded-[3px] bg-bone px-4 py-4 text-base font-semibold text-ink no-underline">
                 Resume — {inProgress.stage === "draft" ? `row ${inProgress.row + 1} of 8` : inProgress.stage === "general" ? "your general" : `battle ${inProgress.battleIndex + 1}, ${STAGE_LABEL[inProgress.stage]}`}
               </Link>
               {inProgress.kind === "free" && (
@@ -113,48 +102,44 @@ export default function TodayPage() {
               )}
             </>
           ) : dailyDone ? (
-            <div className="flex min-h-11 items-center justify-center rounded-md border border-rule-2 px-4 py-[15px] text-[15px] text-dim">
-              Today: {dailyDone.headline}
-            </div>
+            <div className="box-border mt-1 flex min-h-11 w-full items-center justify-center rounded-[3px] border border-rule px-4 py-[15px] text-[15px] text-dim">Today: {dailyDone.headline}</div>
           ) : (
-            <button type="button" disabled={!engine || !today} onClick={() => begin("daily")} className="flex min-h-11 items-center justify-center rounded-md bg-accent-fill px-4 py-[17px] text-[17px] font-semibold text-accent-text disabled:opacity-60">
-              Draft today’s army
+            <button type="button" disabled={!engine || !today} onClick={() => begin("daily")} className="box-border mt-1 flex min-h-11 w-full items-center justify-center rounded-[3px] bg-bone px-4 py-4 text-base font-semibold text-ink disabled:opacity-60">
+              Draft the army
             </button>
           )}
-          <div className="text-center text-xs text-faint-2">Draft once, fight three times. About six minutes.</div>
         </section>
 
-        {yesterday && (
-          <section className="flex flex-col gap-3 rounded-lg border border-rule-2 bg-panel px-[18px] py-4">
-            <div className="flex items-baseline justify-between">
-              <span className="label text-faint">{yesterday.kind === "daily" ? "Last daily" : "Last campaign"}</span>
-              <span className="font-mono text-[10px]" style={{ color: yesterday.won === yesterday.played && yesterday.played === 3 ? "var(--brass)" : "var(--bad)" }}>
-                {yesterday.won === 3 ? "CONQUERED" : `FELL AT BATTLE ${yesterday.played}`}
-              </span>
-            </div>
-            <p className="display m-0 text-[19px] leading-[1.35]">{yesterday.headline}</p>
-            <div className="flex items-center gap-2 border-t border-rule-3 pt-3">
-              <span className="label text-[9px] tracking-[0.1em] text-faint-2">Last five</span>
-              <div className="flex gap-1">
-                {lastFive.map((h) => {
-                  const w = h.won === 3;
-                  return (
-                    <div key={h.finishedAt} className="flex h-[18px] w-[18px] items-center justify-center rounded-sm border font-mono text-[10px]" style={{ background: w ? "var(--panel-sel)" : "transparent", borderColor: w ? "#7a6420" : "#3d382f", color: w ? "var(--brass)" : "var(--faint-2)" }}>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-baseline justify-between">
+            <span className="font-mono text-[9px] tracking-[0.16em] text-faint">THE LAST FIVE</span>
+          </div>
+          <div className="flex gap-[7px]">
+            {lastFive.length ? (
+              lastFive.map((h) => {
+                const w = h.won === 3;
+                return (
+                  <div key={h.finishedAt} className="flex min-h-11 grow basis-0 flex-col items-center gap-[5px] rounded-[3px] border px-1 pt-[9px] pb-2" style={{ background: w ? "var(--raised)" : "var(--sunk)", borderColor: w ? "var(--rule-btn)" : "var(--raised)" }}>
+                    <span className="font-mono text-[8px] tracking-[0.1em] text-faint-2">{dayOf(h.finishedAt)}</span>
+                    <span className="display text-[20px] leading-none" style={{ color: w ? "var(--bone)" : "var(--faint-2)" }}>
                       {w ? "W" : "L"}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-        )}
+                    </span>
+                    <span className="font-mono text-[8px] text-faint-2">{h.won}·{h.played}</span>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-xs text-faint-2">Nothing yet. Your first campaign lands here.</div>
+            )}
+          </div>
+        </div>
 
-        <div className="flex gap-2.5">
-          <button type="button" disabled={!engine || !!inProgress} onClick={() => begin("free")} className="min-h-11 flex-1 basis-0 rounded-md border border-rule-btn bg-transparent px-2.5 py-[15px] text-sm text-bone disabled:opacity-40">
-            Free campaign
+        <div className="flex gap-2">
+          <button type="button" disabled={!engine || !today || !!inProgress} onClick={() => begin("free")} className="box-border min-h-11 grow basis-0 rounded-[3px] border border-rule bg-transparent px-1.5 py-3 text-[13px] text-center disabled:opacity-40" style={{ color: "var(--center)" }}>
+            Free run
           </button>
-          <button type="button" disabled className="min-h-11 flex-1 basis-0 rounded-md border border-rule-btn bg-transparent px-2.5 py-[15px] text-sm text-faint-2">
-            Replay a run
+          <button type="button" disabled className="box-border min-h-11 grow basis-0 rounded-[3px] border border-dashed border-raised bg-transparent px-1.5 py-3 text-[13px] text-faint-2">
+            Replay a seed
           </button>
         </div>
       </main>

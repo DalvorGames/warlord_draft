@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #100F0C; }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: #E08A5F; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 1640px; box-sizing: border-box; background: #100F0C; color: #F2ECDD; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 0 12px 0 6px; height: 52px; flex-shrink: 0;">
+    <a href="Phone-Home.dc.html" aria-label="Back" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #B3AC9C; font-size: 20px; text-decoration: none;">&larr;</a>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: #B3AC9C;">HOW IT WORKS</span>
+    <a href="Phone-Glossary.dc.html" style="min-width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #F2ECDD; font-size: 13px; text-decoration: none; padding: 0 8px;">Numbers</a>
+  </header>
+
+  <div style="padding: 4px 18px 18px 18px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px;">
+    <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; font-weight: 400; line-height: 1.1;">One army a day.<br>About three minutes.</h1>
+    <span style="font-size: 12px; color: #9A9384; line-height: 1.45;">Everyone gets the same board. Draft it, place it, then watch it fight. Four steps.</span>
+  </div>
+
+  <div style="padding: 0 18px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px;">
+    <sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+      <div style="background: #1F1C17; border: 1px solid #3D3830; border-radius: 8px; padding: 14px 16px 16px 16px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: #F2ECDD; color: #100F0C; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center;">{{s.n}}</span>
+          <div style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
+            <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 22px; line-height: 1.1; color: #F2ECDD;">{{s.title}}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.14em; color: #6F6858;">{{s.kicker}}</span>
+          </div>
+        </div>
+
+        <sc-if value="{{s.is_general}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; gap: 8px; padding: 2px 0;">
+            <sc-for list="{{s.cards}}" as="c" hint-placeholder-count="3">
+              <div style="flex-grow: 1; flex-basis: 0; height: 58px; background: {{c.deep}}; border: 1px solid {{c.bright}}; border-radius: 4px; padding: 7px 9px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 7px; letter-spacing: 0.14em; color: {{c.bright}};">{{c.culture}}</span>
+                <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 15px; color: #F2ECDD; line-height: 1;">{{c.name}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{s.is_draft}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 4px; padding: 2px 0;">
+            <sc-for list="{{s.rows}}" as="r" hint-placeholder-count="8">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #6F6858; width: 12px; text-align: right;">{{r.n}}</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: {{r.color}}; width: 58px;">{{r.klass}}</span>
+                <div style="flex-grow: 1; display: flex; gap: 3px;">
+                  <div style="flex-grow: 1; height: 8px; background: {{r.c1}}; border-radius: 1px;"></div>
+                  <div style="flex-grow: 1; height: 8px; background: {{r.c2}}; border-radius: 1px;"></div>
+                  <div style="flex-grow: 1; height: 8px; background: {{r.c3}}; border-radius: 1px;"></div>
+                  <div style="flex-grow: 1; height: 8px; background: {{r.c4}}; border-radius: 1px;"></div>
+                </div>
+              </div>
+            </sc-for>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: #6F6858; padding: 3px 0 0 20px; letter-spacing: 0.06em;">4 CARDS A ROW · 3 IN CLASS, 1 WILD · CAVALRY ROWS ARE ALL CAVALRY</span>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{s.is_deploy}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; gap: 6px; padding: 2px 0;">
+            <sc-for list="{{s.fronts}}" as="f" hint-placeholder-count="3">
+              <div style="flex-grow: 1; flex-basis: 0; background: #16140F; border: 1px dashed #4A453C; border-radius: 4px; padding: 8px 8px 9px 8px; display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.14em; color: #9A9384;">{{f.label}}</span>
+                <div style="display: flex; gap: 3px; flex-wrap: wrap; justify-content: center;">
+                  <sc-for list="{{f.tokens}}" as="t" hint-placeholder-count="4">
+                    <span style="width: 16px; height: 16px; border-radius: 50%; background: {{t.bg}}; border: 1px solid {{t.edge}};"></span>
+                  </sc-for>
+                </div>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: {{f.wantColor}};">{{f.want}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{s.is_battle}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 2px 0;">
+            <sc-for list="{{s.stages}}" as="st" hint-placeholder-count="4">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: {{st.color}}; width: 62px;">{{st.label}}</span>
+                <span style="font-size: 11px; color: #C4BDAC; line-height: 1.35; flex-grow: 1;">{{st.text}}</span>
+              </div>
+            </sc-for>
+            <div style="display: flex; align-items: center; gap: 8px; padding-top: 6px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: #6F6858; width: 62px; letter-spacing: 0.1em;">MORALE</span>
+              <div style="flex-grow: 1; height: 8px; background: #16140F; border-radius: 1px; position: relative; overflow: hidden;">
+                <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 55%; background: #F2A23C; opacity: 0.85;"></div>
+                <div style="position: absolute; left: 80%; top: 0; bottom: 0; width: 1px; background: #F2ECDD;"></div>
+              </div>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #D9633C;">0.80 ROUT</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <span style="font-size: 13px; color: #C4BDAC; line-height: 1.5;">{{s.body}}</span>
+        <sc-for list="{{s.tips}}" as="t" hint-placeholder-count="2">
+          <div style="display: flex; gap: 8px; align-items: flex-start;">
+            <span style="flex-shrink: 0; width: 5px; height: 5px; border-radius: 50%; background: #D9633C; margin-top: 6px;"></span>
+            <span style="font-size: 12px; color: #B3AC9C; line-height: 1.45;">{{t.text}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="padding: 20px 18px 0 18px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #9A9384;">CULTURES &amp; TRAITS</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #6F6858;">4 UNITS WAKES IT · 6 DOUBLES IT</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+      <sc-for list="{{cultures}}" as="c" hint-placeholder-count="9">
+        <div style="background: {{c.deep}}; border: 1px solid {{c.bright}}; border-radius: 4px; padding: 8px 9px; display: flex; flex-direction: column; gap: 3px; min-height: 52px; box-sizing: border-box;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.12em; color: {{c.bright}};">{{c.name}}</span>
+          <span style="font-size: 11px; font-weight: 500; color: #F2ECDD; line-height: 1.2;">{{c.trait}}</span>
+          <span style="font-size: 9px; color: #E6DECB; opacity: 0.75; line-height: 1.3;">{{c.gist}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1;"></div>
+
+  <div style="flex-shrink: 0; border-top: 1px solid #2C2822; background: #16140F; padding: 12px 18px 28px 18px; display: flex; flex-direction: column; gap: 8px; margin-top: 20px;">
+    <a href="Phone-Glossary.dc.html" style="display: block; text-align: center; text-decoration: none; background: transparent; border: 1px solid #4A453C; color: #F2ECDD; font-size: 15px; font-weight: 500; padding: 14px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">What each number means</a>
+    <a href="Phone-General.dc.html" style="display: block; text-align: center; text-decoration: none; background: #F2ECDD; border: 1px solid #F2ECDD; color: #100F0C; font-size: 16px; font-weight: 600; padding: 15px; border-radius: 3px; min-height: 44px; box-sizing: border-box;">Play today&rsquo;s board</a>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":1640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const CUL = {
+      rom: ['ROME', '#6E1C1C', '#E4574F'], car: ['CARTHAGE', '#4A2A6B', '#B58AE0'], mac: ['MACEDON', '#1E3A6E', '#6E9BF0'],
+      grk: ['GREECE', '#16465A', '#4FC0E6'], per: ['PERSIA', '#124A44', '#38C7AC'], chn: ['CHINA', '#1E4A32', '#52C98A'],
+      ind: ['INDIA', '#6B3E12', '#F2A23C'], stp: ['STEPPE', '#4A4A1C', '#C9C45A'], gal: ['GAULS', '#5C2245', '#DA7AB0']
+    };
+    const wing = '#8FA9C4', centre = '#C4BDAC', off = '#2C2822', sel = '#F2ECDD';
+    const row = (n, klass, color, picked) => ({ n: n, klass: klass, color: color, c1: picked === 1 ? sel : off, c2: picked === 2 ? sel : off, c3: picked === 3 ? sel : off, c4: picked === 4 ? sel : off });
+    const tok = (deep, bright) => ({ bg: deep, edge: bright });
+    const tip = (t) => ({ text: t });
+
+    return {
+      steps: [
+        { n: '1', is_general: true, is_draft: false, is_deploy: false, is_battle: false, title: 'Take a general', kicker: 'THREE TURN OVER · ONE IS YOURS',
+          cards: [
+            { culture: CUL.gal[0], deep: CUL.gal[1], bright: CUL.gal[2], name: 'Viridomarus' },
+            { culture: CUL.ind[0], deep: CUL.ind[1], bright: CUL.ind[2], name: 'Ashoka' },
+            { culture: CUL.car[0], deep: CUL.car[1], bright: CUL.car[2], name: 'Hasdrubal' }
+          ],
+          body: 'His four numbers shape the whole army before you have drafted a single unit.',
+          tips: [tip('Supply 80+ lets you carry three elites instead of two.'), tip('Charisma makes every front stand longer. Command makes everything hit harder.')] },
+        { n: '2', is_general: false, is_draft: true, is_deploy: false, is_battle: false, title: 'Draft eight rows', kicker: 'ONE UNIT A ROW · TWO REROLLS',
+          rows: [row('1', 'LINE', centre, 3), row('2', 'LINE', centre, 4), row('3', 'SHOCK', centre, 3), row('4', 'CAVALRY', wing, 2), row('5', 'CAVALRY', wing, 1), row('6', 'RANGED', wing, 4), row('7', 'RANGED', wing, 4), row('8', 'FLEX', centre, 1)],
+          body: 'Each row deals four units from one culture. Take one, or reroll the row. Your general counts as a unit too.',
+          tips: [tip('Four units from one culture wakes its trait. Six wakes the stronger version.'), tip('S and A grades are elites. The cap is two, or three with the right general.')] },
+        { n: '3', is_general: false, is_draft: false, is_deploy: true, is_battle: false, title: 'Place them on three fronts', kicker: 'TAP A UNIT · TAP A FRONT',
+          fronts: [
+            { label: 'LEFT', tokens: [tok(CUL.per[1], CUL.per[2]), tok(CUL.ind[1], CUL.ind[2])], want: 'wants speed', wantColor: wing },
+            { label: 'CENTRE', tokens: [tok(CUL.rom[1], CUL.rom[2]), tok(CUL.chn[1], CUL.chn[2]), tok(CUL.ind[1], CUL.ind[2]), tok(CUL.ind[1], CUL.ind[2])], want: 'wants steady', wantColor: centre },
+            { label: 'RIGHT', tokens: [tok(CUL.ind[1], CUL.ind[2]), tok(CUL.ind[1], CUL.ind[2])], want: 'wants speed', wantColor: wing }
+          ],
+          body: 'Cavalry earns its keep on a wing. Heavy infantry holds the centre. A front with nobody on it breaks the moment it is touched.',
+          tips: [tip('Pick a doctrine: Aggressive, Defensive, Envelopment or Skirmish. It nudges every stage and how much your fronts can take.'), tip('Each front shows a cohesion word: FIRM, STEADY or BRITTLE. Fix BRITTLE before you fight.')] },
+        { n: '4', is_general: false, is_draft: false, is_deploy: false, is_battle: true, title: 'Watch it play out', kicker: 'ONE BEAT AT A TIME · NO INPUT',
+          stages: [
+            { label: 'SKIRMISH', color: '#4FC0E6', text: 'Arrows first. Shoot against their Armour.' },
+            { label: 'CLASH', color: '#F2A23C', text: 'The charge lands. Charge against Steady and Armour.' },
+            { label: 'PRESS', color: '#DA7AB0', text: 'The shoving match. Fight in the centre, Speed on the wings.' },
+            { label: 'BREAK', color: '#D9633C', text: 'A front that takes more than its cohesion runs.' }
+          ],
+          body: 'Each front fights its opposite. Losing a stage costs morale. Break both his wings and his centre is surrounded; at 0.80 morale an army routs.',
+          tips: [tip('Everyone plays the same board, so the ladder ranks how you won, then how much you lost.')] }
+      ],
+      cultures: [
+        { name: CUL.rom[0], deep: CUL.rom[1], bright: CUL.rom[2], trait: 'Manipular Reserve', gist: 'Fronts stand 10% longer' },
+        { name: CUL.car[0], deep: CUL.car[1], bright: CUL.car[2], trait: 'Mercenary Army', gist: 'Every foreign unit +5%' },
+        { name: CUL.mac[0], deep: CUL.mac[1], bright: CUL.mac[2], trait: 'Combined Arms', gist: 'Wings press +25%' },
+        { name: CUL.grk[0], deep: CUL.grk[1], bright: CUL.grk[2], trait: 'Hoplite Cohesion', gist: 'Greeks steadier, fronts firmer' },
+        { name: CUL.per[0], deep: CUL.per[1], bright: CUL.per[2], trait: 'Weight of Numbers', gist: 'One more elite slot' },
+        { name: CUL.chn[0], deep: CUL.chn[1], bright: CUL.chn[2], trait: 'Crossbow Volleys', gist: 'Skirmish +20%' },
+        { name: CUL.stp[0], deep: CUL.stp[1], bright: CUL.stp[2], trait: 'Refuse Battle', gist: 'Skirmish +25%' },
+        { name: CUL.ind[0], deep: CUL.ind[1], bright: CUL.ind[2], trait: 'Elephant Line', gist: 'Charge +8%' },
+        { name: CUL.gal[0], deep: CUL.gal[1], bright: CUL.gal[2], trait: 'Furor', gist: 'Charge +8%, less steady at 6' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

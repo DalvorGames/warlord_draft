@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif; background: #100F0C; }
+    button { font-family: inherit; cursor: pointer; }
+  </style>
+</helmet>
+<div style="width: 980px; height: 844px; box-sizing: border-box; background: #100F0C; color: #F2ECDD; display: flex; gap: 28px; padding: 30px 34px;">
+
+  <div style="width: 330px; flex-shrink: 0; display: flex; flex-direction: column; gap: 18px;">
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: #9A9384;">PALETTE V2</span>
+      <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1.1;">Colour is the culture.</span>
+      <span style="font-size: 13px; color: #B3AC9C; line-height: 1.5;">The neutrals lift one step so cards sit off the ground. Every culture gets a hue: a deep fill for a card, a bright one for text and edges. Grades stay achromatic, so hue means culture and nothing else. Buttons go bone.</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.16em; color: #9A9384;">NEUTRALS, LIFTED</span>
+      <div style="display: flex; gap: 6px;">
+        <sc-for list="{{neutrals}}" as="n" hint-placeholder-count="6">
+          <div style="flex-grow: 1; flex-basis: 0; display: flex; flex-direction: column; gap: 4px;">
+            <div style="height: 44px; background: {{n.hex}}; border: 1px solid #3D3830; border-radius: 3px;"></div>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: #9A9384;">{{n.hex}}</span>
+            <span style="font-size: 9px; color: #B3AC9C;">{{n.name}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.16em; color: #9A9384;">GRADES, ACHROMATIC — S IS BONE</span>
+      <div style="display: flex; gap: 6px;">
+        <sc-for list="{{grades}}" as="g" hint-placeholder-count="6">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; background: {{g.bg}}; color: {{g.text}}; border: 1px solid {{g.edge}}; border-radius: 2px; padding: 4px 10px;">{{g.g}}</span>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.16em; color: #9A9384;">BUTTONS</span>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" style="flex-grow: 1; background: #F2ECDD; border: 1px solid #F2ECDD; color: #100F0C; font-size: 14px; font-weight: 600; padding: 13px; border-radius: 3px;">Draft the army</button>
+        <button type="button" style="flex-grow: 1; background: none; border: 1px solid #4A453C; color: #F2ECDD; font-size: 14px; padding: 13px; border-radius: 3px;">Free run</button>
+      </div>
+      <span style="font-size: 11px; color: #9A9384; line-height: 1.45;">Bone on ink reads against any culture colour. Rust <span style="color: #D9633C;">#D9633C</span> stays for the current step and the reel flash.</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.16em; color: #9A9384;">A BATTLE IS YOUR COLOUR AGAINST HIS</span>
+      <div style="background: #1F1C17; border: 1px solid #3D3830; border-radius: 4px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">
+          <span style="color: #F2A23C;">ASHOKA &middot; INDIA</span>
+          <span style="color: #4FC0E6;">CHABRIAS &middot; GREECE</span>
+        </div>
+        <div style="display: flex; height: 8px; background: #2C2822; border-radius: 2px; position: relative;">
+          <div style="flex-grow: 1; flex-basis: 0; display: flex; justify-content: flex-end;"><div style="height: 8px; width: 100%; background: #F2A23C; border-radius: 2px 0 0 2px;"></div></div>
+          <div style="flex-grow: 1; flex-basis: 0;"><div style="height: 8px; width: 37%; background: #4FC0E6; border-radius: 0 2px 2px 0;"></div></div>
+          <div style="position: absolute; left: 50%; top: -3px; width: 1px; height: 14px; background: #9A9384;"></div>
+        </div>
+        <span style="font-size: 11px; color: #9A9384;">Every match looks different, because every general does.</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.16em; color: #9A9384;">NINE CULTURES &middot; DEEP FOR FILLS, BRIGHT FOR TEXT AND EDGES</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #6F6858;">BONE ON DEEP &ge; 7:1 &middot; BRIGHT ON GROUND &ge; 5:1</span>
+    </div>
+    <sc-for list="{{cultures}}" as="c" hint-placeholder-count="9">
+      <div style="display: flex; gap: 10px; align-items: stretch; height: 72px;">
+        <div style="width: 150px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+          <span style="font-size: 13px; color: #F2ECDD;">{{c.name}}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #9A9384;">{{c.deep}} &middot; {{c.bright}}</span>
+        </div>
+        <div style="width: 40px; background: {{c.deep}}; border-radius: 3px;"></div>
+        <div style="width: 40px; background: {{c.bright}}; border-radius: 3px;"></div>
+        <div style="flex-grow: 1; min-width: 0; background: {{c.deep}}; border: 1px solid {{c.bright}}; border-radius: 4px; padding: 9px 12px; display: flex; flex-direction: column; justify-content: center; gap: 4px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; background: {{c.gBg}}; color: {{c.gText}}; border: 1px solid {{c.gEdge}}; border-radius: 2px; padding: 1px 5px;">{{c.grade}}</span>
+            <span style="font-size: 13px; font-weight: 500; color: #F2ECDD;">{{c.unit}}</span>
+          </div>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: {{c.bright}};">{{c.trait}}</span>
+        </div>
+        <div style="width: 150px; flex-shrink: 0; background: #1F1C17; border: 1px solid #3D3830; border-left: 3px solid {{c.bright}}; border-radius: 3px; padding: 9px 12px; display: flex; flex-direction: column; justify-content: center; gap: 3px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 0.12em; color: {{c.bright}};">{{c.short}}</span>
+          <span style="font-size: 12px; color: #F2ECDD;">{{c.unit2}}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: #9A9384;">ON A NEUTRAL PANEL</span>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":980,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const g = (grade) => {
+      if (grade === 'S') return { gBg: '#F2ECDD', gText: '#100F0C', gEdge: '#FFFFFF' };
+      if (grade === 'A') return { gBg: '#BDB5A4', gText: '#100F0C', gEdge: '#BDB5A4' };
+      if (grade === 'B') return { gBg: '#7E786B', gText: '#100F0C', gEdge: '#7E786B' };
+      return { gBg: 'transparent', gText: '#C4BDAC', gEdge: '#6A6456' };
+    };
+    const c = (name, short, deep, bright, grade, unit, unit2, trait) => Object.assign({ name: name, short: short, deep: deep, bright: bright, grade: grade, unit: unit, unit2: unit2, trait: trait }, g(grade));
+    return {
+      neutrals: [
+        { hex: '#100F0C', name: 'ground' }, { hex: '#1F1C17', name: 'panel' }, { hex: '#2C2822', name: 'raised' },
+        { hex: '#3D3830', name: 'rule' }, { hex: '#9A9384', name: 'faint' }, { hex: '#F2ECDD', name: 'bone' }
+      ],
+      grades: [
+        Object.assign({ g: 'S' }, (() => { const x = g('S'); return { bg: x.gBg, text: x.gText, edge: x.gEdge }; })()),
+        Object.assign({ g: 'A' }, (() => { const x = g('A'); return { bg: x.gBg, text: x.gText, edge: x.gEdge }; })()),
+        Object.assign({ g: 'B' }, (() => { const x = g('B'); return { bg: x.gBg, text: x.gText, edge: x.gEdge }; })()),
+        { g: 'C', bg: 'transparent', text: '#C4BDAC', edge: '#6A6456' },
+        { g: 'D', bg: 'transparent', text: '#9A9384', edge: '#4A453C' },
+        { g: 'F', bg: 'transparent', text: '#9A9384', edge: '#4A453C' }
+      ],
+      cultures: [
+        c('Rome', 'ROME', '#6E1C1C', '#E4574F', 'S', 'Punic War Veterans', 'Triarii', 'MANIPULAR RESERVE'),
+        c('Carthage', 'CARTHAGE', '#4A2A6B', '#B58AE0', 'S', 'Libyan Veterans', 'Numidian Cavalry', 'MERCENARY ARMY'),
+        c('Macedon & Successors', 'MACEDON', '#1E3A6E', '#6E9BF0', 'S', 'Companion Cavalry', 'Pezhetairoi', 'COMBINED ARMS'),
+        c('Greek City-States', 'GREECE', '#16465A', '#4FC0E6', 'S', 'Spartan Hoplites', 'Cretan Archers', 'HOPLITE COHESION'),
+        c('Achaemenid Persia', 'PERSIA', '#124A44', '#38C7AC', 'A', 'Immortals', 'Persian Heavy Cavalry', 'WEIGHT OF NUMBERS'),
+        c('Warring States China', 'CHINA', '#1E4A32', '#52C98A', 'S', 'Wei Wuzu', 'Crossbowmen', 'CROSSBOW VOLLEYS'),
+        c('India (Nanda / Maurya)', 'INDIA', '#6B3E12', '#F2A23C', 'S', 'Armored War Elephants', 'Indian Longbowmen', 'ELEPHANT LINE'),
+        c('Steppe Nomads', 'STEPPE', '#4A4A1C', '#C9C45A', 'A', 'Massagetae Cataphracts', 'Scythian Horse Archers', 'REFUSE BATTLE'),
+        c('Gauls & Celts', 'GAULS', '#5C2245', '#DA7AB0', 'A', 'Noble Retinue (Soldurii)', 'Gaesatae', 'FUROR')
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
