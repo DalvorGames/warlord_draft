@@ -5,6 +5,7 @@
 import { mulberry32, type Rng } from "./rng.js";
 import { prepareArmy, type PreparedArmy, type PreparedUnit } from "./prepare.js";
 import { FRONTS, OPPOSITE } from "./deploy.js";
+import { frontThreshold } from "./preview.js";
 import type { Army, EventDef, Front, GameData, Side, TerrainName } from "./types.js";
 import type { BattleResult, Contribution, ResolveOptions } from "./resolve.js";
 
@@ -93,9 +94,7 @@ function frontageMult(data: GameData, n: number, oppN: number): number {
 }
 
 function threshold(s: SideState, units: PreparedUnit[]): number {
-  if (!units.length) return 0;
-  const mp = s.army.moraleParts;
-  return (0.55 + (avg(units, (u) => u.stats.discipline) / 100) * 0.35 + (mp.charisma / 100) * 0.2) * mp.mult;
+  return frontThreshold(s.army, units);
 }
 
 // ---------- scoring ----------

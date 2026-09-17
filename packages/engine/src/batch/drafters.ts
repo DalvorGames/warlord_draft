@@ -7,6 +7,8 @@ import type { Army, GameData, PlanName } from "../types.js";
 
 export type DrafterName = "random" | "greedy";
 export type Drafter = (data: GameData, draftSeed: number, botSeed: number) => Army;
+/** Same bots, returning the finished DraftState (plan set) so it can be serialised with toRunString. */
+export type DraftStateBot = (data: GameData, draftSeed: number, botSeed: number) => DraftState;
 
 const PLANS: PlanName[] = ["aggressive", "defensive", "envelopment", "skirmish"];
 const ELITE = new Set(["A", "S"]);
@@ -45,7 +47,7 @@ function pickFirstLegal(data: GameData, state: DraftState, row: number, order: n
 }
 
 /** Uniform random legal picks, random plan, no rerolls. Measures units, not drafting skill. */
-export const randomDrafter: Drafter = (data, draftSeed, botSeed) => {
+export const randomDraftState: DraftStateBot = (data, draftSeed, botSeed) => {
   const rng = mulberry32(botSeed);
   let state = startDraft(data, draftSeed);
   state = pickGeneral(data, state, rng.int(state.generalPool.length));
@@ -55,14 +57,15 @@ export const randomDrafter: Drafter = (data, draftSeed, botSeed) => {
     for (let i = order.length - 1; i > 0; i--) { const j = rng.int(i + 1); [order[i], order[j]] = [order[j], order[i]]; }
     state = pickFirstLegal(data, state, row, order);
   }
-  return withDeployment(data, toArmy(data, setPlan(state, rng.pick(PLANS))));
+  return setPlan(state, rng.pick(PLANS));
 };
+export const randomDrafter: Drafter = (data, d, b) => withDeployment(data, toArmy(data, randomDraftState(data, d, b)));
 
 /**
  * Greedy: on-class first, highest cost, chase culture thresholds, reroll the two weakest rows, plan = general's style.
  * A "reasonable player" baseline. Balance numbers should come from this bot.
  */
-export const greedyDrafter: Drafter = (data, draftSeed, botSeed) => {
+export const greedyDraftState: DraftStateBot = (data, draftSeed, botSeed) => {
   const rng = mulberry32(botSeed);
   let state = startDraft(data, draftSeed);
   state = pickGeneral(data, state, rng.int(state.generalPool.length));
@@ -114,7 +117,9 @@ export const greedyDrafter: Drafter = (data, draftSeed, botSeed) => {
     }
     state = next;
   }
-  return withDeployment(data, toArmy(data, setPlan(state, data.rules.styleToPlan[general.style])));
+  return setPlan(state, data.rules.styleToPlan[general.style]);
 };
+export const greedyDrafter: Drafter = (data, d, b) => withDeployment(data, toArmy(data, greedyDraftState(data, d, b)));
 
 export const DRAFTERS: Record<DrafterName, Drafter> = { random: randomDrafter, greedy: greedyDrafter };
+export const DRAFT_STATE_BOTS: Record<DrafterName, DraftStateBot> = { random: randomDraftState, greedy: greedyDraftState };

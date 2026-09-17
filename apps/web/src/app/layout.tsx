@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { EngineProvider } from "@/lib/engine/EngineProvider";
+import { CampaignProvider } from "@/lib/campaign/CampaignProvider";
 
 const display = Instrument_Serif({
   weight: "400",
@@ -36,7 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable} h-full`}>
       <body className="min-h-full flex flex-col">
-        <EngineProvider>{children}</EngineProvider>
+        <EngineProvider>
+          <CampaignProvider>{children}</CampaignProvider>
+        </EngineProvider>
       </body>
     </html>
   );
