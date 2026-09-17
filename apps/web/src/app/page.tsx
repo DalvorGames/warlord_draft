@@ -25,7 +25,7 @@ function routeFor(stage: string, row: number, battle: number): string {
 
 export default function TodayPage() {
   const router = useRouter();
-  const { engine, hydrated, save, history, start } = useCampaign();
+  const { engine, hydrated, save, history, start, abandon } = useCampaign();
   const key = dailyKey();
   const seed = seedFromKey(key);
   const preview = useMemo(() => (engine ? campaignFromSeed(engine, seed, key) : null), [engine, seed, key]);
@@ -94,9 +94,16 @@ export default function TodayPage() {
             ))}
           </div>
           {inProgress ? (
-            <Link href={routeFor(inProgress.stage, inProgress.row, inProgress.battleIndex)} className="flex min-h-11 items-center justify-center rounded-md bg-accent-fill px-4 py-[17px] text-[17px] font-semibold text-accent-text no-underline">
-              Resume — {inProgress.stage === "draft" ? `row ${inProgress.row + 1} of 8` : inProgress.stage === "general" ? "your general" : `battle ${inProgress.battleIndex + 1}, ${STAGE_LABEL[inProgress.stage]}`}
-            </Link>
+            <>
+              <Link href={routeFor(inProgress.stage, inProgress.row, inProgress.battleIndex)} className="flex min-h-11 items-center justify-center rounded-md bg-accent-fill px-4 py-[17px] text-[17px] font-semibold text-accent-text no-underline">
+                Resume — {inProgress.stage === "draft" ? `row ${inProgress.row + 1} of 8` : inProgress.stage === "general" ? "your general" : `battle ${inProgress.battleIndex + 1}, ${STAGE_LABEL[inProgress.stage]}`}
+              </Link>
+              {inProgress.kind === "free" && (
+                <button type="button" onClick={abandon} className="bg-transparent text-xs text-faint-2 underline">
+                  Abandon this free campaign
+                </button>
+              )}
+            </>
           ) : dailyDone ? (
             <div className="flex min-h-11 items-center justify-center rounded-md border border-rule-2 px-4 py-[15px] text-[15px] text-dim">
               Today: {dailyDone.headline}
@@ -135,7 +142,7 @@ export default function TodayPage() {
         )}
 
         <div className="flex gap-2.5">
-          <button type="button" disabled={!engine} onClick={() => begin("free")} className="min-h-11 flex-1 basis-0 rounded-md border border-rule-btn bg-transparent px-2.5 py-[15px] text-sm text-bone disabled:opacity-60">
+          <button type="button" disabled={!engine || !!inProgress} onClick={() => begin("free")} className="min-h-11 flex-1 basis-0 rounded-md border border-rule-btn bg-transparent px-2.5 py-[15px] text-sm text-bone disabled:opacity-40">
             Free campaign
           </button>
           <button type="button" disabled className="min-h-11 flex-1 basis-0 rounded-md border border-rule-btn bg-transparent px-2.5 py-[15px] text-sm text-faint-2">
