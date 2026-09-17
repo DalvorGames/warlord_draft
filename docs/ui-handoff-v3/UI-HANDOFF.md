@@ -6,7 +6,8 @@ changes it. Designed against the gameplay plan in `design/gdd/traits.md`, `campa
 `deployment.md`, none of which is built yet: the mocks show the game as it will be.*
 
 **The design:** `design/` beside this file — `canvas.json` is the artboard index, one `<name>.dc.html` per screen
-(`design/README.md` says how to read one); `renders/` has every artboard as a 2× PNG.
+(`design/README.md` says how to read one); `renders/` has every artboard as a 2× PNG. Row 7 of the canvas is the
+1v1 mode (§13).
 The same screens are live on the Design canvas at `https://claude.ai/artifact/XwCoVMGv3X69LmqUic67Cs`. Rows,
 top to bottom: **1 Today to the draft · 2 Deploy in four states · 3 Battle to Result · 4 Rules and Numbers ·
 5 Components · 6 Tokens.** Every phone artboard is 390×844 unless it scrolls (Between 1180, Result 1320–1460,
@@ -97,13 +98,19 @@ Tokens, fonts, culture colours and grades are exactly v2 §2. Additions:
 Today ─▶ 1 General ─▶ 2 Draft (×8 rows) ─▶ 3 Deploy ─▶ 4 Battle ─▶ Between (win) ─▶ 3 Deploy …
   │                      └─ Board sheet        └─ Enemy sheet        └─ Result (loss / win) ─▶ Today
   └─ RULES ◀─▶ NUMBERS ◀─ the ? on General and Deploy
+  └─ VERSUS (tab) ─▶ Room ─▶ 1v1 General ─▶ Draft ─▶ Deploy ─▶ Battle ─▶ Result ─▶ Rematch (§13)
 ```
 
 ### 3.1 Today (`Main`)
 Date as the title. One card: the three face-down cards with "Three generals are waiting"; the three foes as rows
 (name, culture in its bright, trait chips, ground, a three-step tier bar and a word: "a light army", "a full
 army", "at full strength, the hard one"); the muster line; the bone button. Below: THE LAST FIVE as five cells
-(W/L over the shape), STREAK, and THE LADDER in words before it exists. Tab bar TODAY · RULES.
+(W/L over the shape), STREAK, and THE LADDER in words before it exists. **Tab bar TODAY · VERSUS · RULES**; the
+wordmark alone in the header (Rules left it: it is a tab now).
+**A friend is waiting** (`Main-Invite`): while a room you were invited to is open, one row sits above the muster —
+his initial in his culture fill, "Sam is waiting for you.", `ROOM KJ4M7Q · 8 MIN LEFT`, **Join** — and the VERSUS
+tab carries a rust dot. The row is the whole link (44px tall, rust foot edge); it leaves when the room closes.
+The words carry it, the dot only repeats them.
 States (copy only, one artboard): first visit as drawn; run in progress → the button reads "Resume — battle 1,
 setting the line"; daily done → the headline replaces the button and the share card sits under it; loading →
 "Turning over today's board…" in the card, never a blank; corrupt save → "Yesterday's run could not be read. Start
@@ -203,6 +210,9 @@ the share card. Both: pinned "Share the result" + RUN, then "Back to today" and 
 One style: a back arrow on the left that always returns to the previous step (Deploy → the last draft row; the
 report has none), a mono title, and at most one text link on the right (`Numbers`, `Board`, `Skip`, `Rules`,
 `Replay`). No icon buttons, no circled `?`.
+**Tab screens** (Today, Versus, Rules) are the exception: no back arrow, the wordmark `WARLORD DRAFT · ERA I` on
+the left, and the tab bar pinned at the bottom with the current tab marked by a rust rule. Everything inside a
+run or a room hides the tab bar; leaving is always a named action (Back to today, Leave the room).
 
 ### 3.9 Rules (390×1900)
 Four numbered cards with diagrams made of real components (mini general cards with trait chips and handicaps; the
@@ -354,6 +364,89 @@ commentary, DAZN live updates); the key event as a filled callout inside the fee
 two lineups side by side on small pitches as the post-match teaching view (FotMob "Share lineup"); head-to-head
 stats as bars on one shared scale with the delta beside them (Box Box Club, Hevy); a daily with the date, a one-line
 read and the last days as a row of cells (The New Yorker "Today's Crossword").
+
+## 13. 1v1: play a friend
+
+*Added 2026-09-17. Nine artboards in row 7 of the canvas. The game concept lists 1v1 as a later phase; this is the
+UI for it, designed so that it reuses the run screens with three additions: a room, timers and presence. Decided
+with the designer the same day: **fully hidden draft, strictly live, watched separately.***
+
+### 13.1 Decisions
+1. **Same board, hidden.** Both players see the same three generals and the same eight rows. Picks are hidden
+   from each other until Deploy, where each sees the other's roster (never his line). Either may take the same
+   general; mirrors are allowed. The handicap does not apply.
+2. **Strictly live.** A room holds two players. Every step has a timer: general 45s, each draft row 40s, the line
+   90s. **At zero the game picks for you** (first card of the row, the default line). A player who leaves the room
+   for more than a minute lets the other claim the field.
+3. **One battle**, on a ground drawn when the second player joins. No campaign, no foe tiers.
+4. **Watched separately.** Each player steps through the same report at their own pace; a presence line says
+   where the other is. The reveal lands when each reaches the end.
+5. **A rematch keeps the room** and draws a new board. The room keeps a head-to-head record.
+6. Rerolls: two each, private. No free reroll in 1v1.
+
+### 13.2 Screens (`Versus-*`)
+**Getting there.** Three doors, in order of how often they are used:
+1. **The invite link** (`warlorddraft.app/v/KJ4M7Q`) opens the room directly, in the browser, signed in or not —
+   `Versus-Room-Ready` from the joiner's side. Most 1v1 games start here; the sender never sees Versus-Start
+   twice in a row either, because the Result's Rematch keeps the room.
+2. **A friend is waiting**: the Join row on Today (§3.1, `Main-Invite`) and the rust dot on the VERSUS tab, for
+   an invite that arrived while you were elsewhere in the app.
+3. **The VERSUS tab** in the bottom nav (`Versus-Start`), for creating a room cold or typing a code.
+Never a card for 1v1 in the muster: Today stays about today, and the tab is one tap away on every screen.
+
+- **Versus** (`Versus-Start`, a tab screen): the wordmark header, `VERSUS` over "One board, two generals." and
+  what 1v1 is in four sentences; **Create a room** (a code and a link); **Join a room** (six letters, or open the
+  link); the head-to-head record with a "Play again" per friend; the tab bar with VERSUS current.
+- **Room, waiting** (`Versus-Room-Waiting`): the six-letter code large, "Read it out, or send the link", Share the
+  link / Copy code, two avatars with VS and an empty seat, "Waiting for a second player. The room stays open for
+  ten minutes." Leave the room is the only footer action.
+- **Room, both in** (`Versus-Room-Ready`): the ground drawn and its two clauses; the timers, stated; a **split
+  ready-up** (Abode style): your half in your culture fill with a Ready button, his half with his state; "Starts
+  when both are ready."
+- **General** (`Versus-General`): the run screen with a **timer** in the header and a **presence line** under the
+  progress bar (`SAM · CHOOSING`). Copy: "Three names. You both see them. He may take the same one."
+- **Draft** (`Versus-Draft`): the run screen with the timer (rust under ten seconds), presence (`SAM · ROW 3 OF 8`),
+  the reroll control at two, and the hint "Same four cards on his screen. Your pick stays hidden until the line is
+  set."
+- **Deploy** (`Versus-Deploy`): the run screen. The enemy row reads "Sam with Fabius of Rome" and his eight
+  tokens, revealed now; matchup rings work as in the run. CTA **Lock the line**. Presence `SAM · PLACING`.
+- **Locked** (`Versus-Locked`): Deploy dimmed under a card: `YOUR LINE IS LOCKED` / "Sam is still placing." / the
+  countdown / **Unlock and change**. The battle starts the moment both lock, or when the timer runs out.
+- **Battle** (`Versus-Battle`): the report with both names on the scoreboard (MAX / SAM), presence `SAM · WATCHING ·
+  AT THE CLASH`, and the same controls. His side is his culture bright, hatched, as always.
+- **Result** (`Versus-Result`): a head-to-head card (you, the record, him), the turning point with the trait that
+  decided it, the chronicle, **both lines revealed**, two tiles, the share card (`Warlord Draft · 1v1 · KJ4M7Q`),
+  **Rematch** (primary) and Share; Back to today and Leave the room.
+
+### 13.3 Components
+| Thing | Spec |
+|---|---|
+| Room code | six characters, mono 26px in 44×56 boxes on `#16140F`; the same six in the header as `ROOM · KJ4M7Q`. Excludes 0/O and 1/I |
+| Timer | mono 14px 600 in the header's right slot; bone, **rust under ten seconds**; `aria-live="polite"` |
+| Presence line | 28px row under the header: an 8px dot (green `#52C98A` with a soft ring = here; faint = away; bone = done; rust = left) and `NAME · WHERE` in mono 11px. WHERE is one of CHOOSING, ROW n OF 8, PLACING, LOCKED, STILL PLACING · m:ss LEFT, WATCHING · AT <beat>, LEFT |
+| Ready-up halves | two culture-filled cards side by side, min 300px tall; yours carries the Ready button, his carries his state word |
+| Head-to-head record | `4 – 1` in mono 22px between the two names; kept per room, shown on Versus |
+| Tab bar | three tabs TODAY · VERSUS · RULES, mono 11px, current in bone under a 24×2 rust rule, others faint; a 7px rust dot at the top right of VERSUS while an invite is open, with `, invite waiting` for screen readers |
+| Invite row | 44px+ link card above the muster: 36px initial disc in the friend's culture fill, "<Name> is waiting for you.", `ROOM <code> · <n> MIN LEFT`, Join; rust 3px foot edge. One at a time — the newest invite wins |
+
+### 13.4 Rules the UI computes
+- Timer at zero: general → the first card; draft row → the first card; line → the run's default line and the
+  plan left as is. The pick is marked `AUTO` in the chronicle so the other player knows.
+- Leave: a player absent for 60s shows `SAM · LEFT` in rust and the other gets "Claim the field" beside "Keep
+  waiting". Claiming ends the match as a win by default; the record counts it.
+- The battle is the same deterministic resolve; both clients replay it from the two run strings, so "watched
+  separately" costs nothing on the server beyond presence.
+- Presence is sent on every step change and every 10s; the line shows the last known state with the dot faint
+  after 20s without word.
+
+### 13.5 What the engine and server need
+- Rooms: create / join by code / leave; a room holds two run strings, the drawn ground, the seed, ready states,
+  per-step deadlines and a record.
+- Invites: the link `/v/<code>` resolves to the room; Today asks once on load for "any open room that names
+  me" to draw the Join row and the tab dot. A room names a player by account, or by the link having been opened
+  on this device.
+- Deadlines are server-side; the client shows the countdown and submits the auto-pick when it fires.
+- Nothing in the resolver changes: `resolve(armyA, armyB, terrain, seed)` with two player armies.
 
 ## 10. Open items
 

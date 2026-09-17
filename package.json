@@ -2,11 +2,14 @@
   "name": "warlord-draft",
   "version": "0.2.0",
   "private": true,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "dev": "npm run dev -w apps/web",
     "build": "npm run build -w @warlord/engine && npm run build -w apps/web",
-    "test": "npm run test -w @warlord/engine",
+    "test": "npm run test -w @warlord/engine && npm run test -w @warlord/web",
     "typecheck": "npm run typecheck -w @warlord/engine && npm run typecheck -w apps/web",
     "engine": "npm run --silent -w @warlord/engine --"
   }

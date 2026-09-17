@@ -133,3 +133,14 @@ Next: measure and tune on the new data (battle 1 sits at about 70%, target 80%);
 - Decided with the designer: enemy on Deploy as an always-visible strip plus a sheet (roster page goes); tokens are abstract class shapes with a culture edge and a grade tick; morale shown as strength remaining with FIRM / STEADY / BRITTLE / ROUTED (display only); no "best pick" tag on draft cards.
 - Found while playing: Today already shows all three foes and grounds before the draft (answers Campaign open question 4); the board sheet shows every row from the start; draft card buttons have no accessible name; new battle beats land below the fold; Greece and Macedon are both blue in the battle bars; "RECKONING" is truncated.
 - Next: the user hands the v3 folder to a design session; mocks and an updated UI-HANDOFF come back.
+
+## 1v1 lobbies (2026-09-17, planned, not built)
+- Designer asked for a 1v1 mode with one-off lobbies; a design handoff is coming, then a plan before any build.
+- Direction agreed in principle: one battle per lobby, six-letter code + link, no accounts (per-device seat token),
+  same seed for both (general pool, board, ground), private simultaneous drafts with three rerolls, rosters revealed
+  when both lock, blind lines, resolve when both lines are in, each side sees the report from its own seat.
+- Storage: Supabase table behind Next route handlers (keys server-only); file store locally. Needs the designer to
+  create the project, run `supabase/` SQL, and set `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` on Vercel.
+- Engine needs only a result-flip helper (resolve as host vs guest, flip for the guest so the report stays A = you).
+- Sketch: extend `CampaignSave` with `kind: "duel"` so General, Draft, Deploy, Battle and Result are reused;
+  new routes `/1v1` (create) and `/1v1/[code]` (join, wait); route handlers under `/api/lobby`.

@@ -73,6 +73,14 @@
       "x": 470,
       "y": 1204
     },
+    "Deploy-Plan.dc.html": {
+      "h": 1180,
+      "is_interactive": true,
+      "title": "Deploy · plan open",
+      "w": 390,
+      "x": 1880,
+      "y": 1204
+    },
     "Deploy-Ready.dc.html": {
       "h": 844,
       "is_interactive": true,
@@ -160,13 +168,85 @@
       "x": 0,
       "y": 9684
     },
-    "Deploy-Plan.dc.html": {
-      "h": 1180,
-      "is_interactive": true,
-      "title": "Deploy · plan open",
+    "Versus-Start.dc.html": {
+      "x": 0,
+      "y": 11224,
       "w": 390,
+      "h": 844,
+      "title": "1v1 · Versus tab",
+      "is_interactive": true
+    },
+    "Versus-Room-Waiting.dc.html": {
+      "x": 470,
+      "y": 11224,
+      "w": 390,
+      "h": 844,
+      "title": "1v1 · Room, waiting",
+      "is_interactive": true
+    },
+    "Versus-Room-Ready.dc.html": {
+      "x": 940,
+      "y": 11224,
+      "w": 390,
+      "h": 844,
+      "title": "1v1 · Room, both in",
+      "is_interactive": true
+    },
+    "Versus-General.dc.html": {
+      "x": 1410,
+      "y": 11224,
+      "w": 390,
+      "h": 844,
+      "title": "1v1 · General",
+      "is_interactive": true
+    },
+    "Versus-Draft.dc.html": {
       "x": 1880,
-      "y": 1204
+      "y": 11224,
+      "w": 390,
+      "h": 844,
+      "title": "1v1 · Draft, hidden",
+      "is_interactive": true
+    },
+    "Versus-Deploy.dc.html": {
+      "x": 2350,
+      "y": 11224,
+      "w": 390,
+      "h": 844,
+      "title": "1v1 · Deploy",
+      "is_interactive": true
+    },
+    "Versus-Locked.dc.html": {
+      "x": 2820,
+      "y": 11224,
+      "w": 390,
+      "h": 844,
+      "title": "1v1 · Locked, waiting",
+      "is_interactive": true
+    },
+    "Versus-Battle.dc.html": {
+      "x": 3290,
+      "y": 11224,
+      "w": 390,
+      "h": 844,
+      "title": "1v1 · Battle, presence",
+      "is_interactive": true
+    },
+    "Versus-Result.dc.html": {
+      "x": 3760,
+      "y": 11224,
+      "w": 390,
+      "h": 1500,
+      "title": "1v1 · Result",
+      "is_interactive": true
+    },
+    "Main-Invite.dc.html": {
+      "x": 2350,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Today · a friend is waiting",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -187,7 +267,7 @@
     },
     "row1": {
       "kind": "title1",
-      "maxW": 2270,
+      "maxW": 2740,
       "text": "1 · Today to the draft",
       "w": 240,
       "x": 0,
@@ -234,15 +314,38 @@
       "y": 9454
     },
     "scroll": {
-      "x": 2820,
-      "y": 1204,
-      "w": 320,
+      "size": 24,
       "text": "Unit card open and Plan open are drawn taller than a phone on purpose: a tapped token or the plan expands a card underneath, the page grows, and it scrolls under the pinned button. Everything else on Deploy stays on one screen.",
-      "size": "m"
+      "w": 320,
+      "x": 2820,
+      "y": 1204
+    },
+    "row7": {
+      "kind": "title1",
+      "maxW": 4150,
+      "text": "7 · 1v1: play a friend",
+      "w": 240,
+      "x": 0,
+      "y": 10994
+    },
+    "vs": {
+      "x": 4230,
+      "y": 11224,
+      "w": 340,
+      "size": 24,
+      "text": "Decided 2026-09-17: fully hidden draft (same eight rows, no reveal until Deploy), strictly live with timers (general 45s, row 40s, line 90s; the game picks at zero), and the battle watched separately with a presence line. One battle, ground drawn by the room. A rematch keeps the room."
+    },
+    "entry": {
+      "x": 2820,
+      "y": 0,
+      "w": 340,
+      "size": 24,
+      "text": "Entry to 1v1: a third tab, VERSUS, in the bottom nav on every top-level screen. Today carries a Join row only while a friend is waiting in a room (rust dot on the tab, words on the page). An invite link opens the room directly and skips all of this."
     }
   },
   "order": [
     "Main.dc.html",
+    "Main-Invite.dc.html",
     "General.dc.html",
     "Draft-Line.dc.html",
     "Draft-Flex.dc.html",
@@ -262,7 +365,16 @@
     "Rules.dc.html",
     "Numbers.dc.html",
     "Components.dc.html",
-    "Tokens.dc.html"
+    "Tokens.dc.html",
+    "Versus-Start.dc.html",
+    "Versus-Room-Waiting.dc.html",
+    "Versus-Room-Ready.dc.html",
+    "Versus-General.dc.html",
+    "Versus-Draft.dc.html",
+    "Versus-Deploy.dc.html",
+    "Versus-Locked.dc.html",
+    "Versus-Battle.dc.html",
+    "Versus-Result.dc.html"
   ],
   "pages": [],
   "title": "Warlord Draft · UI v3"

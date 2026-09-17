@@ -10,13 +10,14 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "pretypecheck": "node scripts/sync-engine.mjs"
+    "pretypecheck": "node scripts/sync-engine.mjs",
+    "test": "vitest run"
   },
   "dependencies": {
+    "@warlord/engine": "*",
     "next": "16.3.5",
     "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "@warlord/engine": "*"
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -26,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.11"
   }
 }

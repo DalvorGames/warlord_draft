@@ -13,3 +13,4 @@ export * from "./preview.js";
 export * from "./beats.js";
 export * from "./traits.js";
 export * from "./campaign.js";
+export * from "./duel.js";

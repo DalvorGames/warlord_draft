@@ -23,7 +23,11 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    }
+    },
+    "./data/*": "./data/*"
   },
-  "files": ["dist", "data"]
+  "files": [
+    "dist",
+    "data"
+  ]
 }

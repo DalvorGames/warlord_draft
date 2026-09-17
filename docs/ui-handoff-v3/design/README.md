@@ -1,7 +1,7 @@
 # design/ — the artboards as files
 
 One `<name>.dc.html` per artboard and `canvas.json`, the index (frames on the canvas: x, y, w, h, title). Exported
-from the Design canvas at `https://claude.ai/artifact/XwCoVMGv3X69LmqUic67Cs` on 2026-09-17 (canvas version 13).
+from the Design canvas at `https://claude.ai/artifact/XwCoVMGv3X69LmqUic67Cs` on 2026-09-17 (canvas version 15).
 The canvas is the live copy; these files are the snapshot the handoff describes.
 
 ## Reading a .dc.html without the canvas runtime
@@ -21,6 +21,7 @@ canvas needs. The mocks are static: no `{{holes}}`, no state, so a browser rende
 | File | Screen | Size |
 |---|---|---|
 | Main | Today | 390×844 |
+| Main-Invite | Today with a friend waiting in a room (the Join row, the VERSUS tab dot) | 390×844 |
 | General | General pick, Epaminondas taken, one trait note open | 390×844 |
 | Draft-Line, Draft-Flex | Draft row 1 (line) and row 5 (flex), a stat note and a count note open | 390×844 |
 | Board | Board sheet over the row | 390×844 |
@@ -30,3 +31,4 @@ canvas needs. The mocks are static: no `{{holes}}`, no state, so a browser rende
 | Result-Loss, Result-Win | Loss (the captured run) and win (illustrative) | 390×1560, 390×1400 |
 | Rules, Numbers | The two reference pages | 390×1900, 390×2500 |
 | Components, Tokens | The component sheet and the token sheet | 1280 wide |
+| Versus-Start (the VERSUS tab), -Room-Waiting, -Room-Ready, -General, -Draft, -Deploy, -Locked, -Battle, -Result | 1v1: play a friend (handoff §13) | 390×844, Result 1500 |
