@@ -9,6 +9,7 @@ import { Screen } from "@/components/Screen";
 import { TraitChip } from "@/components/ui/TraitChip";
 import { LineReveal } from "@/components/ui/LineReveal";
 import { useCampaign } from "@/lib/campaign/CampaignProvider";
+import { DuelResult } from "@/components/versus/DuelResult";
 import { chronicle, endedLabel } from "@/lib/battleView";
 import { TERRAIN_WORD, cultureColor, cultureShort, firstName, traitDef } from "@/lib/text";
 
@@ -19,7 +20,7 @@ function fmtDate(iso: string): string {
 
 export default function ResultPage() {
   const router = useRouter();
-  const { engine, hydrated, save, army, general, battles, score, abandon, setStage } = useCampaign();
+  const { engine, hydrated, save, army, general, battles, score, duel, abandon, setStage } = useCampaign();
   const [copied, setCopied] = useState<string | null>(null);
   const [shownBattle, setShownBattle] = useState<number | null>(null);
   const fought = useMemo(() => battles.filter((b) => b.result), [battles]);
@@ -32,6 +33,7 @@ export default function ResultPage() {
     else if (save && save.stage !== "result") setStage("result");
   }, [engine, hydrated, save, score.over, router, setStage]);
 
+  if (save?.kind === "duel" && engine && army && general && duel) return <DuelResult />;
   if (!engine || !save || !army || !general || !fought.length) return <Screen />;
   const mine = cultureColor(general.culture);
   const last = fought[fought.length - 1];

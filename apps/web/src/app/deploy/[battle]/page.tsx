@@ -12,8 +12,10 @@ import { InfoBubble, InlineNote } from "@/components/ui/Note";
 import { Sheet } from "@/components/ui/Sheet";
 import { StatBar } from "@/components/ui/Bars";
 import { useCampaign } from "@/lib/campaign/CampaignProvider";
+import { PresenceLine, Timer } from "@/components/versus/Presence";
+import { countdown, useServerClock } from "@/lib/versus/client";
 import { enemyRead, inspectorFit, lineTraitState, matchupSentence, matchups, planFit, rosterMatchupLine, tierWord } from "@/lib/deployText";
-import { CLASS_WORD, GENERAL_STATS, GROUND_NOTE, PLAN_TEXT, PLAN_TITLE, STAT_KEYS, STAT_WORD, TERRAIN_WORD, WING_CLASSES, cultureColor, cultureName, cultureShort, gradeStyle, ofCulture, shortUnitName, subtypeWord, traitDef, traitWithLevel } from "@/lib/text";
+import { CLASS_WORD, GENERAL_STATS, GROUND_NOTE, PLAN_TEXT, PLAN_TITLE, STAT_KEYS, STAT_WORD, TERRAIN_WORD, WING_CLASSES, cultureColor, cultureName, cultureShort, gradeStyle, ofCulture, shortGeneralName, shortUnitName, subtypeWord, traitDef, traitWithLevel } from "@/lib/text";
 
 const FRONT_DEFS: { id: Front; label: string; word: string }[] = [
   { id: "L", label: "LEFT", word: "left" },
@@ -30,7 +32,9 @@ export default function DeployPage() {
   const router = useRouter();
   const n = Math.max(1, Math.min(3, Number(params.battle) || 1));
   const i = n - 1;
-  const { engine, hydrated, save, army, general, traits, battles, setBattlePlan, setBattleDeployment, giveBattle, setStage } = useCampaign();
+  const { engine, hydrated, save, army, general, traits, battles, duel, setBattlePlan, setBattleDeployment, giveBattle, setStage } = useCampaign();
+  const now = useServerClock(duel?.serverNow ?? Date.now);
+  const [sending, setSending] = useState(false);
   const [held, setHeld] = useState<number | null>(null);
   const [sheet, setSheet] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
@@ -43,7 +47,7 @@ export default function DeployPage() {
     else if (save && !army) router.replace(`/draft/${save.row + 1}`);
     else if (save && save.battles[i]?.fought) router.replace(`/battle/${n}`);
     else if (save && i > 0 && !save.battles[i - 1]?.fought) router.replace(`/deploy/${i}`);
-    else if (save && save.stage !== "deploy") setStage("deploy");
+    else if (save && save.stage !== "deploy" && save.kind !== "duel") setStage("deploy");
   }, [engine, hydrated, save, army, i, n, router, setStage]);
 
   const b = battles[i];
@@ -64,6 +68,29 @@ export default function DeployPage() {
     });
   }, [engine, army, b, held, placed, plan]);
 
+  const him = duel?.view.him ?? null;
+  const myTimer = duel ? countdown(duel.view.me.deadline, now) : null;
+  const hisTimer = him ? countdown(him.deadline, now) : null;
+  const locked = !!duel?.view.me.locked;
+
+  // A duel before his roster is revealed: he is still drafting.
+  if (duel && engine && save && army && general && !b) {
+    return (
+      <Screen>
+        <RunHeader label="Set the line" />
+        {him && <PresenceLine name={him.name} dot={him.dot} where={him.where} />}
+        <main className="flex grow flex-col items-center justify-center gap-4 px-5 text-center">
+          <span className="label text-faint">YOUR ARMY IS RAISED</span>
+          <span className="display text-[30px] leading-tight">{him ? `${him.name} is still drafting.` : "Waiting."}</span>
+          <span className="text-[15px] text-dim">{him?.where === "LEFT" ? "He has been gone a while. You can claim the field, or keep waiting." : "His roster turns over the moment his eighth pick lands; then you both have ninety seconds to set a line."}</span>
+          {him?.dot === "left" && (
+            <button type="button" onClick={() => duel.claim().catch(() => {})} className="box-border min-h-12 rounded-[3px] border border-bone bg-bone px-5 text-[17px] font-semibold text-ink">Claim the field</button>
+          )}
+          {duel.error && <span className="text-[13px] text-rust">{duel.error}</span>}
+        </main>
+      </Screen>
+    );
+  }
   if (!engine || !save || !army || !general || !b) return <Screen />;
   const units = army.slots.map((s) => engine.data.unitById.get(s.unitId)!);
   const foeUnits = b.foe.slots.map((s) => engine.data.unitById.get(s.unitId)!);
@@ -78,21 +105,33 @@ export default function DeployPage() {
   const mineCC = cultureColor(general.culture);
   const rings = heldUnit ? matchups(engine, heldUnit, b.foe) : null;
   const brittle = FRONT_DEFS.filter((d) => preview && preview.fronts[d.id].count > 0 && cohesionWord(preview.fronts[d.id].threshold) === "BRITTLE").map((d) => d.id);
-  const scouts = traits.some((t) => t.id === "scouts") ? heaviestFront(b.spec.line) : null;
+  const scouts = !duel && traits.some((t) => t.id === "scouts") ? heaviestFront(b.spec.line) : null;
 
   const put = (target: Front | null) => {
-    if (held === null) return;
+    if (held === null || locked) return;
     const next = placed.slice();
     next[held] = target;
     setBattleDeployment(i, next);
+    if (duel) duel.line({ deployment: next }).catch(() => {});
     setHeld(null);
     setBubble(null);
   };
-  const give = () => {
-    if (!allPlaced) return;
+  const choosePlan = (p: PlanName) => {
+    setBattlePlan(i, p);
+    if (duel) duel.line({ plan: p }).catch(() => {});
+  };
+  const give = async () => {
+    if (!allPlaced || sending) return;
+    if (duel) {
+      setSending(true);
+      try { await duel.line({ deployment: placed, plan, locked: true }); } catch { /* shown below */ }
+      setSending(false);
+      return;
+    }
     giveBattle(i, plan);
     router.push(`/battle/${n}`);
   };
+  const unlock = async () => { try { await duel!.line({ locked: false }); } catch { /* he has locked */ } };
   const toggleBubble = (k: string) => setBubble((x) => (x === k ? null : k));
   const cohNote = (f: Front) => {
     const thr = preview?.fronts[f].threshold ?? 0;
@@ -104,13 +143,14 @@ export default function DeployPage() {
 
   return (
     <Screen>
-      <RunHeader back={i === 0 ? "/draft/8" : `/between/${i}`} label={`Battle ${n} of 3 · Set the line`} right={<HeaderLink href="/numbers">Numbers</HeaderLink>} />
-      <main className="flex grow flex-col gap-3.5 px-5 pb-4">
+      <RunHeader back={duel ? undefined : i === 0 ? "/draft/8" : `/between/${i}`} label={duel ? (locked ? "The line · locked" : "Set the line") : `Battle ${n} of 3 · Set the line`} right={duel && myTimer && !locked ? <Timer text={myTimer.text} ms={myTimer.ms} /> : <HeaderLink href="/numbers">Numbers</HeaderLink>} />
+      {him && <PresenceLine name={him.name} dot={him.dot} where={locked && !him.locked && hisTimer?.text ? `STILL PLACING · ${hisTimer.text} LEFT` : him.where} />}
+      <main className="flex grow flex-col gap-3.5 px-5 pb-4" style={{ opacity: locked ? 0.35 : 1, pointerEvents: locked ? "none" : "auto" }}>
         {/* 2. The enemy row */}
         <button type="button" onClick={() => setSheet(true)} aria-label={`His army: ${b.foeGeneral.name} ${ofCulture(engine, b.foeGeneral.culture)}`} className="flex flex-col gap-3 rounded-lg border border-rule bg-panel px-4 py-3 text-left">
           <div className="flex items-center justify-between gap-2">
             <span className="display min-w-0 truncate text-[26px] leading-tight text-bone">
-              {b.foeGeneral.name} <span className="text-[18px]" style={{ color: hisCC.bright }}>{ofCulture(engine, b.foeGeneral.culture)}</span>
+              {him ? <>{him.name} <span className="text-[18px]" style={{ color: hisCC.bright }}>with {shortGeneralName(b.foeGeneral.name)} {ofCulture(engine, b.foeGeneral.culture)}</span></> : <>{b.foeGeneral.name} <span className="text-[18px]" style={{ color: hisCC.bright }}>{ofCulture(engine, b.foeGeneral.culture)}</span></>}
             </span>
             <span className="text-[18px] text-dim">›</span>
           </div>
@@ -125,7 +165,7 @@ export default function DeployPage() {
               <span className="flex items-center gap-1.5 text-rust"><span className="inline-block h-2.5 w-2.5 rounded-sm border-2 border-rust" /> HE IS · {rings.beaten.length}</span>
             </div>
           )}
-          <span className="label text-faint">{tierWord(b.spec.tier)}</span>
+          {!duel && <span className="label text-faint">{tierWord(b.spec.tier)}</span>}
         </button>
         {scouts && (
           <div className="flex items-center gap-2 rounded-[3px] border border-dotted border-bone px-3 py-2 font-mono text-[11px] tracking-[0.14em] text-bone">
@@ -253,7 +293,7 @@ export default function DeployPage() {
               {PLANS.map((p) => {
                 const on = p === plan;
                 return (
-                  <button key={p} type="button" onClick={() => setBattlePlan(i, p)} aria-pressed={on} className="flex flex-col gap-1 rounded-md border bg-sunk px-3.5 py-3 text-left" style={{ borderColor: on ? "var(--rust)" : "var(--rule)" }}>
+                  <button key={p} type="button" onClick={() => choosePlan(p)} aria-pressed={on} className="flex flex-col gap-1 rounded-md border bg-sunk px-3.5 py-3 text-left" style={{ borderColor: on ? "var(--rust)" : "var(--rule)" }}>
                     <div className="flex items-baseline justify-between">
                       <span className="text-[17px] font-semibold text-bone">{PLAN_TITLE[p]}</span>
                       {on && <span className="label text-rust">CHOSEN</span>}
@@ -267,9 +307,29 @@ export default function DeployPage() {
           )}
         </div>
       </main>
+      {duel && locked && (
+        <div className="fixed inset-x-0 top-1/2 z-40 mx-auto flex w-full max-w-[480px] -translate-y-1/2 flex-col gap-3 px-5 md:max-w-[560px]">
+          <div className="flex flex-col gap-3 rounded-lg border border-rule-btn bg-panel px-5 py-4" style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
+            <span className="label text-bone">YOUR LINE IS LOCKED</span>
+            <span className="display text-[30px] leading-tight">{him?.locked ? "Both lines are in." : him?.dot === "left" ? `${him.name} has left.` : `${him?.name ?? "He"} is still placing.`}</span>
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-[15px] leading-snug text-dim">{him?.locked ? "The battle is starting." : "The battle starts the moment he locks, or when his time runs out."}</span>
+              {hisTimer?.text && !him?.locked && <span className="font-mono text-[20px] font-semibold text-bone">{hisTimer.text}</span>}
+            </div>
+            {him?.dot === "left" && !him.locked && (
+              <button type="button" onClick={() => duel.claim().catch(() => {})} className="box-border min-h-12 w-full rounded-[3px] border border-bone bg-bone px-4 text-[17px] font-semibold text-ink">Claim the field</button>
+            )}
+            {!him?.locked && (
+              <button type="button" onClick={unlock} className="box-border min-h-12 w-full rounded-[3px] border border-rule-btn bg-transparent px-4 text-[17px] font-semibold text-bone">Unlock and change</button>
+            )}
+            {duel.error && <span className="text-[13px] text-rust">{duel.error}</span>}
+          </div>
+        </div>
+      )}
       <BottomBar>
-        <PrimaryButton muted={!allPlaced} disabled={!allPlaced} onClick={give}>
-          {allPlaced ? "Give battle" : `${bench.length} still on the bench`}
+        {duel?.error && !locked && <span className="text-[13px] text-rust">{duel.error}</span>}
+        <PrimaryButton muted={!allPlaced || locked || sending} disabled={!allPlaced || locked || sending} onClick={give}>
+          {locked ? `Locked · waiting for ${him?.name ?? "him"}` : sending ? "Locking…" : allPlaced ? (duel ? "Lock the line" : "Give battle") : `${bench.length} still on the bench`}
         </PrimaryButton>
       </BottomBar>
 

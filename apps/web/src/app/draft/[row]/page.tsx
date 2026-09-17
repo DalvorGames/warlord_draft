@@ -13,6 +13,9 @@ import { InfoLabel, InlineNote, Hint } from "@/components/ui/Note";
 import { useCampaign } from "@/lib/campaign/CampaignProvider";
 import { consequenceLine, loudStats, rowBest } from "@/lib/draftRules";
 import { useHint } from "@/lib/hints";
+import { PresenceLine, Timer } from "@/components/versus/Presence";
+import { countdown, useServerClock } from "@/lib/versus/client";
+import { routeForDuel } from "@/lib/versus/duel";
 import { CLASS_WORD, SLOT_LABEL, SLOT_QUESTION, STAT_NOTE, STAT_TITLE, STAT_WORD, cultureColor, cultureShort, gradeStyle, shortUnitName, subtypeWord } from "@/lib/text";
 
 /** Rows already rolled in this page load, so going back does not re-spin. */
@@ -22,7 +25,10 @@ export default function DraftRowPage() {
   const params = useParams<{ row: string }>();
   const router = useRouter();
   const rowIndex = Math.max(0, Math.min(7, Number(params.row) - 1 || 0));
-  const { engine, hydrated, save, general, draftFrozen, updateDraft, setRow, setStage } = useCampaign();
+  const { engine, hydrated, save, general, duel, draftFrozen, updateDraft, setRow, setStage } = useCampaign();
+  const now = useServerClock(duel?.serverNow ?? Date.now);
+  const [chosen, setChosen] = useState<number | null>(null); // a duel picks locally, then Next row commits
+  const [sending, setSending] = useState(false);
   const [phase, setPhase] = useState<ReelPhase[]>([]);
   const [landed, setLanded] = useState<number | null>(null);
   const [note, setNote] = useState<string | null>(null); // `${card}:${key}` or `${card}:why`
@@ -33,10 +39,14 @@ export default function DraftRowPage() {
   useEffect(() => {
     if (hydrated && !save) router.replace("/");
     else if (save && save.draft.generalIndex === null) router.replace("/general");
-    else if (save && draftFrozen) router.replace(`/deploy/${save.battleIndex + 1}`);
-  }, [hydrated, save, draftFrozen, router]);
+    else if (save && save.kind === "duel" && duel) {
+      // The server owns the step: rows are sequential, and a timer may have moved you on.
+      const want = routeForDuel(duel.view);
+      if (want !== `/draft/${rowIndex + 1}`) router.replace(want);
+    } else if (save && draftFrozen) router.replace(`/deploy/${save.battleIndex + 1}`);
+  }, [hydrated, save, duel, draftFrozen, rowIndex, router]);
   useEffect(() => {
-    if (save && save.row !== rowIndex) setRow(rowIndex);
+    if (save && save.kind !== "duel" && save.row !== rowIndex) setRow(rowIndex);
   }, [save, rowIndex, setRow]);
 
   const state = save?.draft ?? null;
@@ -91,39 +101,51 @@ export default function DraftRowPage() {
   const [t1, t2] = engine.data.rules.traitThresholds;
   const homeCount = summary.cultureCounts[general.culture] ?? 0;
 
+  const picked = duel ? chosen : row.pick;
   const pick = (card: number) => {
     if (rolling) return;
+    if (duel) { setChosen((c) => (c === card ? null : card)); return; }
     updateDraft((e, d) => (d.rows[rowIndex].pick === card ? e.unpickRow(d, rowIndex) : e.pickCard(d, rowIndex, card)));
   };
-  const reroll = () => {
-    if (rolling || row.pick !== null || state.rerollsLeft <= 0) return;
+  const reroll = async () => {
+    if (rolling || picked !== null || state.rerollsLeft <= 0) return;
+    if (duel) { setChosen(null); try { await duel.pick({ reroll: true }); } catch { /* the poll will say */ } return; }
     updateDraft((e, d) => e.rerollRow(d, rowIndex));
   };
-  const next = () => {
-    if (row.pick === null || rolling) return;
+  const next = async () => {
+    if (picked === null || rolling) return;
+    if (duel) {
+      setSending(true);
+      try { await duel.pick({ card: picked }); setChosen(null); router.push(rowIndex === 7 ? "/deploy/1" : `/draft/${rowIndex + 2}`); } catch { /* an illegal pick: the card stays, the error shows */ }
+      setSending(false);
+      return;
+    }
     if (allPicked) { setStage("deploy"); router.push("/deploy/1"); }
     else router.push(`/draft/${(nextUnpicked >= 0 ? nextUnpicked : state.rows.findIndex((r) => r.pick === null)) + 1}`);
   };
+  const timer = duel ? countdown(duel.view.me.deadline, now) : null;
   const toggle = (k: string) => setNote((n) => (n === k ? null : k));
   const best = Object.fromEntries(loud.keys.map((k) => [k, rowBest(engine, state, rowIndex, k)])) as Record<StatKey, number>;
-  const canReroll = row.pick === null && state.rerollsLeft > 0 && !rolling;
+  const canReroll = picked === null && state.rerollsLeft > 0 && !rolling;
 
   return (
     <Screen>
-      <RunHeader back={rowIndex === 0 ? "/general" : `/draft/${rowIndex}`} label={`Row ${rowIndex + 1} of 8 · ${SLOT_LABEL[row.slot]}`} right={<HeaderLink href="/draft/board">Board</HeaderLink>} />
-      <div className="px-5 pb-4">
+      <RunHeader back={duel ? undefined : rowIndex === 0 ? "/general" : `/draft/${rowIndex}`} label={`Row ${rowIndex + 1} of 8 · ${SLOT_LABEL[row.slot]}`} right={duel && timer ? <Timer text={timer.text} ms={timer.ms} /> : <HeaderLink href="/draft/board">Board</HeaderLink>} />
+      <div className="px-5 pb-2">
         <StepBar steps={state.rows.map((_, i) => `Row ${i + 1}`)} current={rowIndex} />
       </div>
-      <div className="flex items-start justify-between gap-4 px-5 pb-4">
+      {duel?.view.him && <PresenceLine name={duel.view.him.name} dot={duel.view.him.dot} where={duel.view.him.where} />}
+      <div className="flex items-start justify-between gap-4 px-5 pt-2 pb-4">
         <div className="flex min-w-0 flex-col gap-1.5">
           <h1 className="display m-0 text-[30px] leading-[1.05]">{SLOT_QUESTION[row.slot]}</h1>
-          <span className="text-[15px] leading-snug text-dim">{loud.hint}</span>
+          <span className="text-[15px] leading-snug text-dim">{duel ? "Same four cards on his screen. Your pick stays hidden until the line is set." : loud.hint}</span>
         </div>
         <button type="button" onClick={reroll} disabled={!canReroll} className="flex min-h-[64px] shrink-0 flex-col items-center justify-center gap-1 rounded-[3px] border bg-transparent px-3.5 py-2" style={canReroll ? { borderColor: "var(--rule-btn)", color: "var(--bone)" } : { borderColor: "var(--rule)", color: "var(--faint)" }}>
           <span className="text-[17px]">{state.rerollsLeft > 0 ? "Reroll" : "No rerolls left"}</span>
-          {state.rerollsLeft > 0 && <span className="font-mono text-[11px] tracking-[0.14em]">{state.rerollsLeft} LEFT · 1 FREE</span>}
+          {state.rerollsLeft > 0 && <span className="font-mono text-[11px] tracking-[0.14em]">{state.rerollsLeft} LEFT{duel ? "" : " · 1 FREE"}</span>}
         </button>
       </div>
+      {duel?.error && <div className="px-5 pb-2 text-[13px] text-rust">{duel.error}</div>}
       {row.slot === "flex" && flexHint && (
         <div className="px-5 pb-3">
           <Hint onDismiss={dismissFlexHint}>A flex row makes loud whatever your army still lacks: shooters first, then wings, then the center.</Hint>
@@ -136,7 +158,7 @@ export default function DraftRowPage() {
           const stop: ReelLine[] = [...reelLines.slice(0, 6), { grade: unit.grade, name: unit.name, hot: true }, ...reelLines.slice(6, 9)];
           const cc = cultureColor(unit.culture);
           const cons = consequenceLine(engine, state, rowIndex, i);
-          const selected = row.pick === i;
+          const selected = picked === i;
           const disabled = cons.disabled && !selected;
           const gs = gradeStyle(unit.grade);
           const openKey = note?.startsWith(`${i}:`) ? note.slice(note.indexOf(":") + 1) : null;
@@ -201,8 +223,8 @@ export default function DraftRowPage() {
           <span className="text-dim">TAKEN {summary.picksMade} / 8</span>
           <span style={{ color: homeCount >= t1 ? homeCC.bright : "var(--dim)" }}>{cultureShort(engine, general.culture).toUpperCase()} {homeCount} OF {homeCount >= t1 ? t2 : t1}</span>
         </div>
-        <PrimaryButton muted={row.pick === null || rolling} disabled={row.pick === null || rolling} onClick={next}>
-          {rolling ? "Rolling…" : row.pick === null ? "Take one to go on" : allPicked ? "Set the line" : "Next row"}
+        <PrimaryButton muted={picked === null || rolling || sending} disabled={picked === null || rolling || sending} onClick={next}>
+          {sending ? "Taking…" : rolling ? "Rolling…" : picked === null ? "Take one to go on" : allPicked || (duel && rowIndex === 7) ? "Set the line" : "Next row"}
         </PrimaryButton>
       </BottomBar>
     </Screen>

@@ -8,6 +8,7 @@ import { Screen } from "@/components/Screen";
 import { TabBar } from "@/components/TabBar";
 import { TraitChip } from "@/components/ui/TraitChip";
 import { useCampaign } from "@/lib/campaign/CampaignProvider";
+import { useInvite } from "@/lib/versus/invite";
 import { campaignFromSeed } from "@/lib/campaign/spec";
 import { dailyKey, seedFromKey } from "@/lib/daily";
 import { tierShort } from "@/lib/deployText";
@@ -30,6 +31,7 @@ const longDate = (d: Date) => d.toLocaleDateString("en-US", { weekday: "long", m
 export default function TodayPage() {
   const router = useRouter();
   const { engine, hydrated, stale, save, history, start, abandon } = useCampaign();
+  const invite = useInvite();
   const [today, setToday] = useState<{ key: string; seed: number; label: string } | null>(null);
   useEffect(() => {
     const key = dailyKey();
@@ -46,7 +48,7 @@ export default function TodayPage() {
     });
   }, [engine, preview]);
 
-  const inProgress = hydrated && save && save.stage !== "result" && !save.finishedAt ? save : null;
+  const inProgress = hydrated && save && save.kind !== "duel" && save.stage !== "result" && !save.finishedAt ? save : null;
   const dailyDone = today ? history.find((h) => h.id === today.key) : undefined;
   const lastFive = history.slice(0, 5);
   const streak = (() => { let n = 0; for (const h of history) { if (h.won === 3) n++; else break; } return n; })();
@@ -66,6 +68,13 @@ export default function TodayPage() {
     <Screen>
       <AppHeader />
       <main className="flex grow flex-col gap-5 px-5 pb-5">
+        {invite && (
+          <Link href={`/v/${invite.code}`} className="flex min-h-11 items-center gap-3 rounded-lg border border-rule bg-panel px-4 py-3 no-underline" style={{ borderLeft: "3px solid var(--rust)" }}>
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-rule-btn bg-raised font-mono text-[15px] text-bone">{(invite.hisName || "?").charAt(0).toUpperCase()}</span>
+            <span className="flex min-w-0 grow flex-col"><span className="text-[15px] text-bone">{invite.hisName || "A friend"} is waiting for you.</span><span className="label text-faint">ROOM {invite.code} · {invite.left}</span></span>
+            <span className="text-[15px] font-semibold text-bone">Join</span>
+          </Link>
+        )}
         <div className="flex flex-col gap-1 pt-2">
           <span className="label text-faint">TODAY&apos;S MUSTER</span>
           <h1 className="display m-0 text-[30px] leading-[1.1]">{today?.label ?? " "}</h1>
@@ -173,7 +182,7 @@ export default function TodayPage() {
           <span className="text-[13px] leading-snug text-dim">Ranked by battles won, then by losses. Standings open when today&apos;s board closes and everyone&apos;s runs can be compared.</span>
         </div>
       </main>
-      <TabBar />
+      <TabBar invite={!!invite} />
     </Screen>
   );
 }

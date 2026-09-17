@@ -11,14 +11,15 @@ import { ContestBar, StrengthBar } from "@/components/ui/Bars";
 import { LineReveal } from "@/components/ui/LineReveal";
 import { useCampaign } from "@/lib/campaign/CampaignProvider";
 import { contestRows, frontStrip, stageGutter, strengthOf, FRONT_WORD } from "@/lib/battleView";
-import { cultureColor, firstName } from "@/lib/text";
+import { TERRAIN_WORD, cultureColor, firstName } from "@/lib/text";
+import { PresenceLine } from "@/components/versus/Presence";
 
 export default function BattlePage() {
   const params = useParams<{ battle: string }>();
   const router = useRouter();
   const n = Math.max(1, Math.min(3, Number(params.battle) || 1));
   const i = n - 1;
-  const { engine, hydrated, save, army, general, battles, score } = useCampaign();
+  const { engine, hydrated, save, army, general, battles, score, duel } = useCampaign();
   const [shown, setShown] = useState(1); // beats revealed so far, the reveal beat included
   const [playing, setPlaying] = useState(false);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -34,6 +35,13 @@ export default function BattlePage() {
     else if (save && !save.battles[i]?.fought) router.replace(`/deploy/${n}`);
   }, [engine, hydrated, save, i, n, router]);
 
+  // In a duel, tell the room where you are in the report (presence: WATCHING · AT <beat>).
+  const reported = useRef(-1);
+  useEffect(() => {
+    if (!duel || !total || shown === reported.current) return;
+    reported.current = shown;
+    duel.presence({ beat: shown, done: shown >= total }).catch(() => {});
+  }, [duel, shown, total]);
   useEffect(() => {
     if (!playing) return;
     timer.current = setInterval(() => setShown((s) => { if (s >= total) { setPlaying(false); return s; } return s + 1; }), 1800);
@@ -44,8 +52,12 @@ export default function BattlePage() {
   const mine = cultureColor(general.culture);
   const hisRaw = cultureColor(b.foeGeneral.culture);
   const his = hisRaw.bright === mine.bright ? { ...hisRaw, bright: "#b3ac9c" } : hisRaw;
-  const youName = firstName(general.name).toUpperCase();
-  const hisName = firstName(b.foeGeneral.name).toUpperCase();
+  const him = duel?.view.him ?? null;
+  const youName = (duel ? duel.view.me.name : firstName(general.name)).toUpperCase();
+  const hisName = (him ? him.name : firstName(b.foeGeneral.name)).toUpperCase();
+  const hisBeat = him?.beat ?? null;
+  const atWord = (label: string) => (label === "CLASH" ? "AT THE CLASH" : label === "SKIRMISH" ? "AT THE SKIRMISH" : label === "RESULT" ? "AT THE END" : `AT ${label}`);
+  const hisAt = hisBeat === null ? "" : hisBeat >= total ? "AT THE END" : atWord(beats[Math.max(0, Math.min(hisBeat, total) - 1)]?.label ?? "");
   const routLevel = engine.data.rules.fronts.routLevel;
   const atEnd = shown >= total;
   const last = beats[Math.min(shown, total) - 1];
@@ -58,7 +70,8 @@ export default function BattlePage() {
 
   return (
     <Screen>
-      <RunHeader label={`Battle ${n} of 3 · The report`} right={!atEnd ? <HeaderLink onClick={() => { setPlaying(false); setShown(total); }}>Skip</HeaderLink> : null} />
+      <RunHeader label={duel ? `The battle · ${TERRAIN_WORD[b.spec.terrain]}` : `Battle ${n} of 3 · The report`} right={!atEnd ? <HeaderLink onClick={() => { setPlaying(false); setShown(total); }}>Skip</HeaderLink> : null} />
+      {him && <PresenceLine name={him.name} dot={him.dot} where={him.step === "done" ? "WATCHED IT" : him.step === "watching" ? `WATCHING${hisAt ? " · " + hisAt : ""}` : him.where} />}
       <div className="flex shrink-0 flex-col gap-3 px-5 pb-3">
         <div className="flex items-end gap-3">
           <div className="flex grow basis-0 flex-col gap-1.5">

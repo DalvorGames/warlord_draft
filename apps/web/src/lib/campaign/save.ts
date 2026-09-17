@@ -14,11 +14,21 @@ export interface BattlePlay {
   fought: boolean;
 }
 
+/** A 1v1 room this save plays in (docs/versus-plan.md §6.2). */
+export interface DuelRef {
+  code: string;
+  seat: "host" | "guest";
+  token: string;
+  matchNo: number;
+}
+
 export interface CampaignSave {
   v: 2;
   /** The engine data version the save was made with; a different one means the run cannot be replayed. */
   dataVersion: number;
-  kind: "daily" | "free";
+  kind: "daily" | "free" | "duel";
+  /** Present when kind is "duel": the room the server mirrors this save into. */
+  duel?: DuelRef;
   spec: CampaignSpec;
   draft: DraftState;
   /** Draft row the player is looking at (phone: one row per screen). */
@@ -33,7 +43,7 @@ export interface CampaignSave {
 
 export interface HistoryEntry {
   id: string;
-  kind: "daily" | "free";
+  kind: "daily" | "free" | "duel";
   general: string;
   won: number;
   played: number;

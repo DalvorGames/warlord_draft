@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { HeaderLink, RunHeader } from "@/components/RunHeader";
 import { Screen } from "@/components/Screen";
 import { TabBar } from "@/components/TabBar";
+import { AppHeader } from "@/components/AppHeader";
 import { TraitChip } from "@/components/ui/TraitChip";
 import { Glyph } from "@/components/ui/Token";
 import { useEngine } from "@/lib/engine/EngineProvider";
@@ -19,7 +19,7 @@ export default function RulesPage() {
   const [t1, t2] = engine?.data.rules.traitThresholds ?? [4, 6];
   return (
     <Screen>
-      <RunHeader back="/" label="How it works" right={<HeaderLink href="/numbers">Numbers</HeaderLink>} />
+      <AppHeader />
       <main className="flex grow flex-col gap-5 px-5 pb-6">
         <div className="flex flex-col gap-1.5">
           <h1 className="display m-0 text-[30px] leading-[1.1]">One army a day. About six minutes.</h1>

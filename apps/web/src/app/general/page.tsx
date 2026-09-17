@@ -11,13 +11,18 @@ import { TraitChip } from "@/components/ui/TraitChip";
 import { InlineNote } from "@/components/ui/Note";
 import { useCampaign } from "@/lib/campaign/CampaignProvider";
 import { STEPS } from "@/lib/steps";
+import { PresenceLine, Timer } from "@/components/versus/Presence";
+import { countdown, useServerClock } from "@/lib/versus/client";
+import { routeForDuel } from "@/lib/versus/duel";
 import { GENERAL_STATS, GENERAL_STAT_NOTE, cultureColor, cultureName, firstName, traitDef } from "@/lib/text";
 
 const ORDINAL = ["THE FIRST", "THE SECOND", "THE THIRD"];
 
 export default function GeneralPage() {
   const router = useRouter();
-  const { engine, hydrated, save, updateDraft, setStage } = useCampaign();
+  const { engine, hydrated, save, duel, updateDraft, setStage } = useCampaign();
+  const now = useServerClock(duel?.serverNow ?? Date.now);
+  const [sending, setSending] = useState(false);
   const [chosen, setChosen] = useState<number | null>(null);
   const [flipped, setFlipped] = useState<boolean[]>([false, false, false]);
   const [note, setNote] = useState<string | null>(null); // `${i}:${traitId}` or `${i}:stat:${key}`
@@ -25,8 +30,8 @@ export default function GeneralPage() {
 
   useEffect(() => {
     if (hydrated && !save) router.replace("/");
-    if (save && save.draft.generalIndex !== null) router.replace(`/draft/${save.row + 1}`);
-  }, [hydrated, save, router]);
+    if (save && save.draft.generalIndex !== null) router.replace(save.kind === "duel" && duel ? routeForDuel(duel.view) : `/draft/${save.row + 1}`);
+  }, [hydrated, save, duel, router]);
 
   // The reveal: cards turn over by themselves (v2 §5.2), unless motion is reduced.
   useEffect(() => {
@@ -41,24 +46,31 @@ export default function GeneralPage() {
   const pool = save.draft.generalPool.map((id) => engine.data.generalById.get(id)!);
   const allUp = flipped.every(Boolean);
 
-  const take = () => {
+  const take = async () => {
     if (chosen === null) return;
+    if (duel) {
+      setSending(true);
+      try { await duel.pick({ general: chosen }); router.push("/draft/1"); } catch { setSending(false); }
+      return;
+    }
     updateDraft((e, d) => e.pickGeneral(d, chosen));
     setStage("draft");
     router.push("/draft/1");
   };
+  const timer = duel ? countdown(duel.view.me.deadline, now) : null;
   const toggleNote = (k: string) => setNote((n) => (n === k ? null : k));
   const elitesOf = (g: General) => (g.stats.logistics >= rules.eliteCap.logisticsThreshold ? rules.eliteCap.withLogistics : rules.eliteCap.base);
 
   return (
     <Screen>
-      <RunHeader back="/" label="1 · Your general" right={<HeaderLink href="/numbers">Numbers</HeaderLink>} />
-      <div className="px-5 pb-4">
+      <RunHeader back={duel ? undefined : "/"} label="1 · Your general" right={duel && timer ? <Timer text={timer.text} ms={timer.ms} /> : <HeaderLink href="/numbers">Numbers</HeaderLink>} />
+      <div className="px-5 pb-2">
         <StepBar steps={[...STEPS].slice(0, 4)} current={0} />
       </div>
-      <div className="flex flex-col gap-1 px-5 pb-4">
-        <h1 className="display m-0 text-[30px] leading-[1.1]">{allUp ? "Three names. Take one." : "Three came up."}</h1>
-        <span className="text-[15px] text-dim">{allUp ? "Tap a word to see what it does." : "Turning them over…"}</span>
+      {duel?.view.him && <PresenceLine name={duel.view.him.name} dot={duel.view.him.dot} where={duel.view.him.where} />}
+      <div className="flex flex-col gap-1 px-5 pt-2 pb-4">
+        <h1 className="display m-0 text-[30px] leading-[1.1]">{duel ? "Three names. You both see them." : allUp ? "Three names. Take one." : "Three came up."}</h1>
+        <span className="text-[15px] text-dim">{duel ? "He may take the same one. Tap a word to see what it does." : allUp ? "Tap a word to see what it does." : "Turning them over…"}</span>
       </div>
       <main className="flex grow flex-col gap-3 px-5 pb-4">
         {pool.map((g, i) => {
@@ -136,8 +148,8 @@ export default function GeneralPage() {
         })}
       </main>
       <BottomBar>
-        <PrimaryButton muted={chosen === null} disabled={chosen === null} onClick={take}>
-          {chosen === null ? (allUp ? "Tap a card to take him" : "Turning them over…") : `Take the field with ${firstName(pool[chosen].name)}`}
+        <PrimaryButton muted={chosen === null || sending} disabled={chosen === null || sending} onClick={take}>
+          {sending ? "Taking…" : chosen === null ? (allUp ? "Tap a card to take him" : "Turning them over…") : `Take the field with ${firstName(pool[chosen].name)}`}
         </PrimaryButton>
       </BottomBar>
     </Screen>

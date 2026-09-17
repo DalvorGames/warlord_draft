@@ -69,6 +69,8 @@ export function cultureShort(engine: Engine, key: string): string {
 /** "of Macedon", "of Gauls" reads oddly; the mock says "of Gauls", so keep the short form throughout. */
 export const ofCulture = (engine: Engine, key: string) => `of ${cultureShort(engine, key)}`;
 export const firstName = (name: string) => name.split(" ")[0];
+/** "Fabius" from "Fabius Maximus Cunctator", but "King Wuling" from "King Wuling of Zhao": the part before "of", else the first word. */
+export const shortGeneralName = (name: string) => (name.includes(" of ") ? name.split(" of ")[0] : name.split(" ")[0]);
 
 export const traitDef = (engine: Engine, id: string): TraitDef & { id: string } => ({ id, ...engine.data.rules.traits[id] });
 export const cultureTraitId = (engine: Engine, culture: string) => engine.data.cultures[culture].trait;
